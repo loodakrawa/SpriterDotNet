@@ -35,7 +35,7 @@ namespace SpriterDotNet
         public SpriterEntity Entity { get; private set; }
         public SpriterAnimation CurrentAnimation { get; private set; }
 
-        public string Name { get; set; }
+        public string Name { get; private set; }
         public float Speed { get; set; }
         public float Length { get; set; }
         public float Time { get; set; }
