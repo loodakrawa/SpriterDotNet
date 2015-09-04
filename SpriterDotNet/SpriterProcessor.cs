@@ -38,7 +38,9 @@ namespace SpriterDotNet
             if (nextKey >= keys.Length) nextKey = 0;
             SpriterMainLineKey keyB = keys[nextKey];
 
-            float adjustedTime = AdjustTime(keyA, keyB, targetTime, animation.Length);
+            float nextTime = GetNextTime(keyA, keyB, animation.Length);
+            float factor = GetFactor(keyA, nextTime, targetTime);
+            float adjustedTime = Linear(keyA.Time, nextTime, factor);
 
             var boneInfos = new Dictionary<int, SpriterSpatialInfo>();
 
@@ -76,8 +78,7 @@ namespace SpriterDotNet
             GetKeys(spriterRef, animation, out keyA, out keyB);
             if (keyB == null) return Copy(keyA.BoneInfo);
 
-            targetTime = AdjustTime(keyA, keyB, targetTime, animation.Length);
-            float factor = GetInterpolationFactor(keyA, keyB, targetTime, animation.Length);
+            float factor = GetFactor(keyA, keyB, animation.Length, targetTime);
             return Interpolate(keyA.BoneInfo, keyB.BoneInfo, factor, keyA.Spin);
         }
 
@@ -89,8 +90,7 @@ namespace SpriterDotNet
             GetKeys(spriterRef, animation, out keyA, out keyB);
             if (keyB == null) return Copy(keyA.ObjectInfo);
 
-            targetTime = AdjustTime(keyA, keyB, targetTime, animation.Length);
-            float factor = GetInterpolationFactor(keyA, keyB, targetTime, animation.Length);
+            float factor = GetFactor(keyA, keyB, animation.Length, targetTime);
             return Interpolate(keyA.ObjectInfo, keyB.ObjectInfo, factor, keyA.Spin);
         }
 
@@ -154,22 +154,26 @@ namespace SpriterDotNet
             target.Y = source.Y;
         }
 
-        private static float GetInterpolationFactor(SpriterKey keyA, SpriterKey keyB, float time, float animationLength)
+        private static float GetFactor(SpriterKey keyA, SpriterKey keyB, float animationLength, float targetTime)
         {
-            float timeA = keyA.Time;
-            float timeB = keyB.Time > keyA.Time ? keyB.Time : animationLength;
-
-            return ReverseLinear(timeA, timeB, time);
+            float nextTime = GetNextTime(keyA, keyB, animationLength);
+            return GetFactor(keyA, nextTime, targetTime);
         }
 
-        private static float AdjustTime(SpriterKey keyA, SpriterKey keyB, float time, float animationLength)
+        private static float GetFactor(SpriterKey key, float nextTime, float targetTime)
         {
-            float timeA = keyA.Time;
-            float timeB = keyB.Time > keyA.Time ? keyB.Time : animationLength;
+            float factor = ReverseLinear(key.Time, nextTime, targetTime);
+            return ApplySpeedCurve(key, factor);
+        }
 
-            float factor = ReverseLinear(timeA, timeB, time);
+        private static float GetNextTime(SpriterKey keyA, SpriterKey keyB, float animationLength)
+        {
+            return keyB.Time > keyA.Time ? keyB.Time : animationLength;
+        }
 
-            switch (keyA.CurveType)
+        private static float ApplySpeedCurve(SpriterKey key, float factor)
+        {
+            switch (key.CurveType)
             {
                 case SpriterCurveType.Instant:
                     factor = 0.0f;
@@ -177,20 +181,20 @@ namespace SpriterDotNet
                 case SpriterCurveType.Linear:
                     break;
                 case SpriterCurveType.Quadratic:
-                    factor = Quadratic(0.0f, keyA.C1, 1.0f, factor);
+                    factor = Bezier(factor, 0.0f, key.C1, 1.0f);
                     break;
                 case SpriterCurveType.Cubic:
-                    factor = Cubic(0.0f, keyA.C1, keyA.C2, 1.0f, factor);
+                    factor = Bezier(factor, 0.0f, key.C1, key.C2, 1.0f);
                     break;
                 case SpriterCurveType.Quartic:
-                    factor = Quartic(0.0f, keyA.C1, keyA.C2, keyA.C3, 1.0f, factor);
+                    factor = Bezier(factor, 0.0f, key.C1, key.C2, key.C3, 1.0f);
                     break;
                 case SpriterCurveType.Quintic:
-                    factor = Quintic(0.0f, keyA.C1, keyA.C2, keyA.C3, keyA.C4, 1.0f, factor);
+                    factor = Bezier(factor, 0.0f, key.C1, key.C2, key.C3, key.C4, 1.0f);
                     break;
             }
 
-            return Linear(timeA, timeB, factor);
+            return factor;
         }
 
         private static SpriterSpatialInfo Interpolate(SpriterSpatialInfo a, SpriterSpatialInfo b, float f, int spin)
@@ -253,24 +257,17 @@ namespace SpriterDotNet
             return c1 + (c2 - c1) * f;
         }
 
-        private static float Quadratic(float c1, float c2, float c3, float f)
+        private static float Bezier(float t, params float[] f)
         {
-            return Linear(Linear(c1, c2, f), Linear(c2, c3, f), f);
-        }
+            for (int i = f.Length - 1; i > 0; --i)
+            {
+                for (int j = 0; j < i; ++j)
+                {
+                    f[j] = Linear(f[j], f[j + 1], t);
+                }
+            }
 
-        private static float Cubic(float c1, float c2, float c3, float c4, float f)
-        {
-            return Linear(Quadratic(c1, c2, c3, f), Quadratic(c2, c3, c4, f), f);
-        }
-
-        private static float Quartic(float c1, float c2, float c3, float c4, float c5, float f)
-        {
-            return Linear(Cubic(c1, c2, c3, c4, f), Cubic(c2, c3, c4, c5, f), f);
-        }
-
-        private static float Quintic(float c1, float c2, float c3, float c4, float c5, float c6, float f)
-        {
-            return Linear(Quartic(c1, c2, c3, c4, c5, f), Quartic(c2, c3, c4, c5, c6, f), f);
+            return f[0];
         }
     }
 }
