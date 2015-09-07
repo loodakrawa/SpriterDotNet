@@ -30,3 +30,8 @@ To use it:
 
 * Take SpriterDotNet.Monogame as an example
 ```
+
+## Feedback
+For questions, feedback, complaints, etc, use the related topic on [Spriter Forum](http://brashmonkey.com/forum/index.php?/topic/4166-spriterdotnet-an-implementation-for-all-c-frameworks/)
+
+Also, feel free to drop a note if you use SpriterDotNet in your game/project and I'll be happy to add a showcase section with links to your game/project.
