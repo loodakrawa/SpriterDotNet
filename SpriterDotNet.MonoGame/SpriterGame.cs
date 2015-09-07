@@ -48,7 +48,7 @@ namespace SpriterDotNet.MonoGame
         private static readonly int Height = 768;
         private static readonly float MaxSpeed = 5.0f;
         private static readonly float DeltaSpeed = 0.2f;
-        private static readonly string Instructions = "Enter = Next Scml\nSpace = Next Animation\nP = Anim Speed +\nO = Anim Speed -\nR = Reverse Direction\nM = Update Speed +\nN = Update Speed -";
+        private static readonly string Instructions = "Enter = Next Scml\nSpace = Next Animation\nP = Anim Speed +\nO = Anim Speed -\nR = Reverse Direction\nX = Reset Animation\nM = Update Speed +\nN = Update Speed -";
 
         private IList<MonogameSpriterAnimator> animators = new List<MonogameSpriterAnimator>();
         private MonogameSpriterAnimator currentAnimator;
@@ -131,6 +131,7 @@ namespace SpriterDotNet.MonoGame
             if (IsPressed(Keys.R)) currentAnimator.Speed = -currentAnimator.Speed;
             if (IsPressed(Keys.M)) ChangeUpdateSpeed(true);
             if (IsPressed(Keys.N)) ChangeUpdateSpeed(false);
+            if (IsPressed(Keys.X)) currentAnimator.Play(currentAnimator.Name);
 
             oldState = Keyboard.GetState();
 

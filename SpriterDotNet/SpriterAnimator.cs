@@ -90,12 +90,14 @@ namespace SpriterDotNet
 
             if (Time < 0.0f)
             {
-                Time += Length;
+                if (CurrentAnimation.Looping) Time += Length;
+                else Time = 0.0f;
                 AnimationFinished(Name);
             }
             else if (Time >= Length)
             {
-                Time -= Length;
+                if (CurrentAnimation.Looping) Time -= Length;
+                else Time = Length;
                 AnimationFinished(Name);
             }
 

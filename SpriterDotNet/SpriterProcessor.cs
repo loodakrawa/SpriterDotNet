@@ -38,8 +38,8 @@ namespace SpriterDotNet
             if (nextKey >= keys.Length) nextKey = 0;
             SpriterMainLineKey keyB = keys[nextKey];
 
-            float nextTime = GetNextTime(keyA, keyB, animation.Length);
-            float factor = GetFactor(keyA, nextTime, targetTime);
+            float nextTime = keyB.Time > keyA.Time ? keyB.Time : animation.Length;
+            float factor = GetFactor(keyA, keyB, animation.Length, targetTime);
             float adjustedTime = Linear(keyA.Time, nextTime, factor);
 
             var boneInfos = new Dictionary<int, SpriterSpatialInfo>();
@@ -156,19 +156,18 @@ namespace SpriterDotNet
 
         private static float GetFactor(SpriterKey keyA, SpriterKey keyB, float animationLength, float targetTime)
         {
-            float nextTime = GetNextTime(keyA, keyB, animationLength);
-            return GetFactor(keyA, nextTime, targetTime);
-        }
+            float timeA = keyA.Time;
+            float timeB = keyB.Time;
 
-        private static float GetFactor(SpriterKey key, float nextTime, float targetTime)
-        {
-            float factor = ReverseLinear(key.Time, nextTime, targetTime);
-            return ApplySpeedCurve(key, factor);
-        }
+            if(timeA > timeB)
+            {
+                timeB += animationLength;
+                if (targetTime < timeA) targetTime += animationLength;
+            }
 
-        private static float GetNextTime(SpriterKey keyA, SpriterKey keyB, float animationLength)
-        {
-            return keyB.Time > keyA.Time ? keyB.Time : animationLength;
+            float factor = ReverseLinear(timeA, timeB, targetTime);
+            factor = ApplySpeedCurve(keyA, factor);
+            return factor;
         }
 
         private static float ApplySpeedCurve(SpriterKey key, float factor)
@@ -201,7 +200,7 @@ namespace SpriterDotNet
         {
             return new SpriterSpatialInfo
             {
-                Angle = Linear(a.Angle, AdjustAngle(a.Angle, b.Angle, spin), f),
+                Angle = AngleLinear(a.Angle, b.Angle, spin, f),
                 X = Linear(a.X, b.X, f),
                 Y = Linear(a.Y, b.Y, f),
                 ScaleX = Linear(a.ScaleX, b.ScaleX, f),
@@ -213,7 +212,7 @@ namespace SpriterDotNet
         {
             return new SpriterObjectInfo
             {
-                Angle = Linear(a.Angle, AdjustAngle(a.Angle, b.Angle, spin), f),
+                Angle = AngleLinear(a.Angle, b.Angle, spin, f),
                 X = Linear(a.X, b.X, f),
                 Y = Linear(a.Y, b.Y, f),
                 ScaleX = Linear(a.ScaleX, b.ScaleX, f),
@@ -238,13 +237,15 @@ namespace SpriterDotNet
             child.ScaleX *= parent.ScaleX;
             child.ScaleY *= parent.ScaleY;
             child.Angle += parent.Angle;
+            child.Angle %= 360.0f;
         }
 
-        private static float AdjustAngle(float a, float b, int spin)
+        private static float AngleLinear(float a, float b, int spin, float f)
         {
-            if (spin == 1 && (b - a) < 0) b += 360;
-            if (spin == -1 && (b - a) > 0) b -= 360;
-            return b;
+            if (spin == 0) return a;
+            if (spin > 0 && (b - a) < 0) b += 360;
+            if (spin < 0 && (b - a) > 0) b -= 360;
+            return Linear(a, b, f);
         }
 
         private static float ReverseLinear(float a, float b, float v)
