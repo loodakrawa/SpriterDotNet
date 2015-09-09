@@ -114,13 +114,6 @@ namespace SpriterDotNet
             }
 
             keyB = timelineKeys[keyBId];
-
-            ++keyBId;
-            if (keyBId < timelineKeys.Length)
-            {
-                SpriterTimeLineKey nextKey = timelineKeys[keyBId];
-                if (nextKey.Time == keyB.Time) keyB = nextKey;
-            }
         }
 
         private static SpriterSpatialInfo Copy(SpriterSpatialInfo info)
@@ -217,8 +210,8 @@ namespace SpriterDotNet
                 Y = Linear(a.Y, b.Y, f),
                 ScaleX = Linear(a.ScaleX, b.ScaleX, f),
                 ScaleY = Linear(a.ScaleY, b.ScaleY, f),
-                PivotX = Linear(a.PivotX, b.PivotX, f),
-                PivotY = Linear(a.PivotY, b.PivotY, f),
+                PivotX = a.PivotX,
+                PivotY = a.PivotY,
                 FileId = a.FileId,
                 FolderId = a.FolderId
             };
