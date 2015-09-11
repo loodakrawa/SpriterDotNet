@@ -206,6 +206,7 @@ namespace SpriterDotNet
             return new SpriterObjectInfo
             {
                 Angle = AngleLinear(a.Angle, b.Angle, spin, f),
+                Alpha = Linear(a.Alpha, b.Alpha, f),
                 X = Linear(a.X, b.X, f),
                 Y = Linear(a.Y, b.Y, f),
                 ScaleX = Linear(a.ScaleX, b.ScaleX, f),
