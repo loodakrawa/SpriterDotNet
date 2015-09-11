@@ -12,3 +12,7 @@ build/
 # Unity
 Library/
 Temp/
+
+# Specific
+SpriterDotNet.Unity/*.csproj
+SpriterDotNet.Unity/*.sln

@@ -1,5 +1,4 @@
-﻿
-Microsoft Visual Studio Solution File, Format Version 12.00
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2015
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpriterDotNet.Unity.CSharp", "SpriterDotNet.Unity.CSharp.csproj", "{ACDA2F7A-202C-999A-9B8C-538EF10560C2}"
 EndProject
