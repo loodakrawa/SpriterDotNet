@@ -15,6 +15,7 @@ namespace SpriterDotNetUnity
     [ExecuteInEditMode]
     public class SpriterDotNetBehaviour : MonoBehaviour
     {
+        public float AnimatorSpeed = 1.0f;
         public float MaxSpeed = 5.0f;
         public float DeltaSpeed = 0.2f;
 
@@ -22,11 +23,11 @@ namespace SpriterDotNetUnity
         public GameObject[] Pivots;
         public GameObject[] Children;
 
-        private UnitySpriterAnimator animator;
-        private SpriterEntity entity;
-
         [HideInInspector]
         public string SpriterData;
+
+        private UnitySpriterAnimator animator;
+        private SpriterEntity entity;
 
         public void Awake()
         {
@@ -45,21 +46,32 @@ namespace SpriterDotNetUnity
 #if UNITY_EDITOR
             if (!UnityEditor.EditorApplication.isPlayingOrWillChangePlaymode) return;
 #endif
-
+            animator.Speed = AnimatorSpeed;
             animator.Step(Time.deltaTime * 1000.0f);
-
-            if (Input.GetButtonDown("space")) NextAnimation();
-            if (Input.GetButtonDown("r")) animator.Speed = -animator.Speed;
-            if (Input.GetButtonDown("p")) ChangeAnimationSpeed(DeltaSpeed);
-            if (Input.GetButtonDown("o")) ChangeAnimationSpeed(-DeltaSpeed);
+            if (GetAxisDownPositive("Horizontal")) ChangeAnimation(1);
+            if (GetAxisDownNegative("Horizontal")) ChangeAnimation(-1);
+            if (GetAxisDownPositive("Vertical")) ChangeAnimationSpeed(DeltaSpeed);
+            if (GetAxisDownNegative("Vertical")) ChangeAnimationSpeed(-DeltaSpeed);
+            if (Input.GetButtonDown("Jump")) ReverseAnimation();
         }
 
-        private void NextAnimation()
+        private static bool GetAxisDownPositive(string axisName)
+        {
+            return Input.GetButtonDown(axisName) && Input.GetAxis(axisName) > 0;
+        }
+
+        private static bool GetAxisDownNegative(string axisName)
+        {
+            return Input.GetButtonDown(axisName) && Input.GetAxis(axisName) < 0;
+        }
+
+        private void ChangeAnimation(int delta)
         {
             List<string> animations = animator.GetAnimations().ToList();
             int index = animations.IndexOf(animator.CurrentAnimation.Name);
-            ++index;
+            index += delta;
             if (index >= animations.Count) index = 0;
+            if (index < 0) index = animations.Count - 1;
             animator.Play(animations[index]);
         }
 
@@ -67,7 +79,12 @@ namespace SpriterDotNetUnity
         {
             var speed = animator.Speed + delta;
             speed = Math.Abs(speed) < MaxSpeed ? speed : MaxSpeed * Math.Sign(speed);
-            animator.Speed = speed;
+            AnimatorSpeed = (float)Math.Round(speed, 1, MidpointRounding.AwayFromZero);
+        }
+
+        private void ReverseAnimation()
+        {
+            AnimatorSpeed *= -1;
         }
 
         private void RegisterSprites()
@@ -82,5 +99,4 @@ namespace SpriterDotNetUnity
             }
         }
     }
-
 }
