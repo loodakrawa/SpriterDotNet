@@ -13,7 +13,7 @@ namespace SpriterDotNetUnity
     }
 
     [ExecuteInEditMode]
-    public class SpriterDotNetBehaviour : MonoBehaviour
+    public class SpriterDotNetBehaviour : MonoBehaviour, ISerializationCallbackReceiver
     {
         public float AnimatorSpeed = 1.0f;
         public float MaxSpeed = 5.0f;
@@ -29,16 +29,19 @@ namespace SpriterDotNetUnity
         private UnitySpriterAnimator animator;
         private SpriterEntity entity;
 
+        private bool deserializationComplete;
+
         public void Awake()
         {
-            Spriter spriter = Spriter.Parse(SpriterData);
-            entity = spriter.Entities[0];
-            animator = new UnitySpriterAnimator(entity, Pivots, Children);
-            RegisterSprites();
-
-#if UNITY_EDITOR
-            if (!UnityEditor.EditorApplication.isPlayingOrWillChangePlaymode) animator.Step(Time.deltaTime);
-#endif
+			#if UNITY_EDITOR
+			if(deserializationComplete){
+				Spriter spriter = Spriter.Parse(SpriterData);
+				entity = spriter.Entities[0];
+				animator = new UnitySpriterAnimator(entity, Pivots, Children);
+				RegisterSprites();
+				if (!UnityEditor.EditorApplication.isPlayingOrWillChangePlaymode) animator.Step(Time.deltaTime);
+			}
+			#endif
         }
 
         public void Update()
@@ -97,6 +100,16 @@ namespace SpriterDotNetUnity
                     animator.Register(i, j, files[j]);
                 }
             }
+        }
+
+        public void OnBeforeSerialize()
+        {
+
+        }
+
+        public void OnAfterDeserialize()
+        {
+            deserializationComplete = true;
         }
     }
 }
