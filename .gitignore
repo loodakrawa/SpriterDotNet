@@ -17,3 +17,4 @@ Temp/
 SpriterDotNet.Unity/*.csproj
 SpriterDotNet.Unity/*.sln
 SpriterDotNet.Unity/ProjectSettings
+!SpriterDotNet.Unity/Assets/SpriterDotNet/Lib/*.dll
