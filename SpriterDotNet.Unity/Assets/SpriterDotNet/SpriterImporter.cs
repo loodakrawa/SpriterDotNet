@@ -50,7 +50,7 @@ namespace SpriterDotNetUnity
             GameObject go = new GameObject();
             go.name = entity.Name;
             SpriterDotNetBehaviour sdnBehaviour = go.AddComponent<SpriterDotNetBehaviour>();
-            sdnBehaviour.spriterData = data;
+            sdnBehaviour.SpriterData = data;
             sdnBehaviour.enabled = true;
 
             LoadSprites(sdnBehaviour, spriter, rootFolder);
@@ -75,16 +75,16 @@ namespace SpriterDotNetUnity
                 }
             }
 
-            sdnBehaviour.children = new GameObject[maxObjects];
-            sdnBehaviour.pivots = new GameObject[maxObjects];
+            sdnBehaviour.Children = new GameObject[maxObjects];
+            sdnBehaviour.Pivots = new GameObject[maxObjects];
 
             for (int i = 0; i < maxObjects; ++i)
             {
                 GameObject pivot = new GameObject();
                 GameObject child = new GameObject();
 
-                sdnBehaviour.pivots[i] = pivot;
-                sdnBehaviour.children[i] = child;
+                sdnBehaviour.Pivots[i] = pivot;
+                sdnBehaviour.Children[i] = child;
 
                 pivot.transform.SetParent(parent.transform);
                 child.transform.SetParent(pivot.transform);
@@ -99,14 +99,14 @@ namespace SpriterDotNetUnity
 
         private static void LoadSprites(SpriterDotNetBehaviour sdnBehaviour, Spriter spriter, string rootFolder)
         {
-            sdnBehaviour.folders = new SdnFolder[spriter.Folders.Length];
+            sdnBehaviour.Folders = new SdnFolder[spriter.Folders.Length];
 
             for (int i = 0; i < spriter.Folders.Length; ++i)
             {
                 SpriterFolder folder = spriter.Folders[i];
                 SdnFolder sdnFolder = new SdnFolder();
                 sdnFolder.Files = new Sprite[folder.Files.Length];
-                sdnBehaviour.folders[i] = sdnFolder;
+                sdnBehaviour.Folders[i] = sdnFolder;
 
                 for (int j = 0; j < folder.Files.Length; ++j)
                 {

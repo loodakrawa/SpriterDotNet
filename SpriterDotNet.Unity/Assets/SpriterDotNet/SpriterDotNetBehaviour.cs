@@ -15,25 +15,25 @@ namespace SpriterDotNetUnity
     [ExecuteInEditMode]
     public class SpriterDotNetBehaviour : MonoBehaviour
     {
-        public float animatorSpeed = 1.0f;
-        public float maxSpeed = 5.0f;
-        public float deltaSpeed = 0.2f;
+        public float AnimatorSpeed = 1.0f;
+        public float MaxSpeed = 5.0f;
+        public float DeltaSpeed = 0.2f;
 
-        public SdnFolder[] folders;
-        public GameObject[] pivots;
-        public GameObject[] children;
+        public SdnFolder[] Folders;
+        public GameObject[] Pivots;
+        public GameObject[] Children;
+
+        [HideInInspector]
+        public string SpriterData;
 
         private UnitySpriterAnimator animator;
         private SpriterEntity entity;
 
-        [HideInInspector]
-        public string spriterData;
-
         public void Awake()
         {
-            Spriter spriter = Spriter.Parse(spriterData);
+            Spriter spriter = Spriter.Parse(SpriterData);
             entity = spriter.Entities[0];
-            animator = new UnitySpriterAnimator(entity, pivots, children);
+            animator = new UnitySpriterAnimator(entity, Pivots, Children);
             RegisterSprites();
 
 #if UNITY_EDITOR
@@ -46,19 +46,23 @@ namespace SpriterDotNetUnity
 #if UNITY_EDITOR
             if (!UnityEditor.EditorApplication.isPlayingOrWillChangePlaymode) return;
 #endif
-            animator.Speed = animatorSpeed;
+            animator.Speed = AnimatorSpeed;
             animator.Step(Time.deltaTime * 1000.0f);
+            if (GetAxisDownPositive("Horizontal")) ChangeAnimation(1);
+            if (GetAxisDownNegative("Horizontal")) ChangeAnimation(-1);
+            if (GetAxisDownPositive("Vertical")) ChangeAnimationSpeed(DeltaSpeed);
+            if (GetAxisDownNegative("Vertical")) ChangeAnimationSpeed(-DeltaSpeed);
+            if (Input.GetButtonDown("Jump")) ReverseAnimation();
+        }
 
-            if (Input.GetButtonDown("Horizontal") && Input.GetAxis("Horizontal") > 0)
-                ChangeAnimation(1);
-            if (Input.GetButtonDown("Horizontal") && Input.GetAxis("Horizontal") < 0)
-                ChangeAnimation(-1);
-            if (Input.GetButtonDown("Vertical") && Input.GetAxis("Vertical") > 0)
-                ChangeAnimationSpeed(deltaSpeed);
-            if (Input.GetButtonDown("Vertical") && Input.GetAxis("Vertical") < 0)
-                ChangeAnimationSpeed(-deltaSpeed);
-            if (Input.GetButtonDown("Jump"))
-                ReverseAnimation();
+        private static bool GetAxisDownPositive(string axisName)
+        {
+            return Input.GetButtonDown(axisName) && Input.GetAxis(axisName) > 0;
+        }
+
+        private static bool GetAxisDownNegative(string axisName)
+        {
+            return Input.GetButtonDown(axisName) && Input.GetAxis(axisName) < 0;
         }
 
         private void ChangeAnimation(int delta)
@@ -74,20 +78,20 @@ namespace SpriterDotNetUnity
         private void ChangeAnimationSpeed(float delta)
         {
             var speed = animator.Speed + delta;
-            speed = Math.Abs(speed) < maxSpeed ? speed : maxSpeed * Math.Sign(speed);
-            animatorSpeed = (float)Math.Round(speed, 1, MidpointRounding.AwayFromZero);
+            speed = Math.Abs(speed) < MaxSpeed ? speed : MaxSpeed * Math.Sign(speed);
+            AnimatorSpeed = (float)Math.Round(speed, 1, MidpointRounding.AwayFromZero);
         }
 
         private void ReverseAnimation()
         {
-            animatorSpeed *= -1;
+            AnimatorSpeed *= -1;
         }
 
         private void RegisterSprites()
         {
-            for (int i = 0; i < folders.Length; ++i)
+            for (int i = 0; i < Folders.Length; ++i)
             {
-                Sprite[] files = folders[i].Files;
+                Sprite[] files = Folders[i].Files;
                 for (int j = 0; j < files.Length; ++j)
                 {
                     animator.Register(i, j, files[j]);
@@ -95,5 +99,4 @@ namespace SpriterDotNetUnity
             }
         }
     }
-
 }
