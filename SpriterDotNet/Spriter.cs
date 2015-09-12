@@ -239,8 +239,23 @@ namespace SpriterDotNet
         [XmlAttribute("scale_y")]
         public float ScaleY { get; set; }
 
-        [XmlAttribute("a")]
         public float Alpha { get; set; }
+
+        [XmlAttribute("a")]
+        public string A
+        {
+            get
+            {
+                return null;
+            }
+
+            set
+            {
+                float val;
+                Single.TryParse(value, out val);
+                Alpha = val;
+            }
+        }
 
         public SpriterSpatialInfo()
         {
