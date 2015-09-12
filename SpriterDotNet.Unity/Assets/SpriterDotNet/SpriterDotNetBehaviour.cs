@@ -80,7 +80,7 @@ namespace SpriterDotNetUnity
 
         private void ReverseAnimation()
         {
-            animator.Speed = -animator.Speed;
+            animatorSpeed *= -1;
         }
 
         private void RegisterSprites()
