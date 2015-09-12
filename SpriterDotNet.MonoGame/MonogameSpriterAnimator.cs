@@ -24,7 +24,6 @@ SOFTWARE.
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using SpriterDotNet;
 using System;
 
 namespace SpriterDotNet.MonoGame
@@ -43,12 +42,25 @@ namespace SpriterDotNet.MonoGame
         protected override void ApplyTransform(Texture2D texture, SpriterObjectInfo info)
         {
             Vector2 origin = new Vector2(info.PivotX * texture.Width, (1 - info.PivotY) * texture.Height);
-
             Vector2 location = charLocation + new Vector2(info.X, -info.Y);
-            Vector2 scale = new Vector2(info.ScaleX, info.ScaleY);
-
+            Vector2 scale = new Vector2(Math.Abs(info.ScaleX), Math.Abs(info.ScaleY));
             float angle = -(float)(Math.PI / 180.0f) * info.Angle;
-            spriteBatch.Draw(texture, location, null, Color.White, angle, origin, scale, SpriteEffects.None, 1);
+            Color color = Color.White * info.Alpha;
+            SpriteEffects effects = SpriteEffects.None;
+
+            if (info.ScaleX < 0)
+            {
+                effects |= SpriteEffects.FlipHorizontally;
+                origin = new Vector2(texture.Width - origin.X, origin.Y);
+            }
+
+            if (info.ScaleY < 0)
+            {
+                effects |= SpriteEffects.FlipVertically;
+                origin = new Vector2(origin.X, texture.Height - origin.Y);
+            }
+
+            spriteBatch.Draw(texture, location, null, color, angle, origin, scale, effects, 1);
         }
     }
 }
