@@ -16,3 +16,4 @@ Temp/
 # Specific
 SpriterDotNet.Unity/*.csproj
 SpriterDotNet.Unity/*.sln
+SpriterDotNet.Unity/ProjectSettings
