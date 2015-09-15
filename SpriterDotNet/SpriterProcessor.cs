@@ -211,7 +211,7 @@ namespace SpriterDotNet
             child.Y = px * s + py * c + parent.Y;
             child.ScaleX *= parent.ScaleX;
             child.ScaleY *= parent.ScaleY;
-            child.Angle += parent.Angle;
+            child.Angle = parent.Angle + Math.Sign(parent.ScaleX * parent.ScaleY) * child.Angle;
             child.Angle %= 360.0f;
         }
 
