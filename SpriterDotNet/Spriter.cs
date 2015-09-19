@@ -4,73 +4,41 @@
 // of the MIT license.  See the LICENSE file for details.
 
 using System;
-using System.IO;
-using System.Linq;
 using System.Xml.Serialization;
 
 namespace SpriterDotNet
 {
-    [XmlRoot("spriter_data")]
-    [Serializable]
+    [Serializable, XmlRoot("spriter_data")]
     public class Spriter
     {
-        public static Spriter Parse(string data)
-        {
-            XmlSerializer serializer = new XmlSerializer(typeof(Spriter));
-            using (TextReader reader = new StringReader(data))
-            {
-                Spriter spriter = serializer.Deserialize(reader) as Spriter;
-                SetDefaultPivots(spriter);
-                return spriter;
-            }
-        }
-
-        private static void SetDefaultPivots(Spriter spriter)
-        {
-            var infos = from e in spriter.Entities
-                        from a in e.Animations
-                        from t in a.Timelines
-                        from k in t.Keys
-                        let o = k.ObjectInfo
-                        where o != null && (float.IsNaN(o.PivotX) || float.IsNaN(o.PivotY))
-                        select o;
-
-            foreach (SpriterObjectInfo info in infos)
-            {
-                SpriterFile file = spriter.Folders[info.FolderId].Files[info.FileId];
-                info.PivotX = file.PivotX;
-                info.PivotY = file.PivotY;
-            }
-        }
-
         [XmlElement("folder")]
-        public SpriterFolder[] Folders { get; set; }
+        public SpriterFolder[] Folders;
 
         [XmlElement("entity")]
-        public SpriterEntity[] Entities { get; set; }
+        public SpriterEntity[] Entities;
     }
 
     [Serializable]
     public class SpriterFolder : SpriterElement
     {
         [XmlElement("file")]
-        public SpriterFile[] Files { get; set; }
+        public SpriterFile[] Files;
     }
 
     [Serializable]
     public class SpriterFile : SpriterElement
     {
         [XmlAttribute("pivot_x")]
-        public float PivotX { get; set; }
+        public float PivotX;
 
         [XmlAttribute("pivot_y")]
-        public float PivotY { get; set; }
+        public float PivotY;
 
         [XmlAttribute("width")]
-        public int Width { get; set; }
+        public int Width;
 
         [XmlAttribute("height")]
-        public int Height { get; set; }
+        public int Height;
 
         public SpriterFile()
         {
@@ -83,33 +51,33 @@ namespace SpriterDotNet
     public class SpriterEntity : SpriterElement
     {
         [XmlElement("character_map")]
-        public SpriterCharacterMap[] CharacterMaps { get; set; }
+        public SpriterCharacterMap[] CharacterMaps;
 
         [XmlElement("animation")]
-        public SpriterAnimation[] Animations { get; set; }
+        public SpriterAnimation[] Animations;
     }
 
     [Serializable]
     public class SpriterCharacterMap : SpriterElement
     {
         [XmlElement("map")]
-        public SpriterMapInstruction[] Maps { get; set; }
+        public SpriterMapInstruction[] Maps;
     }
 
     [Serializable]
     public class SpriterMapInstruction
     {
         [XmlAttribute("folder")]
-        public int FolderId { get; set; }
+        public int FolderId;
 
         [XmlAttribute("file")]
-        public int FileId { get; set; }
+        public int FileId;
 
         [XmlAttribute("target_folder")]
-        public int TargetFolderId { get; set; }
+        public int TargetFolderId;
 
         [XmlAttribute("target_file")]
-        public int TargetFileId { get; set; }
+        public int TargetFileId;
 
         public SpriterMapInstruction()
         {
@@ -122,16 +90,16 @@ namespace SpriterDotNet
     public class SpriterAnimation : SpriterElement
     {
         [XmlAttribute("length")]
-        public float Length { get; set; }
+        public float Length;
 
         [XmlAttribute("looping")]
-        public bool Looping { get; set; }
+        public bool Looping;
 
         [XmlArray("mainline"), XmlArrayItem("key")]
-        public SpriterMainLineKey[] MainlineKeys { get; set; }
+        public SpriterMainLineKey[] MainlineKeys;
 
         [XmlElement("timeline")]
-        public SpriterTimeLine[] Timelines { get; set; }
+        public SpriterTimeLine[] Timelines;
 
         public SpriterAnimation()
         {
@@ -143,23 +111,23 @@ namespace SpriterDotNet
     public class SpriterMainLineKey : SpriterKey
     {
         [XmlElement("bone_ref")]
-        public SpriterRef[] BoneRefs { get; set; }
+        public SpriterRef[] BoneRefs;
 
         [XmlElement("object_ref")]
-        public SpriterObjectRef[] ObjectRefs { get; set; }
+        public SpriterObjectRef[] ObjectRefs;
     }
 
     [Serializable]
     public class SpriterRef : SpriterElement
     {
         [XmlAttribute("parent")]
-        public int ParentId { get; set; }
+        public int ParentId;
 
         [XmlAttribute("timeline")]
-        public int TimelineId { get; set; }
+        public int TimelineId;
 
         [XmlAttribute("key")]
-        public int KeyId { get; set; }
+        public int KeyId;
 
         public SpriterRef()
         {
@@ -171,30 +139,30 @@ namespace SpriterDotNet
     public class SpriterObjectRef : SpriterRef
     {
         [XmlAttribute("z_index")]
-        public int ZIndex { get; set; }
+        public int ZIndex;
     }
 
     [Serializable]
     public class SpriterTimeLine : SpriterElement
     {
         [XmlAttribute("type")]
-        public SpriterObjectType ObjectType { get; set; }
+        public SpriterObjectType ObjectType;
 
         [XmlElement("key")]
-        public SpriterTimeLineKey[] Keys { get; set; }
+        public SpriterTimeLineKey[] Keys;
     }
 
     [Serializable]
     public class SpriterTimeLineKey : SpriterKey
     {
         [XmlAttribute("spin")]
-        public int Spin { get; set; }
+        public int Spin;
 
         [XmlElement("bone", typeof(SpriterSpatialInfo))]
-        public SpriterSpatialInfo BoneInfo { get; set; }
+        public SpriterSpatialInfo BoneInfo;
 
         [XmlElement("object", typeof(SpriterObjectInfo))]
-        public SpriterObjectInfo ObjectInfo { get; set; }
+        public SpriterObjectInfo ObjectInfo;
 
         public SpriterTimeLineKey()
         {
@@ -206,21 +174,21 @@ namespace SpriterDotNet
     public class SpriterSpatialInfo
     {
         [XmlAttribute("x")]
-        public float X { get; set; }
+        public float X;
 
         [XmlAttribute("y")]
-        public float Y { get; set; }
+        public float Y;
 
         [XmlAttribute("angle")]
-        public float Angle { get; set; }
+        public float Angle;
 
         [XmlAttribute("scale_x")]
-        public float ScaleX { get; set; }
+        public float ScaleX;
 
         [XmlAttribute("scale_y")]
-        public float ScaleY { get; set; }
+        public float ScaleY;
 
-        public float Alpha { get; set; }
+        public float Alpha;
 
         [XmlAttribute("a")]
         public string A
@@ -250,16 +218,16 @@ namespace SpriterDotNet
     public class SpriterObjectInfo : SpriterSpatialInfo
     {
         [XmlAttribute("folder")]
-        public int FolderId { get; set; }
+        public int FolderId;
 
         [XmlAttribute("file")]
-        public int FileId { get; set; }
+        public int FileId;
 
         [XmlAttribute("pivot_x")]
-        public float PivotX { get; set; }
+        public float PivotX;
 
         [XmlAttribute("pivot_y")]
-        public float PivotY { get; set; }
+        public float PivotY;
 
         public SpriterObjectInfo()
         {
@@ -272,31 +240,32 @@ namespace SpriterDotNet
     public abstract class SpriterElement
     {
         [XmlAttribute("id")]
-        public int Id { get; set; }
+        public int Id;
 
         [XmlAttribute("name")]
-        public string Name { get; set; }
+        public string Name;
     }
 
+    [Serializable]
     public abstract class SpriterKey : SpriterElement
     {
         [XmlAttribute("time")]
-        public float Time { get; set; }
+        public float Time;
 
         [XmlAttribute("curve_type")]
-        public SpriterCurveType CurveType { get; set; }
+        public SpriterCurveType CurveType;
 
         [XmlAttribute("c1")]
-        public float C1 { get; set; }
+        public float C1;
 
         [XmlAttribute("c2")]
-        public float C2 { get; set; }
+        public float C2;
 
         [XmlAttribute("c3")]
-        public float C3 { get; set; }
+        public float C3;
 
         [XmlAttribute("c4")]
-        public float C4 { get; set; }
+        public float C4;
 
         public SpriterKey()
         {
