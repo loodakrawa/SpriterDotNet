@@ -67,7 +67,7 @@ namespace SpriterDotNet.MonoGame
                 string scmlPath = pair.Key;
                 string spriterName = pair.Value;
                 string data = File.ReadAllText(scmlPath);
-                Spriter spriter = Spriter.Parse(data);
+                Spriter spriter = SpriterParser.Parse(data);
 
                 var animator = new MonogameSpriterAnimator(spriter.Entities[0], charPosition, spriteBatch);
                 RegisterTextures(animator, spriter, spriterName);

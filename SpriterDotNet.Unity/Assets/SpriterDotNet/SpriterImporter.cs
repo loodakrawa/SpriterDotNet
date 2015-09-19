@@ -7,17 +7,16 @@
 
 using SpriterDotNet;
 using System;
-using System.Linq;
-using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
 namespace SpriterDotNetUnity
 {
-
     public class SpriterImporter : AssetPostprocessor
     {
+        private static readonly string[] ScmlExtensions = new string[] { ".scml" };
         private static readonly float DeltaZ = -0.001f;
 
         private static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromPath)
@@ -42,34 +41,35 @@ namespace SpriterDotNetUnity
 
         private static bool IsScml(string path)
         {
-            return path.EndsWith(".scml");
+            return ScmlExtensions.Any(path.EndsWith);
         }
 
         private static void CreateSpriter(string path)
         {
             string data = File.ReadAllText(path);
-            Spriter spriter = Spriter.Parse(data);
+            Spriter spriter = SpriterParser.Parse(data);
             string rootFolder = Path.GetDirectoryName(path);
-            SpriterEntity entity = spriter.Entities[0];
 
-            GameObject go = new GameObject();
-            go.name = entity.Name;
-            SpriterDotNetBehaviour sdnBehaviour = go.AddComponent<SpriterDotNetBehaviour>();
-            sdnBehaviour.SpriterData = data;
-            sdnBehaviour.enabled = true;
+            foreach (SpriterEntity entity in spriter.Entities)
+            {
+                GameObject go = new GameObject();
+                go.name = entity.Name;
+                SpriterDotNetBehaviour sdnBehaviour = go.AddComponent<SpriterDotNetBehaviour>();
+                sdnBehaviour.Entity = entity;
+                sdnBehaviour.enabled = true;
 
-            LoadSprites(sdnBehaviour, spriter, rootFolder);
-            CreateChildren(sdnBehaviour, spriter, go);
+                LoadSprites(sdnBehaviour, spriter, rootFolder);
+                CreateChildren(entity, sdnBehaviour, spriter, go);
 
-            string prefabPath = rootFolder + "/" + spriter.Entities[0].Name + ".prefab";
-            PrefabUtility.CreatePrefab(prefabPath, go, ReplacePrefabOptions.ConnectToPrefab);
+                string prefabPath = rootFolder + "/" + entity.Name + ".prefab";
+                PrefabUtility.CreatePrefab(prefabPath, go, ReplacePrefabOptions.ConnectToPrefab);
 
-            GameObject.DestroyImmediate(go);
+                GameObject.DestroyImmediate(go);
+            }
         }
 
-        private static void CreateChildren(SpriterDotNetBehaviour sdnBehaviour, Spriter spriter, GameObject parent)
+        private static void CreateChildren(SpriterEntity entity, SpriterDotNetBehaviour sdnBehaviour, Spriter spriter, GameObject parent)
         {
-            SpriterEntity entity = spriter.Entities[0];
             int maxObjects = 0;
 
             foreach (SpriterAnimation animation in entity.Animations)
@@ -132,6 +132,5 @@ namespace SpriterDotNetUnity
             }
         }
     }
-
 }
 #endif
