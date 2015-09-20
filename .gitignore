@@ -8,6 +8,8 @@ x86/
 build/
 [Bb]in/
 [Oo]bj/
+packages/
+OpenCover/
 
 # Unity
 Library/

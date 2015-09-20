@@ -21,8 +21,8 @@ namespace SpriterDotNet
 
         public static Spriter Parse(string data)
         {
+            if (data != null) data = data.Trim();
             if (String.IsNullOrEmpty(data)) return null;
-            data = data.Trim();
 
             Spriter spriter = null;
             foreach (ISpriterParser parser in Parsers)
