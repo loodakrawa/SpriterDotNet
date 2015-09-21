@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpriterDotNet", "SpriterDot
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpriterDotNet.MonoGame", "SpriterDotNet.MonoGame\SpriterDotNet.MonoGame.csproj", "{9EA4C831-7243-402E-A0AA-A502E6E1549E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpriterDotNet.UnitTests", "SpriterDotNet.UnitTests\SpriterDotNet.UnitTests.csproj", "{45E92DDC-E865-4165-8D2A-FF6018479245}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,18 @@ Global
 		{9EA4C831-7243-402E-A0AA-A502E6E1549E}.Release|Mixed Platforms.Build.0 = Release|x86
 		{9EA4C831-7243-402E-A0AA-A502E6E1549E}.Release|x86.ActiveCfg = Release|x86
 		{9EA4C831-7243-402E-A0AA-A502E6E1549E}.Release|x86.Build.0 = Release|x86
+		{45E92DDC-E865-4165-8D2A-FF6018479245}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{45E92DDC-E865-4165-8D2A-FF6018479245}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{45E92DDC-E865-4165-8D2A-FF6018479245}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{45E92DDC-E865-4165-8D2A-FF6018479245}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{45E92DDC-E865-4165-8D2A-FF6018479245}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{45E92DDC-E865-4165-8D2A-FF6018479245}.Debug|x86.Build.0 = Debug|Any CPU
+		{45E92DDC-E865-4165-8D2A-FF6018479245}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{45E92DDC-E865-4165-8D2A-FF6018479245}.Release|Any CPU.Build.0 = Release|Any CPU
+		{45E92DDC-E865-4165-8D2A-FF6018479245}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{45E92DDC-E865-4165-8D2A-FF6018479245}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{45E92DDC-E865-4165-8D2A-FF6018479245}.Release|x86.ActiveCfg = Release|Any CPU
+		{45E92DDC-E865-4165-8D2A-FF6018479245}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
