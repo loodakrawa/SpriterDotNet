@@ -145,7 +145,7 @@ namespace SpriterDotNet
     [Serializable]
     public class SpriterTimeLine : SpriterElement
     {
-        [XmlAttribute("type")]
+        [XmlAttribute("object_type")]
         public SpriterObjectType ObjectType;
 
         [XmlElement("key")]
@@ -188,23 +188,8 @@ namespace SpriterDotNet
         [XmlAttribute("scale_y")]
         public float ScaleY;
 
-        public float Alpha;
-
         [XmlAttribute("a")]
-        public string A
-        {
-            get
-            {
-                return null;
-            }
-
-            set
-            {
-                float val;
-                Single.TryParse(value, out val);
-                Alpha = val;
-            }
-        }
+        public float Alpha;
 
         public SpriterSpatialInfo()
         {
