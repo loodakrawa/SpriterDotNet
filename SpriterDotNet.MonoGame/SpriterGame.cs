@@ -29,7 +29,7 @@ namespace SpriterDotNet.MonoGame
         private static readonly int Height = 768;
         private static readonly float MaxSpeed = 5.0f;
         private static readonly float DeltaSpeed = 0.2f;
-        private static readonly string Instructions = "Enter = Next Scml\nSpace = Next Animation\nP = Anim Speed +\nO = Anim Speed -\nR = Reverse Direction\nX = Reset Animation\nM = Update Speed +\nN = Update Speed -";
+        private static readonly string Instructions = "Enter = Next Scml\nSpace = Next Animation\nP = Anim Speed +\nO = Anim Speed -\nR = Reverse Direction\nX = Reset Animation\nT = Transition to Next Animation";
 
         private IList<MonogameSpriterAnimator> animators = new List<MonogameSpriterAnimator>();
         private MonogameSpriterAnimator currentAnimator;
@@ -106,13 +106,12 @@ namespace SpriterDotNet.MonoGame
             fps.OnUpdate(gameTime);
 
             if (IsPressed(Keys.Enter)) SwitchScml();
-            if (IsPressed(Keys.Space)) NextAnimation();
+            if (IsPressed(Keys.Space)) currentAnimator.Play(GetNextAnimation());
             if (IsPressed(Keys.P)) ChangeAnimationSpeed(DeltaSpeed);
             if (IsPressed(Keys.O)) ChangeAnimationSpeed(-DeltaSpeed);
             if (IsPressed(Keys.R)) currentAnimator.Speed = -currentAnimator.Speed;
-            if (IsPressed(Keys.M)) ChangeUpdateSpeed(true);
-            if (IsPressed(Keys.N)) ChangeUpdateSpeed(false);
             if (IsPressed(Keys.X)) currentAnimator.Play(currentAnimator.Name);
+            if (IsPressed(Keys.T)) currentAnimator.Transition(GetNextAnimation(), 1000.0f);
 
             oldState = Keyboard.GetState();
 
@@ -136,13 +135,13 @@ namespace SpriterDotNet.MonoGame
             currentAnimator = animators[index];
         }
 
-        private void NextAnimation()
+        private string GetNextAnimation()
         {
             List<string> animations = currentAnimator.GetAnimations().ToList();
             int index = animations.IndexOf(currentAnimator.CurrentAnimation.Name);
             ++index;
             if (index >= animations.Count) index = 0;
-            currentAnimator.Play(animations[index]);
+            return animations[index];
         }
 
         private void ChangeAnimationSpeed(float delta)
@@ -150,15 +149,6 @@ namespace SpriterDotNet.MonoGame
             var speed = currentAnimator.Speed + delta;
             speed = Math.Abs(speed) < MaxSpeed ? speed : MaxSpeed * Math.Sign(speed);
             currentAnimator.Speed = speed;
-        }
-
-        private void ChangeUpdateSpeed(bool up)
-        {
-            int amount = up ? -1 : 1;
-            int targetAmount = TargetElapsedTime.Milliseconds + amount;
-            if (targetAmount == 0) targetAmount = 1;
-            if (targetAmount > 40) targetAmount = 40;
-            TargetElapsedTime = TimeSpan.FromMilliseconds(targetAmount);
         }
 
         private void RegisterTextures(MonogameSpriterAnimator animator, Spriter spriter, string spriterName)
