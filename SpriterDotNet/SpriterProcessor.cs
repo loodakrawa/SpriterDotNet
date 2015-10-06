@@ -4,51 +4,124 @@
 // of the MIT license.  See the LICENSE file for details.
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace SpriterDotNet
 {
     public static class SpriterProcessor
     {
-        public static SpriterObjectInfo[] GetDrawData(SpriterAnimation animation, float targetTime)
+        public static SpriterObjectInfo[] GetDrawData(SpriterAnimation first, SpriterAnimation second, float targetTime, float factor)
         {
-            SpriterMainLineKey[] keys = animation.MainlineKeys;
-            SpriterMainLineKey keyA = keys.Last(k => k.Time <= targetTime);
-            int nextKey = keyA.Id + 1;
-            if (nextKey >= keys.Length) nextKey = 0;
-            SpriterMainLineKey keyB = keys[nextKey];
+            float targetTimeSecond = targetTime / first.Length * second.Length;
 
-            float nextTime = keyB.Time > keyA.Time ? keyB.Time : animation.Length;
-            float factor = GetFactor(keyA, keyB, animation.Length, targetTime);
-            float adjustedTime = Linear(keyA.Time, nextTime, factor);
+            SpriterMainLineKey firstKeyA;
+            SpriterMainLineKey firstKeyB;
+            GetKeys(first, targetTime, out firstKeyA, out firstKeyB);
+            
+            SpriterMainLineKey secondKeyA;
+            SpriterMainLineKey secondKeyB;
+            GetKeys(second, targetTimeSecond, out secondKeyA, out secondKeyB);
 
-            var boneInfos = new Dictionary<int, SpriterSpatialInfo>();
+            if (firstKeyA.BoneRefs.Length != secondKeyA.BoneRefs.Length
+                || firstKeyB.BoneRefs.Length != secondKeyB.BoneRefs.Length
+                || firstKeyA.ObjectRefs.Length != secondKeyA.ObjectRefs.Length
+                || firstKeyB.ObjectRefs.Length != secondKeyB.ObjectRefs.Length) return GetDrawData(first, targetTime);
 
-            if (keyA.BoneRefs != null)
+            float adjustedTimeFirst = AdjustTime(firstKeyA, firstKeyB, first.Length, targetTime);
+            float adjustedTimeSecond = AdjustTime(secondKeyA, secondKeyB, second.Length, targetTimeSecond);
+
+            SpriterSpatialInfo[] boneInfosA = GetBoneInfos(firstKeyA, first, adjustedTimeFirst);
+            SpriterSpatialInfo[] boneInfosB = GetBoneInfos(secondKeyA, second, adjustedTimeSecond);
+            SpriterSpatialInfo[] boneInfos = null;
+            if (boneInfosA != null && boneInfosB != null)
             {
-                for (int i = 0; i < keyA.BoneRefs.Length; ++i)
+                boneInfos = new SpriterSpatialInfo[boneInfosA.Length];
+                for (int i = 0; i < boneInfosA.Length; ++i)
                 {
-                    SpriterRef boneRef = keyA.BoneRefs[i];
-                    SpriterSpatialInfo interpolated = GetBoneInfo(boneRef, animation, adjustedTime);
-
-                    if (boneRef.ParentId >= 0) ApplyParentTransform(interpolated, boneInfos[boneRef.ParentId]);
+                    SpriterSpatialInfo boneA = boneInfosA[i];
+                    SpriterSpatialInfo boneB = boneInfosB[i];
+                    SpriterSpatialInfo interpolated = Interpolate(boneA, boneB, factor, 1);
+                    interpolated.Angle = CloserAngleLinear(boneA.Angle, boneB.Angle, factor);
                     boneInfos[i] = interpolated;
                 }
             }
 
+            SpriterMainLineKey baseKey = factor < 0.5f ? firstKeyA : firstKeyB;
+
+            SpriterObjectInfo[] ret = new SpriterObjectInfo[baseKey.ObjectRefs.Length];
+
+            for (int i = 0; i < baseKey.ObjectRefs.Length; ++i)
+            {
+                SpriterObjectRef objectRefFirst = baseKey.ObjectRefs[i];
+                SpriterObjectInfo interpolatedFirst = GetObjectInfo(objectRefFirst, first, adjustedTimeFirst);
+
+                SpriterObjectRef objectRefSecond = secondKeyA.ObjectRefs[i];
+                SpriterObjectInfo interpolatedSecond = GetObjectInfo(objectRefSecond, second, adjustedTimeSecond);
+
+                SpriterObjectInfo info = Interpolate(interpolatedFirst, interpolatedSecond, factor, 1);
+                info.Angle = CloserAngleLinear(interpolatedFirst.Angle, interpolatedSecond.Angle, factor);
+
+                if (boneInfos != null && objectRefFirst.ParentId >= 0) ApplyParentTransform(info, boneInfos[objectRefFirst.ParentId]);
+
+                ret[objectRefFirst.Id] = info;
+            }
+
+            return ret;
+        }
+
+        public static SpriterObjectInfo[] GetDrawData(SpriterAnimation animation, float targetTime)
+        {
+            SpriterMainLineKey keyA;
+            SpriterMainLineKey keyB;
+            GetKeys(animation, targetTime, out keyA, out keyB);
+
+            float adjustedTime = AdjustTime(keyA, keyB, animation.Length, targetTime);
+
+            var boneInfos = GetBoneInfos(keyA, animation, targetTime);
+
             SpriterObjectInfo[] ret = new SpriterObjectInfo[keyA.ObjectRefs.Length];
 
-            for (int i = 0; i < keyA.ObjectRefs.Length; ++i)
+            foreach (SpriterObjectRef objectRef in keyA.ObjectRefs)
             {
-                SpriterObjectRef objectRef = keyA.ObjectRefs[i];
                 SpriterObjectInfo interpolated = GetObjectInfo(objectRef, animation, adjustedTime);
-
-                if (objectRef.ParentId >= 0) ApplyParentTransform(interpolated, boneInfos[objectRef.ParentId]);
+                if (boneInfos != null && objectRef.ParentId >= 0) ApplyParentTransform(interpolated, boneInfos[objectRef.ParentId]);
                 ret[objectRef.Id] = interpolated;
             }
 
             return ret;
+        }
+
+        private static SpriterSpatialInfo[] GetBoneInfos(SpriterMainLineKey key, SpriterAnimation animation, float targetTime)
+        {
+            if (key.BoneRefs == null) return null;
+            SpriterSpatialInfo[] ret = new SpriterSpatialInfo[key.BoneRefs.Length];
+
+            for (int i = 0; i < key.BoneRefs.Length; ++i)
+            {
+                SpriterRef boneRef = key.BoneRefs[i];
+                SpriterSpatialInfo interpolated = GetBoneInfo(boneRef, animation, targetTime);
+
+                if (boneRef.ParentId >= 0) ApplyParentTransform(interpolated, ret[boneRef.ParentId]);
+                ret[i] = interpolated;
+            }
+
+            return ret;
+        }
+
+        private static float AdjustTime(SpriterKey keyA, SpriterKey keyB, float animationLength, float targetTime)
+        {
+            float nextTime = keyB.Time > keyA.Time ? keyB.Time : animationLength;
+            float factor = GetFactor(keyA, keyB, animationLength, targetTime);
+            return Linear(keyA.Time, nextTime, factor);
+        }
+
+        private static void GetKeys(SpriterAnimation animation, float targetTime, out SpriterMainLineKey keyA, out SpriterMainLineKey keyB)
+        {
+            SpriterMainLineKey[] keys = animation.MainlineKeys;
+            keyA = keys.Last(k => k.Time <= targetTime);
+            int nextKey = keyA.Id + 1;
+            if (nextKey >= keys.Length) nextKey = 0;
+            keyB = keys[nextKey];
         }
 
         private static SpriterSpatialInfo GetBoneInfo(SpriterRef spriterRef, SpriterAnimation animation, float targetTime)
@@ -133,7 +206,7 @@ namespace SpriterDotNet
             float timeA = keyA.Time;
             float timeB = keyB.Time;
 
-            if(timeA > timeB)
+            if (timeA > timeB)
             {
                 timeB += animationLength;
                 if (targetTime < timeA) targetTime += animationLength;
@@ -221,6 +294,14 @@ namespace SpriterDotNet
             if (spin > 0 && (b - a) < 0) b += 360;
             if (spin < 0 && (b - a) > 0) b -= 360;
             return Linear(a, b, f);
+        }
+
+        private static float CloserAngleLinear(float a1, float a2, float factor)
+        {
+            if (Math.Abs(a2 - a1) < 180.0f) return Linear(a1, a2, factor);
+            if (a1 < a2) a1 += 360.0f;
+            else a2 += 360.0f;
+            return Linear(a1, a2, factor);
         }
 
         private static float ReverseLinear(float a, float b, float v)
