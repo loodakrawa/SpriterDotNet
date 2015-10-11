@@ -178,7 +178,35 @@
                     <object_ref id="0" timeline="0" key="0" z_index="0"/>
                     <object_ref id="1" timeline="1" key="0" z_index="1"/>
                 </key>
-                <key id="1" time="500" curve_type="quintic" c1="0.0616" c2="0.0758" c3="0" c4="0">
+                <key id="1" time="500" curve_type="quintic" c1="0.173765" c2="0.8673" c3="0.9353" c4="0.113744">
+                    <object_ref id="0" timeline="0" key="1" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="1" z_index="1"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="green">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" x="-437" y="116" angle="0"/>
+                </key>
+                <key id="1" time="500" spin="0">
+                    <object folder="0" file="0" x="-437" y="116" angle="0"/>
+                </key>
+            </timeline>
+            <timeline id="1" name="red">
+                <key id="0" spin="-1">
+                    <object folder="0" file="1" x="75.083824" y="115.948194" pivot_x="0.000894" pivot_y="0.000311" angle="0"/>
+                </key>
+                <key id="1" time="500">
+                    <object folder="0" file="1" x="75.083824" y="115.948194" pivot_x="0.000894" pivot_y="0.000311" angle="270"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="8" name="Bezier" length="1000" interval="100">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="0" z_index="1"/>
+                </key>
+                <key id="1" time="500" curve_type="bezier" c1="0.4003" c2="0.995261" c3="0.8654" c4="0.161137">
                     <object_ref id="0" timeline="0" key="1" z_index="0"/>
                     <object_ref id="1" timeline="1" key="1" z_index="1"/>
                 </key>

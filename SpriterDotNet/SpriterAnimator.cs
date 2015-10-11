@@ -11,9 +11,11 @@ namespace SpriterDotNet
 {
     public abstract class SpriterAnimator<T>
     {
-        private readonly IDictionary<string, SpriterAnimation> animations;
-        private readonly IDictionary<int, IDictionary<int, T>> objects = new Dictionary<int, IDictionary<int, T>>();
+        public event Action<string> AnimationFinished = s => { };
+        public event Action<string> EventTriggered = s => { };
+        public event Action<string, SpriterVarValue> VariableChanged = (n, v) => { };
 
+        public Spriter Spriter { get; private set; }
         public SpriterEntity Entity { get; private set; }
         public SpriterAnimation CurrentAnimation { get; private set; }
         public SpriterAnimation NextAnimation { get; private set; }
@@ -22,23 +24,28 @@ namespace SpriterDotNet
         public float Speed { get; set; }
         public float Length { get; set; }
         public float Time { get; set; }
-
-        private float totalTransitionTime;
-        private float transitionTime;
-        private float factor;
-
         public float Progress
         {
             get { return Time / Length; }
             set { Time = value * Length; }
         }
 
-        public SpriterAnimator(SpriterEntity entity)
+        protected FrameData LastFrameData;
+
+        private readonly IDictionary<string, SpriterAnimation> animations;
+        private readonly IDictionary<int, IDictionary<int, T>> sprites = new Dictionary<int, IDictionary<int, T>>();
+        private float totalTransitionTime;
+        private float transitionTime;
+        private float factor;
+
+        public SpriterAnimator(SpriterEntity entity, Spriter spriter)
         {
             Entity = entity;
+            Spriter = spriter;
             animations = entity.Animations.ToDictionary(a => a.Name, a => a);
             Speed = 1.0f;
             Play(animations.Keys.First());
+            LastFrameData = new FrameData();
         }
 
         public IEnumerable<string> GetAnimations()
@@ -49,12 +56,12 @@ namespace SpriterDotNet
         public void Register(int folderId, int fileId, T obj)
         {
             IDictionary<int, T> objectsByFiles;
-            objects.TryGetValue(folderId, out objectsByFiles);
+            sprites.TryGetValue(folderId, out objectsByFiles);
 
             if (objectsByFiles == null)
             {
                 objectsByFiles = new Dictionary<int, T>();
-                objects[folderId] = objectsByFiles;
+                sprites[folderId] = objectsByFiles;
             }
 
             objectsByFiles[fileId] = obj;
@@ -77,10 +84,10 @@ namespace SpriterDotNet
             Length = CurrentAnimation.Length;
         }
 
-        public virtual void Transition(string name, float transitionTime)
+        public virtual void Transition(string name, float totalTransitionTime)
         {
-            totalTransitionTime = transitionTime;
-            this.transitionTime = 0;
+            this.totalTransitionTime = totalTransitionTime;
+            transitionTime = 0;
             NextAnimation = animations[name];
         }
 
@@ -88,6 +95,7 @@ namespace SpriterDotNet
         {
             Play(first);
             NextAnimation = animations[second];
+            totalTransitionTime = 0;
             this.factor = factor;
         }
 
@@ -128,32 +136,63 @@ namespace SpriterDotNet
             Animate();
         }
 
+        public ICollection<string> GetVarNames()
+        {
+            return LastFrameData.AnimationVars.Keys;
+        }
+
+        public SpriterVarValue GetVarValue(string name)
+        {
+            return LastFrameData.AnimationVars[name];
+        }
+
         protected virtual void Animate()
         {
-            SpriterObjectInfo[] drawData;
-            if (NextAnimation == null) drawData = SpriterProcessor.GetDrawData(CurrentAnimation, Time);
-            else drawData = SpriterProcessor.GetDrawData(CurrentAnimation, NextAnimation, Time, factor);
+            FrameData frameData;
+            if (NextAnimation == null) frameData = SpriterProcessor.GetFrameData(CurrentAnimation, Time);
+            else frameData = SpriterProcessor.GetFrameData(CurrentAnimation, NextAnimation, Time, factor);
 
-            foreach (SpriterObjectInfo info in drawData)
+            foreach (SpriterObject info in frameData.SpriteData)
             {
                 IDictionary<int, T> objectsByFiles;
-                objects.TryGetValue(info.FolderId, out objectsByFiles);
+                sprites.TryGetValue(info.FolderId, out objectsByFiles);
                 if (objectsByFiles == null) continue;
 
                 T obj;
                 objectsByFiles.TryGetValue(info.FileId, out obj);
                 if (EqualityComparer<T>.Default.Equals(obj, default(T))) continue;
 
-                ApplyTransform(obj, info);
+                ApplySpriteTransform(obj, info);
             }
+
+            foreach (SpriterObject info in frameData.PointData) ApplyPointTransform(info);
+            foreach (var entry in frameData.BoxData) ApplyBoxTransform(Entity.ObjectInfos[entry.Key], entry.Value);
+            foreach (var entry in frameData.AnimationVars) ApplyVariableValue(entry.Key, entry.Value);
+
+            LastFrameData = frameData;
         }
 
-        protected virtual void ApplyTransform(T obj, SpriterObjectInfo info)
+        protected virtual void ApplySpriteTransform(T obj, SpriterObject info)
         {
         }
 
-        protected virtual void AnimationFinished(string name)
+        protected virtual void ApplyPointTransform(SpriterObject info)
         {
+        }
+
+        protected virtual void ApplyBoxTransform(SpriterObjectInfo objInfo, SpriterObject info)
+        {
+        }
+
+        protected virtual void ApplyVariableValue(string name, SpriterVarValue value)
+        {
+            SpriterVarValue lastValue;
+            LastFrameData.AnimationVars.TryGetValue(name, out lastValue);
+            bool changed = lastValue.StringValue != value.StringValue
+                            || lastValue.FloatValue != value.FloatValue
+                            || lastValue.IntValue != value.IntValue;
+
+            if (changed) VariableChanged(name, value);
         }
     }
 }

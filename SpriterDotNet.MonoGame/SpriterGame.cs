@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
 
 namespace SpriterDotNet.MonoGame
 {
@@ -21,12 +22,13 @@ namespace SpriterDotNet.MonoGame
 
         private static readonly IDictionary<string, string> Scmls = new Dictionary<string, string>
         {
+            { "Content/GreyGuyPlus/player_006.scml", "GreyGuyPlus"},
             { "Content/GreyGuy/player.scml", "GreyGuy"},
             { "Content/TestSquares/squares.scml", "TestSquares"}
         };
 
-        private static readonly int Width = 1024;
-        private static readonly int Height = 768;
+        private static readonly int Width = 1280;
+        private static readonly int Height = 960;
         private static readonly float MaxSpeed = 5.0f;
         private static readonly float DeltaSpeed = 0.2f;
         private static readonly string Instructions = "Enter = Next Scml\nSpace = Next Animation\nP = Anim Speed +\nO = Anim Speed -\nR = Reverse Direction\nX = Reset Animation\nT = Transition to Next Animation";
@@ -38,6 +40,7 @@ namespace SpriterDotNet.MonoGame
         private SpriteFont spriteFont;
         private KeyboardState oldState;
         private string status;
+        private string varValues;
         private Fps fps = new Fps();
 
         public SpriteGame()
@@ -51,12 +54,13 @@ namespace SpriterDotNet.MonoGame
         protected override void Initialize()
         {
             base.Initialize();
-
             oldState = Keyboard.GetState();
         }
 
         protected override void LoadContent()
         {
+            base.LoadContent();
+
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             spriteFont = Content.Load<SpriteFont>(FontName);
@@ -69,13 +73,21 @@ namespace SpriterDotNet.MonoGame
                 string data = File.ReadAllText(scmlPath);
                 Spriter spriter = SpriterParser.Parse(data);
 
-                var animator = new MonogameSpriterAnimator(spriter.Entities[0], charPosition, spriteBatch);
-                RegisterTextures(animator, spriter, spriterName);
-
-                animators.Add(animator);
+                foreach(SpriterEntity entity in spriter.Entities)
+                {
+                    var animator = new MonogameSpriterAnimator(spriter, entity, charPosition, spriteBatch, GraphicsDevice);
+                    RegisterTextures(animator, spriter, spriterName);
+                    animators.Add(animator);
+                }
             }
 
             currentAnimator = animators.First();
+            currentAnimator.AnimationFinished += OnAnimationFinished;
+        }
+
+        private void OnAnimationFinished(string name)
+        {
+            Console.WriteLine(name);
         }
 
         protected override void Draw(GameTime gameTime)
@@ -89,6 +101,7 @@ namespace SpriterDotNet.MonoGame
             DrawText(String.Format("FPS (Update) = {0}\nFPS (Draw) =    {1}", fps.UpdateFps, fps.DrawFps), new Vector2(Width - 200, 10), 0.6f);
             DrawText(Instructions, new Vector2(10, 10), 0.6f);
             DrawText(status, new Vector2(10, Height - 50));
+            DrawText(varValues, new Vector2(Width - 300, Height - 200), 0.6f);
             currentAnimator.Step((float)gameTime.ElapsedGameTime.Milliseconds);
 
             spriteBatch.End();
@@ -115,10 +128,35 @@ namespace SpriterDotNet.MonoGame
 
             oldState = Keyboard.GetState();
 
-            string spriter = Scmls[Scmls.Keys.ElementAt(animators.IndexOf(currentAnimator))];
-            status = String.Format("{0} : {1}", spriter, currentAnimator.Name);
+            string entity = currentAnimator.Entity.Name;
+            status = String.Format("{0} : {1}", entity, currentAnimator.Name);
+            varValues = GetVarValues();
 
             base.Update(gameTime);
+        }
+
+        private string GetVarValues()
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach(string name in currentAnimator.GetVarNames())
+            {
+                object value;
+                SpriterVarValue sValue = currentAnimator.GetVarValue(name);
+                switch (sValue.Type)
+                {
+                    case SpriterVarType.Float:
+                        value = sValue.FloatValue;
+                        break;
+                    case SpriterVarType.Int:
+                        value = sValue.IntValue;
+                        break;
+                    default:
+                        value = sValue.StringValue;
+                        break;
+                }
+                sb.Append(name).Append(" = ").Append(value).Append("\n");
+            }
+            return sb.ToString();
         }
 
         private bool IsPressed(Keys key)
@@ -157,6 +195,7 @@ namespace SpriterDotNet.MonoGame
             {
                 foreach (SpriterFile file in folder.Files)
                 {
+                    if (file.Type != SpriterFileType.Image) continue;
                     string path = FormatPath(folder, file, spriterName);
                     Texture2D texture = null;
                     try

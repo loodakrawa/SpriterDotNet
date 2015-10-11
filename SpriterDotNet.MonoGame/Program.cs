@@ -12,8 +12,8 @@ namespace SpriterDotNet.MonoGame
     {
         [STAThread]
         static void Main()
-        {
-            using (var game = new SpriteGame())
+      {
+            using (SpriteGame game = new SpriteGame())
             {
                 game.Run();
             }
