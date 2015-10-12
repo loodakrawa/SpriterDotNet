@@ -136,6 +136,16 @@ namespace SpriterDotNet
             Animate();
         }
 
+        public ICollection<string> GetObjectNames()
+        {
+            return LastFrameData.ObjectVars.Keys;
+        }
+
+        public ICollection<string> GetObjectVarNames(string name)
+        {
+            return LastFrameData.ObjectVars[name].Keys;
+        }
+
         public ICollection<string> GetVarNames()
         {
             return LastFrameData.AnimationVars.Keys;
@@ -144,6 +154,11 @@ namespace SpriterDotNet
         public SpriterVarValue GetVarValue(string name)
         {
             return LastFrameData.AnimationVars[name];
+        }
+
+        public SpriterVarValue GetObjectVarValue(string objectName, string varName)
+        {
+            return LastFrameData.ObjectVars[objectName][varName];
         }
 
         protected virtual void Animate()

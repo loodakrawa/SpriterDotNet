@@ -82,12 +82,6 @@ namespace SpriterDotNet.MonoGame
             }
 
             currentAnimator = animators.First();
-            currentAnimator.AnimationFinished += OnAnimationFinished;
-        }
-
-        private void OnAnimationFinished(string name)
-        {
-            Console.WriteLine(name);
         }
 
         protected override void Draw(GameTime gameTime)
@@ -140,23 +134,37 @@ namespace SpriterDotNet.MonoGame
             StringBuilder sb = new StringBuilder();
             foreach(string name in currentAnimator.GetVarNames())
             {
-                object value;
-                SpriterVarValue sValue = currentAnimator.GetVarValue(name);
-                switch (sValue.Type)
-                {
-                    case SpriterVarType.Float:
-                        value = sValue.FloatValue;
-                        break;
-                    case SpriterVarType.Int:
-                        value = sValue.IntValue;
-                        break;
-                    default:
-                        value = sValue.StringValue;
-                        break;
-                }
+                object value = GetValue(currentAnimator.GetVarValue(name));
                 sb.Append(name).Append(" = ").Append(value).Append("\n");
             }
+            foreach(string objectName in currentAnimator.GetObjectNames())
+            {
+                foreach(string varName in currentAnimator.GetObjectVarNames(objectName))
+                {
+                    object value = GetValue(currentAnimator.GetObjectVarValue(objectName, varName));
+                    sb.Append(objectName).Append(".").Append(varName).Append(" = ").Append(value).Append("\n");
+                }
+            }
+
             return sb.ToString();
+        }
+
+        private object GetValue(SpriterVarValue varValue)
+        {
+            object value;
+            switch (varValue.Type)
+            {
+                case SpriterVarType.Float:
+                    value = varValue.FloatValue;
+                    break;
+                case SpriterVarType.Int:
+                    value = varValue.IntValue;
+                    break;
+                default:
+                    value = varValue.StringValue;
+                    break;
+            }
+            return value;
         }
 
         private bool IsPressed(Keys key)

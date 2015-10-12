@@ -48,6 +48,7 @@ namespace SpriterDotNet
             }
 
             SpriterMainlineKey baseKey = factor < 0.5f ? firstKeyA : firstKeyB;
+            SpriterAnimation currentAnimation = factor < 0.5f ? first : second;
 
             FrameData frameData = new FrameData();
 
@@ -64,8 +65,10 @@ namespace SpriterDotNet
 
                 if (boneInfos != null && objectRefFirst.ParentId >= 0) ApplyParentTransform(info, boneInfos[objectRefFirst.ParentId]);
 
-                AddSpatialData(info, first.Timelines[objectRefFirst.TimelineId], first.Entity.Spriter, targetTime, frameData);
+                AddSpatialData(info, currentAnimation.Timelines[objectRefFirst.TimelineId], currentAnimation.Entity.Spriter, targetTime, frameData);
             }
+
+            AddVariableData(currentAnimation, targetTime, frameData);
 
             return frameData;
         }
@@ -101,23 +104,41 @@ namespace SpriterDotNet
 
             foreach (SpriterVarline varline in animation.Varlines)
             {
-                SpriterVariable variable = animation.Entity.Variables[varline.Def];
+                SpriterVarDef variable = animation.Entity.Variables[varline.Def];
                 SpriterVarlineKey keyA = varline.Keys.LastOrDefault(k => k.Time <= targetTime);
-
-                if(keyA == null)
-                {
-                    frameData.AnimationVars[variable.Name] = variable.VariableValue;
-                    continue;
-                }
-
-                SpriterVarlineKey keyB = GetNextXLineKey(varline.Keys, keyA, animation.Looping);
-
-                float adjustedTime = keyA.Time == keyB.Time ? targetTime : AdjustTime(keyA, keyB, animation.Length, targetTime);
-                float factor = GetFactor(keyA, keyB, animation.Length, targetTime);
-
-                SpriterVarValue newValue = Interpolate(keyA.VariableValue, keyB.VariableValue, factor);
-                frameData.AnimationVars[variable.Name] = newValue;
+                frameData.AnimationVars[variable.Name] = GetVariableValue(animation, variable, varline, targetTime);
             }
+
+            foreach (SpriterTimeline timeline in animation.Timelines)
+            {
+                if (timeline.Varlines == null) continue;
+                SpriterObjectInfo objInfo = animation.Entity.ObjectInfos.First(o => o.Name == timeline.Name);
+                foreach (SpriterVarline varline in timeline.Varlines)
+                {
+                    SpriterVarDef variable = objInfo.Variables[varline.Def];
+                    SpriterVarlineKey keyA = varline.Keys.LastOrDefault(k => k.Time <= targetTime);
+                    frameData.AddObjectVar(objInfo.Name, variable.Name, GetVariableValue(animation, variable, varline, targetTime));
+                }
+            }
+        }
+
+        private static SpriterVarValue GetVariableValue(SpriterAnimation animation, SpriterVarDef varDef, SpriterVarline varline, float targetTime)
+        {
+            SpriterVarlineKey[] keys = varline.Keys;
+            if(keys == null) return varDef.VariableValue;
+
+            SpriterVarlineKey keyA = keys.LastOrDefault(k => k.Time <= targetTime) ?? keys.Last();
+
+            if (keyA == null) return varDef.VariableValue;
+
+            SpriterVarlineKey keyB = GetNextXLineKey(varline.Keys, keyA, animation.Looping);
+
+            if (keyB == null) return keyA.VariableValue;
+
+            float adjustedTime = keyA.Time == keyB.Time ? targetTime : AdjustTime(keyA, keyB, animation.Length, targetTime);
+            float factor = GetFactor(keyA, keyB, animation.Length, targetTime);
+
+            return Interpolate(keyA.VariableValue, keyB.VariableValue, factor);
         }
 
         private static SpriterVarValue Interpolate(SpriterVarValue valA, SpriterVarValue valB, float factor)

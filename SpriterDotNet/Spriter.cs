@@ -65,7 +65,7 @@ namespace SpriterDotNet
         public SpriterAnimation[] Animations;
 
         [XmlArray("var_defs"), XmlArrayItem("i")]
-        public SpriterVariable[] Variables;
+        public SpriterVarDef[] Variables;
     }
 
     [Serializable]
@@ -87,7 +87,7 @@ namespace SpriterDotNet
         public float PivotY;
 
         [XmlArray("var_defs"), XmlArrayItem("i")]
-        public SpriterVariable[] Variables;
+        public SpriterVarDef[] Variables;
     }
 
     [Serializable]
@@ -275,7 +275,7 @@ namespace SpriterDotNet
     }
 
     [Serializable]
-    public class SpriterVariable : SpriterElement
+    public class SpriterVarDef : SpriterElement
     {
         [XmlAttribute("type")]
         public SpriterVarType Type;

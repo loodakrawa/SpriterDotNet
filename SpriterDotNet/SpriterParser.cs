@@ -47,7 +47,7 @@ namespace SpriterDotNet
                     animation.Entity = entity;
 
                     InitInfos(animation);
-                    InitVariables(animation);
+                    InitVarDefs(animation);
                 }
             }
         }
@@ -68,21 +68,37 @@ namespace SpriterDotNet
             }
         }
 
-        private static void InitVariables(SpriterAnimation animation)
+        private static void InitVarDefs(SpriterAnimation animation)
         {
             if (animation.Varlines == null) return;
 
             foreach (SpriterVarline varline in animation.Varlines)
             {
-                SpriterVariable variable = animation.Entity.Variables[varline.Def];
-                variable.VariableValue = GetVarValue(variable.DefaultValue, variable.Type);
-                foreach (SpriterVarlineKey key in varline.Keys) key.VariableValue = GetVarValue(key.Value, variable.Type);
+                SpriterVarDef varDefs = animation.Entity.Variables[varline.Def];
+                Init(varDefs, varline);
             }
+
+            foreach (SpriterTimeline timeline in animation.Timelines)
+            {
+                if (timeline.Varlines == null) continue;
+                SpriterObjectInfo objInfo = animation.Entity.ObjectInfos.First(o => o.Name == timeline.Name);
+                foreach (SpriterVarline varline in timeline.Varlines)
+                {
+                    SpriterVarDef varDef = objInfo.Variables[varline.Def];
+                    Init(varDef, varline);
+                }
+            }
+        }
+
+        private static void Init(SpriterVarDef varDef, SpriterVarline varline)
+        {
+            varDef.VariableValue = GetVarValue(varDef.DefaultValue, varDef.Type);
+            foreach (SpriterVarlineKey key in varline.Keys) key.VariableValue = GetVarValue(key.Value, varDef.Type);
         }
 
         private static SpriterVarValue GetVarValue(string value, SpriterVarType type)
         {
-            float floatValue = Single.NaN;
+            float floatValue = Single.MinValue;
             int intValue = Int32.MinValue;
 
             if (type == SpriterVarType.Float) Single.TryParse(value, out floatValue);
