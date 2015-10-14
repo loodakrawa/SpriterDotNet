@@ -4,6 +4,7 @@
 // of the zlib license.  See the LICENSE file for details.
 
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -82,6 +83,12 @@ namespace SpriterDotNet.MonoGame
             }
 
             currentAnimator = animators.First();
+            currentAnimator.EventTriggered += CurrentAnimator_EventTriggered;
+        }
+
+        private void CurrentAnimator_EventTriggered(string obj)
+        {
+            System.Diagnostics.Debug.WriteLine(obj);
         }
 
         protected override void Draw(GameTime gameTime)
@@ -112,7 +119,7 @@ namespace SpriterDotNet.MonoGame
         {
             fps.OnUpdate(gameTime);
 
-            if (IsPressed(Keys.Enter)) SwitchScml();
+            if (IsPressed(Keys.Enter)) SwitchEntity();
             if (IsPressed(Keys.Space)) currentAnimator.Play(GetNextAnimation());
             if (IsPressed(Keys.P)) ChangeAnimationSpeed(DeltaSpeed);
             if (IsPressed(Keys.O)) ChangeAnimationSpeed(-DeltaSpeed);
@@ -173,7 +180,7 @@ namespace SpriterDotNet.MonoGame
             return oldState.IsKeyUp(key) && state.IsKeyDown(key);
         }
 
-        private void SwitchScml()
+        private void SwitchEntity()
         {
             int index = animators.IndexOf(currentAnimator);
             ++index;
@@ -203,22 +210,36 @@ namespace SpriterDotNet.MonoGame
             {
                 foreach (SpriterFile file in folder.Files)
                 {
-                    if (file.Type != SpriterFileType.Image) continue;
                     string path = FormatPath(folder, file, spriterName);
-                    Texture2D texture = null;
-                    try
+                    
+                    if (file.Type == SpriterFileType.Sound)
                     {
-                        texture = Content.Load<Texture2D>(path);
+                        SoundEffect sound = LoadContent<SoundEffect>(path);
+                        animator.Register(folder.Id, file.Id, sound);
                     }
-                    catch
+                    else
                     {
-                        Debug.WriteLine("Missing Texture: " + path);
+                        Texture2D texture = LoadContent<Texture2D>(path);
+                        if (texture != null) animator.Register(folder.Id, file.Id, texture);
                     }
-                    if (texture == null) continue;
-
-                    animator.Register(folder.Id, file.Id, texture);
+                    
                 }
             }
+        }
+
+        private T LoadContent<T>(string path)
+        {
+            T asset = default(T);
+            try
+            {
+                asset = Content.Load<T>(path);
+            }
+            catch
+            {
+                Debug.WriteLine("Missing Asset: " + path);
+            }
+
+            return asset;
         }
 
         private string FormatPath(SpriterFolder folder, SpriterFile file, string spriterName)

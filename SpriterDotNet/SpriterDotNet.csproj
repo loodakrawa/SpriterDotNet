@@ -39,6 +39,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FrameData.cs" />
+    <Compile Include="FrameMetadata.cs" />
     <Compile Include="ISpriterParser.cs" />
     <Compile Include="MathHelper.cs" />
     <Compile Include="Parser\XmlSpriterParser.cs" />

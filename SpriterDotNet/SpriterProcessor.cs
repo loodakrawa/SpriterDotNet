@@ -4,7 +4,6 @@
 // of the zlib license.  See the LICENSE file for details.
 
 using System;
-using System.Linq;
 
 namespace SpriterDotNet
 {
@@ -68,8 +67,6 @@ namespace SpriterDotNet
                 AddSpatialData(info, currentAnimation.Timelines[objectRefFirst.TimelineId], currentAnimation.Entity.Spriter, targetTime, frameData);
             }
 
-            AddVariableData(currentAnimation, targetTime, frameData);
-
             return frameData;
         }
 
@@ -93,31 +90,51 @@ namespace SpriterDotNet
                 AddSpatialData(interpolated, animation.Timelines[objectRef.TimelineId], animation.Entity.Spriter, targetTime, frameData);
             }
 
-            AddVariableData(animation, targetTime, frameData);
-
             return frameData;
         }
 
-        private static void AddVariableData(SpriterAnimation animation, float targetTime, FrameData frameData)
+        public static FrameMetadata GetFrameMetadata(SpriterAnimation first, SpriterAnimation second, float targetTime, float deltaTime, float factor)
         {
-            if (animation.Varlines == null) return;
+            SpriterAnimation currentAnimation = factor < 0.5f ? first : second;
+            return GetFrameMetadata(currentAnimation, targetTime, deltaTime);
+        }
 
-            foreach (SpriterVarline varline in animation.Varlines)
+        public static FrameMetadata GetFrameMetadata(SpriterAnimation animation, float targetTime, float deltaTime, SpriterSpatial parentInfo = null)
+        {
+            FrameMetadata metadata = new FrameMetadata();
+            AddVariableData(animation, targetTime, metadata);
+            AddEventData(animation, targetTime, deltaTime, metadata);
+            AddSoundData(animation, targetTime, deltaTime, metadata);
+            return metadata;
+        }
+
+        private static void AddVariableData(SpriterAnimation animation, float targetTime, FrameMetadata metadata)
+        {
+            if (animation.Varlines != null)
             {
-                SpriterVarDef variable = animation.Entity.Variables[varline.Def];
-                SpriterVarlineKey keyA = varline.Keys.LastOrDefault(k => k.Time <= targetTime);
-                frameData.AnimationVars[variable.Name] = GetVariableValue(animation, variable, varline, targetTime);
+                foreach (SpriterVarline varline in animation.Varlines)
+                {
+                    SpriterVarDef variable = animation.Entity.Variables[varline.Def];
+                    metadata.AnimationVars[variable.Name] = GetVariableValue(animation, variable, varline, targetTime);
+                }
             }
 
             foreach (SpriterTimeline timeline in animation.Timelines)
             {
                 if (timeline.Varlines == null) continue;
-                SpriterObjectInfo objInfo = animation.Entity.ObjectInfos.First(o => o.Name == timeline.Name);
+                SpriterObjectInfo objInfo = null;
+                foreach (SpriterObjectInfo info in animation.Entity.ObjectInfos)
+                {
+                    if (info.Name == timeline.Name)
+                    {
+                        objInfo = info;
+                        break;
+                    }
+                }
                 foreach (SpriterVarline varline in timeline.Varlines)
                 {
                     SpriterVarDef variable = objInfo.Variables[varline.Def];
-                    SpriterVarlineKey keyA = varline.Keys.LastOrDefault(k => k.Time <= targetTime);
-                    frameData.AddObjectVar(objInfo.Name, variable.Name, GetVariableValue(animation, variable, varline, targetTime));
+                    metadata.AddObjectVar(objInfo.Name, variable.Name, GetVariableValue(animation, variable, varline, targetTime));
                 }
             }
         }
@@ -125,9 +142,9 @@ namespace SpriterDotNet
         private static SpriterVarValue GetVariableValue(SpriterAnimation animation, SpriterVarDef varDef, SpriterVarline varline, float targetTime)
         {
             SpriterVarlineKey[] keys = varline.Keys;
-            if(keys == null) return varDef.VariableValue;
+            if (keys == null) return varDef.VariableValue;
 
-            SpriterVarlineKey keyA = keys.LastOrDefault(k => k.Time <= targetTime) ?? keys.Last();
+            SpriterVarlineKey keyA = LastKeyForTime(keys, targetTime) ?? keys[keys.Length - 1];
 
             if (keyA == null) return varDef.VariableValue;
 
@@ -141,16 +158,47 @@ namespace SpriterDotNet
             return Interpolate(keyA.VariableValue, keyB.VariableValue, factor);
         }
 
-        private static SpriterVarValue Interpolate(SpriterVarValue valA, SpriterVarValue valB, float factor)
+        private static void AddEventData(SpriterAnimation animation, float targetTime, float deltaTime, FrameMetadata metadata)
         {
-            return new SpriterVarValue
+            if (animation.Eventlines == null) return;
+
+            float previousTime = targetTime - deltaTime;
+            foreach (SpriterEventline eventline in animation.Eventlines)
             {
-                Type = valA.Type,
-                StringValue = valA.StringValue,
-                FloatValue = MathHelper.Linear(valA.FloatValue, valB.FloatValue, factor),
-                IntValue = (int)MathHelper.Linear(valA.IntValue, valB.IntValue, factor)
-            };
+                foreach(SpriterKey key in eventline.Keys)
+                {
+                    if(IsTriggered(key, targetTime, previousTime, animation.Length)) metadata.Events.Add(eventline.Name);
+                }
+            }
         }
+
+        private static void AddSoundData(SpriterAnimation animation, float targetTime, float deltaTime, FrameMetadata metadata)
+        {
+            if (animation.Soundlines == null) return;
+
+            float previousTime = targetTime - deltaTime;
+            foreach (SpriterSoundline soundline in animation.Soundlines)
+            {
+                foreach (SpriterSoundlineKey key in soundline.Keys)
+                {
+                    SpriterSound sound = key.SoundObject;
+                    if (sound.Trigger && IsTriggered(key, targetTime, previousTime, animation.Length)) metadata.Sounds.Add(sound);
+                }
+            }
+        }
+
+        private static bool IsTriggered(SpriterKey key, float targetTime, float previousTime, float animationLength)
+        {
+            float timeA = Math.Min(previousTime, targetTime);
+            float timeB = Math.Max(previousTime, targetTime);
+            if (timeA > timeB)
+            {
+                if (timeA < key.Time) timeB += animationLength;
+                else timeA -= animationLength;
+            }
+            return timeA <= key.Time && timeB >= key.Time;
+        }
+
 
         private static void AddSpatialData(SpriterObject info, SpriterTimeline timeline, Spriter spriter, float targetTime, FrameData frameData)
         {
@@ -200,10 +248,36 @@ namespace SpriterDotNet
 
         private static void GetMainlineKeys(SpriterMainlineKey[] keys, float targetTime, out SpriterMainlineKey keyA, out SpriterMainlineKey keyB)
         {
-            keyA = keys.Last(k => k.Time <= targetTime);
+            keyA = LastKeyForTime(keys, targetTime);
             int nextKey = keyA.Id + 1;
             if (nextKey >= keys.Length) nextKey = 0;
             keyB = keys[nextKey];
+        }
+
+        private static T LastKeyForTime<T>(T[] keys, float targetTime) where T : SpriterKey
+        {
+            T current = null;
+            foreach (T key in keys)
+            {
+                if (key.Time > targetTime) break;
+                current = key;
+            }
+
+            return current;
+        }
+
+        private static T GetNextXLineKey<T>(T[] keys, T firstKey, bool looping) where T : SpriterKey
+        {
+            if (keys.Length == 1) return null;
+
+            int keyBId = firstKey.Id + 1;
+            if (keyBId >= keys.Length)
+            {
+                if (!looping) return null;
+                keyBId = 0;
+            }
+
+            return keys[keyBId];
         }
 
         private static SpriterSpatial GetBoneInfo(SpriterRef spriterRef, SpriterAnimation animation, float targetTime)
@@ -228,20 +302,6 @@ namespace SpriterDotNet
 
             float factor = GetFactor(keyA, keyB, animation.Length, targetTime);
             return Interpolate(keyA.ObjectInfo, keyB.ObjectInfo, factor, keyA.Spin);
-        }
-
-        private static T GetNextXLineKey<T>(T[] keys, T firstKey, bool looping) where T : SpriterKey
-        {
-            if (keys.Length == 1) return null;
-
-            int keyBId = firstKey.Id + 1;
-            if (keyBId >= keys.Length)
-            {
-                if (!looping) return null;
-                keyBId = 0;
-            }
-
-            return keys[keyBId];
         }
 
         private static float GetFactor(SpriterKey keyA, SpriterKey keyB, float animationLength, float targetTime)
@@ -318,6 +378,17 @@ namespace SpriterDotNet
                 EntityId = a.EntityId,
                 AnimationId = a.AnimationId,
                 T = MathHelper.Linear(a.T, b.T, f)
+            };
+        }
+
+        private static SpriterVarValue Interpolate(SpriterVarValue valA, SpriterVarValue valB, float factor)
+        {
+            return new SpriterVarValue
+            {
+                Type = valA.Type,
+                StringValue = valA.StringValue,
+                FloatValue = MathHelper.Linear(valA.FloatValue, valB.FloatValue, factor),
+                IntValue = (int)MathHelper.Linear(valA.IntValue, valB.IntValue, factor)
             };
         }
 

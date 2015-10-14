@@ -9,11 +9,10 @@ using System.Linq;
 
 namespace SpriterDotNet
 {
-    public abstract class SpriterAnimator<T>
+    public abstract class SpriterAnimator<TSprite, TSound>
     {
         public event Action<string> AnimationFinished = s => { };
         public event Action<string> EventTriggered = s => { };
-        public event Action<string, SpriterVarValue> VariableChanged = (n, v) => { };
 
         public Spriter Spriter { get; private set; }
         public SpriterEntity Entity { get; private set; }
@@ -30,10 +29,11 @@ namespace SpriterDotNet
             set { Time = value * Length; }
         }
 
-        protected FrameData LastFrameData;
+        protected FrameMetadata LastMetadata;
 
         private readonly IDictionary<string, SpriterAnimation> animations;
-        private readonly IDictionary<int, IDictionary<int, T>> sprites = new Dictionary<int, IDictionary<int, T>>();
+        private readonly IDictionary<int, IDictionary<int, TSprite>> sprites = new Dictionary<int, IDictionary<int, TSprite>>();
+        private readonly IDictionary<int, IDictionary<int, TSound>> sounds = new Dictionary<int, IDictionary<int, TSound>>();
         private float totalTransitionTime;
         private float transitionTime;
         private float factor;
@@ -45,7 +45,7 @@ namespace SpriterDotNet
             animations = entity.Animations.ToDictionary(a => a.Name, a => a);
             Speed = 1.0f;
             Play(animations.Keys.First());
-            LastFrameData = new FrameData();
+            LastMetadata = new FrameMetadata();
         }
 
         public IEnumerable<string> GetAnimations()
@@ -53,18 +53,14 @@ namespace SpriterDotNet
             return animations.Keys;
         }
 
-        public void Register(int folderId, int fileId, T obj)
+        public void Register(int folderId, int fileId, TSprite obj)
         {
-            IDictionary<int, T> objectsByFiles;
-            sprites.TryGetValue(folderId, out objectsByFiles);
+            AddToDict(folderId, fileId, obj, sprites);
+        }
 
-            if (objectsByFiles == null)
-            {
-                objectsByFiles = new Dictionary<int, T>();
-                sprites[folderId] = objectsByFiles;
-            }
-
-            objectsByFiles[fileId] = obj;
+        public void Register(int folderId, int fileId, TSound obj)
+        {
+            AddToDict(folderId, fileId, obj, sounds);
         }
 
         public virtual void Play(string name)
@@ -133,61 +129,78 @@ namespace SpriterDotNet
                 AnimationFinished(Name);
             }
 
-            Animate();
+            Animate(elapsed);
         }
 
         public ICollection<string> GetObjectNames()
         {
-            return LastFrameData.ObjectVars.Keys;
+            return LastMetadata.ObjectVars.Keys;
         }
 
         public ICollection<string> GetObjectVarNames(string name)
         {
-            return LastFrameData.ObjectVars[name].Keys;
+            return LastMetadata.ObjectVars[name].Keys;
         }
 
         public ICollection<string> GetVarNames()
         {
-            return LastFrameData.AnimationVars.Keys;
+            return LastMetadata.AnimationVars.Keys;
         }
 
         public SpriterVarValue GetVarValue(string name)
         {
-            return LastFrameData.AnimationVars[name];
+            return LastMetadata.AnimationVars[name];
         }
 
         public SpriterVarValue GetObjectVarValue(string objectName, string varName)
         {
-            return LastFrameData.ObjectVars[objectName][varName];
+            return LastMetadata.ObjectVars[objectName][varName];
         }
 
-        protected virtual void Animate()
+        public ICollection<string> GetEventNames(string name)
+        {
+            return CurrentAnimation.Eventlines.Select(e => e.Name).ToList();
+        }
+
+        protected virtual void Animate(float deltaTime)
         {
             FrameData frameData;
-            if (NextAnimation == null) frameData = SpriterProcessor.GetFrameData(CurrentAnimation, Time);
-            else frameData = SpriterProcessor.GetFrameData(CurrentAnimation, NextAnimation, Time, factor);
+            FrameMetadata metaData;
+            if (NextAnimation == null)
+            {
+                frameData = SpriterProcessor.GetFrameData(CurrentAnimation, Time);
+                metaData = SpriterProcessor.GetFrameMetadata(CurrentAnimation, Time, deltaTime);
+            }
+            else
+            {
+                frameData = SpriterProcessor.GetFrameData(CurrentAnimation, NextAnimation, Time, factor);
+                metaData = SpriterProcessor.GetFrameMetadata(CurrentAnimation, NextAnimation, Time, deltaTime, factor);
+            }
 
             foreach (SpriterObject info in frameData.SpriteData)
             {
-                IDictionary<int, T> objectsByFiles;
-                sprites.TryGetValue(info.FolderId, out objectsByFiles);
-                if (objectsByFiles == null) continue;
-
-                T obj;
-                objectsByFiles.TryGetValue(info.FileId, out obj);
-                if (EqualityComparer<T>.Default.Equals(obj, default(T))) continue;
-
+                TSprite obj = GetFromDict(info.FolderId, info.FileId, sprites);
                 ApplySpriteTransform(obj, info);
+            }
+
+            foreach (SpriterSound info in metaData.Sounds)
+            {
+                TSound sound = GetFromDict(info.FolderId, info.FileId, sounds);
+                PlaySound(sound, info);
             }
 
             foreach (SpriterObject info in frameData.PointData) ApplyPointTransform(info);
             foreach (var entry in frameData.BoxData) ApplyBoxTransform(Entity.ObjectInfos[entry.Key], entry.Value);
-            foreach (var entry in frameData.AnimationVars) ApplyVariableValue(entry.Key, entry.Value);
+            foreach (string eventName in metaData.Events) DispatchEvent(eventName);
 
-            LastFrameData = frameData;
+            LastMetadata = metaData;
         }
 
-        protected virtual void ApplySpriteTransform(T obj, SpriterObject info)
+        protected virtual void ApplySpriteTransform(TSprite sprite, SpriterObject info)
+        {
+        }
+
+        protected virtual void PlaySound(TSound sound, SpriterSound info)
         {
         }
 
@@ -199,15 +212,35 @@ namespace SpriterDotNet
         {
         }
 
-        protected virtual void ApplyVariableValue(string name, SpriterVarValue value)
+        protected virtual void DispatchEvent(string eventName)
         {
-            SpriterVarValue lastValue;
-            LastFrameData.AnimationVars.TryGetValue(name, out lastValue);
-            bool changed = lastValue.StringValue != value.StringValue
-                            || lastValue.FloatValue != value.FloatValue
-                            || lastValue.IntValue != value.IntValue;
+            EventTriggered(eventName);
+        }
 
-            if (changed) VariableChanged(name, value);
+        private static void AddToDict<T>(int folderId, int fileId, T obj, IDictionary<int, IDictionary<int, T>> dict)
+        {
+            IDictionary<int, T> objectsByFiles;
+            dict.TryGetValue(folderId, out objectsByFiles);
+
+            if (objectsByFiles == null)
+            {
+                objectsByFiles = new Dictionary<int, T>();
+                dict[folderId] = objectsByFiles;
+            }
+
+            objectsByFiles[fileId] = obj;
+        }
+
+        private static T GetFromDict<T>(int folderId, int fileId, IDictionary<int, IDictionary<int, T>> dict)
+        {
+            IDictionary<int, T> objectsByFiles;
+            dict.TryGetValue(folderId, out objectsByFiles);
+            if (objectsByFiles == null) return default(T);
+
+            T obj;
+            objectsByFiles.TryGetValue(fileId, out obj);
+
+            return obj;
         }
     }
 }

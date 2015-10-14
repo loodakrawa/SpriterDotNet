@@ -4,13 +4,14 @@
 // of the zlib license.  See the LICENSE file for details.
 
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 
 namespace SpriterDotNet.MonoGame
 {
-    public class MonogameSpriterAnimator : SpriterAnimator<Texture2D>
+    public class MonogameSpriterAnimator : SpriterAnimator<Texture2D, SoundEffect>
     {
         private Vector2 charLocation;
         private SpriteBatch spriteBatch;
@@ -55,6 +56,11 @@ namespace SpriterDotNet.MonoGame
             }
 
             spriteBatch.Draw(texture, location, null, color, angle, origin, scale, effects, 1);
+        }
+
+        protected override void PlaySound(SoundEffect sound, SpriterSound info)
+        {
+            sound.Play(info.Volume, 0.0f, info.Panning);
         }
 
         protected override void ApplyPointTransform(SpriterObject info)

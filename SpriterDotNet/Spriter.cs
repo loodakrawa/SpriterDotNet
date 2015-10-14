@@ -107,6 +107,12 @@ namespace SpriterDotNet
         [XmlElement("timeline")]
         public SpriterTimeline[] Timelines;
 
+        [XmlElement("eventline")]
+        public SpriterEventline[] Eventlines;
+
+        [XmlElement("soundline")]
+        public SpriterSoundline[] Soundlines;
+
         [XmlArray("meta"), XmlArrayItem("varline")]
         public SpriterVarline[] Varlines;
 
@@ -297,6 +303,7 @@ namespace SpriterDotNet
         public SpriterVarlineKey[] Keys;
     }
 
+    [Serializable]
     public class SpriterVarlineKey : SpriterKey
     {
         [XmlAttribute("val")]
@@ -315,6 +322,52 @@ namespace SpriterDotNet
     }
 
     [Serializable]
+    public class SpriterEventline : SpriterElement
+    {
+        [XmlElement("key")]
+        public SpriterKey[] Keys;
+    }
+
+    [Serializable]
+    public class SpriterSoundline : SpriterElement
+    {
+        [XmlElement("key")]
+        public SpriterSoundlineKey[] Keys;
+    }
+
+    [Serializable]
+    public class SpriterSoundlineKey : SpriterKey
+    {
+        [XmlElement("object")]
+        public SpriterSound SoundObject;
+    }
+
+    [Serializable]
+    public class SpriterSound : SpriterElement
+    {
+        [XmlAttribute("folder")]
+        public int FolderId;
+
+        [XmlAttribute("file")]
+        public int FileId;
+
+        [XmlAttribute("trigger")]
+        public bool Trigger;
+
+        [XmlAttribute("panning")]
+        public float Panning;
+
+        [XmlAttribute("volume")]
+        public float Volume;
+
+        public SpriterSound()
+        {
+            Trigger = true;
+            Volume = 1.0f;
+        }
+    }
+
+    [Serializable]
     public abstract class SpriterElement
     {
         [XmlAttribute("id")]
@@ -325,7 +378,7 @@ namespace SpriterDotNet
     }
 
     [Serializable]
-    public abstract class SpriterKey : SpriterElement
+    public class SpriterKey : SpriterElement
     {
         [XmlAttribute("time")]
         public float Time;
