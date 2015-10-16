@@ -70,9 +70,9 @@ namespace SpriterDotNet
 
         private static void InitVarDefs(SpriterAnimation animation)
         {
-            if (animation.Varlines == null) return;
+            if (animation.Meta == null || animation.Meta.Varlines == null) return;
 
-            foreach (SpriterVarline varline in animation.Varlines)
+            foreach (SpriterVarline varline in animation.Meta.Varlines)
             {
                 SpriterVarDef varDefs = animation.Entity.Variables[varline.Def];
                 Init(varDefs, varline);
@@ -80,9 +80,9 @@ namespace SpriterDotNet
 
             foreach (SpriterTimeline timeline in animation.Timelines)
             {
-                if (timeline.Varlines == null) continue;
+                if (timeline.Meta == null || timeline.Meta.Varlines == null) continue;
                 SpriterObjectInfo objInfo = animation.Entity.ObjectInfos.First(o => o.Name == timeline.Name);
-                foreach (SpriterVarline varline in timeline.Varlines)
+                foreach (SpriterVarline varline in timeline.Meta.Varlines)
                 {
                     SpriterVarDef varDef = objInfo.Variables[varline.Def];
                     Init(varDef, varline);

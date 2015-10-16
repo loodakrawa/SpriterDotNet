@@ -102,41 +102,70 @@ namespace SpriterDotNet
         public static FrameMetadata GetFrameMetadata(SpriterAnimation animation, float targetTime, float deltaTime, SpriterSpatial parentInfo = null)
         {
             FrameMetadata metadata = new FrameMetadata();
-            AddVariableData(animation, targetTime, metadata);
+            AddVariableAndTagData(animation, targetTime, metadata);
             AddEventData(animation, targetTime, deltaTime, metadata);
             AddSoundData(animation, targetTime, deltaTime, metadata);
             return metadata;
         }
 
-        private static void AddVariableData(SpriterAnimation animation, float targetTime, FrameMetadata metadata)
+        private static void AddVariableAndTagData(SpriterAnimation animation, float targetTime, FrameMetadata metadata)
         {
-            if (animation.Varlines != null)
+            if (animation.Meta == null) return;
+
+            if (animation.Meta.Varlines != null)
             {
-                foreach (SpriterVarline varline in animation.Varlines)
+                foreach (SpriterVarline varline in animation.Meta.Varlines)
                 {
                     SpriterVarDef variable = animation.Entity.Variables[varline.Def];
                     metadata.AnimationVars[variable.Name] = GetVariableValue(animation, variable, varline, targetTime);
                 }
             }
 
+            SpriterElement[] tags = animation.Entity.Spriter.Tags;
+            SpriterTagline tagline = animation.Meta.Tagline;
+            if (tagline != null)
+            {
+                SpriterTaglineKey key = LastKeyForTime<SpriterTaglineKey>(tagline.Keys, targetTime);
+                if (key != null && key.Tags != null) foreach (SpriterTag tag in key.Tags) metadata.AnimationTags.Add(tags[tag.TagId].Name);
+            }
+
             foreach (SpriterTimeline timeline in animation.Timelines)
             {
-                if (timeline.Varlines == null) continue;
-                SpriterObjectInfo objInfo = null;
-                foreach (SpriterObjectInfo info in animation.Entity.ObjectInfos)
+                SpriterMeta meta = timeline.Meta;
+                if (meta == null) continue;
+
+                SpriterObjectInfo objInfo = GetObjectInfo(animation, timeline.Name);
+
+                if (meta.Varlines != null)
                 {
-                    if (info.Name == timeline.Name)
+                    foreach (SpriterVarline varline in timeline.Meta.Varlines)
                     {
-                        objInfo = info;
-                        break;
+                        SpriterVarDef variable = objInfo.Variables[varline.Def];
+                        metadata.AddObjectVar(objInfo.Name, variable.Name, GetVariableValue(animation, variable, varline, targetTime));
                     }
                 }
-                foreach (SpriterVarline varline in timeline.Varlines)
+
+                if (meta.Tagline != null)
                 {
-                    SpriterVarDef variable = objInfo.Variables[varline.Def];
-                    metadata.AddObjectVar(objInfo.Name, variable.Name, GetVariableValue(animation, variable, varline, targetTime));
+                    SpriterTaglineKey key = LastKeyForTime<SpriterTaglineKey>(tagline.Keys, targetTime);
+                    if (key != null && key.Tags != null) foreach (SpriterTag tag in key.Tags) metadata.AddObjectTag(objInfo.Name, tags[tag.TagId].Name);
                 }
             }
+        }
+
+        private static SpriterObjectInfo GetObjectInfo(SpriterAnimation animation, string name)
+        {
+            SpriterObjectInfo objInfo = null;
+            foreach (SpriterObjectInfo info in animation.Entity.ObjectInfos)
+            {
+                if (info.Name == name)
+                {
+                    objInfo = info;
+                    break;
+                }
+            }
+
+            return objInfo;
         }
 
         private static SpriterVarValue GetVariableValue(SpriterAnimation animation, SpriterVarDef varDef, SpriterVarline varline, float targetTime)
@@ -165,9 +194,9 @@ namespace SpriterDotNet
             float previousTime = targetTime - deltaTime;
             foreach (SpriterEventline eventline in animation.Eventlines)
             {
-                foreach(SpriterKey key in eventline.Keys)
+                foreach (SpriterKey key in eventline.Keys)
                 {
-                    if(IsTriggered(key, targetTime, previousTime, animation.Length)) metadata.Events.Add(eventline.Name);
+                    if (IsTriggered(key, targetTime, previousTime, animation.Length)) metadata.Events.Add(eventline.Name);
                 }
             }
         }

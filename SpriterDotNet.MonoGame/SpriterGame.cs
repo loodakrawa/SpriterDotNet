@@ -41,7 +41,7 @@ namespace SpriterDotNet.MonoGame
         private SpriteFont spriteFont;
         private KeyboardState oldState;
         private string status;
-        private string varValues;
+        private string metadata;
         private Fps fps = new Fps();
 
         public SpriteGame()
@@ -74,7 +74,7 @@ namespace SpriterDotNet.MonoGame
                 string data = File.ReadAllText(scmlPath);
                 Spriter spriter = SpriterParser.Parse(data);
 
-                foreach(SpriterEntity entity in spriter.Entities)
+                foreach (SpriterEntity entity in spriter.Entities)
                 {
                     var animator = new MonogameSpriterAnimator(spriter, entity, charPosition, spriteBatch, GraphicsDevice);
                     RegisterTextures(animator, spriter, spriterName);
@@ -102,7 +102,7 @@ namespace SpriterDotNet.MonoGame
             DrawText(String.Format("FPS (Update) = {0}\nFPS (Draw) =    {1}", fps.UpdateFps, fps.DrawFps), new Vector2(Width - 200, 10), 0.6f);
             DrawText(Instructions, new Vector2(10, 10), 0.6f);
             DrawText(status, new Vector2(10, Height - 50));
-            DrawText(varValues, new Vector2(Width - 300, Height - 200), 0.6f);
+            DrawText(metadata, new Vector2(Width - 300, Height * 0.5f), 0.6f);
             currentAnimator.Step((float)gameTime.ElapsedGameTime.Milliseconds);
 
             spriteBatch.End();
@@ -131,25 +131,27 @@ namespace SpriterDotNet.MonoGame
 
             string entity = currentAnimator.Entity.Name;
             status = String.Format("{0} : {1}", entity, currentAnimator.Name);
-            varValues = GetVarValues();
+            metadata = "Variables:\n" + GetVarValues() + "\nTags:\n" + GetTagValues();
 
             base.Update(gameTime);
         }
 
         private string GetVarValues()
         {
+            FrameMetadata metadata = currentAnimator.Metadata;
+
             StringBuilder sb = new StringBuilder();
-            foreach(string name in currentAnimator.GetVarNames())
+            foreach (var entry in metadata.AnimationVars)
             {
-                object value = GetValue(currentAnimator.GetVarValue(name));
-                sb.Append(name).Append(" = ").Append(value).Append("\n");
+                object value = GetValue(entry.Value);
+                sb.Append(entry.Key).Append(" = ").AppendLine(value.ToString());
             }
-            foreach(string objectName in currentAnimator.GetObjectNames())
+            foreach (var objectEntry in metadata.ObjectVars)
             {
-                foreach(string varName in currentAnimator.GetObjectVarNames(objectName))
+                foreach (var varEntry in objectEntry.Value)
                 {
-                    object value = GetValue(currentAnimator.GetObjectVarValue(objectName, varName));
-                    sb.Append(objectName).Append(".").Append(varName).Append(" = ").Append(value).Append("\n");
+                    object value = GetValue(varEntry.Value);
+                    sb.Append(objectEntry.Key).Append(".").Append(varEntry.Key).Append(" = ").AppendLine((value ?? string.Empty).ToString());
                 }
             }
 
@@ -172,6 +174,20 @@ namespace SpriterDotNet.MonoGame
                     break;
             }
             return value;
+        }
+
+        private string GetTagValues()
+        {
+            FrameMetadata metadata = currentAnimator.Metadata;
+
+            StringBuilder sb = new StringBuilder();
+            foreach (string tag in metadata.AnimationTags) sb.AppendLine(tag);
+            foreach (var objectEntry in metadata.ObjectTags)
+            {
+                foreach(string tag in objectEntry.Value) sb.Append(objectEntry.Key).Append(".").AppendLine(tag);
+            }
+
+            return sb.ToString();
         }
 
         private bool IsPressed(Keys key)
@@ -211,7 +227,7 @@ namespace SpriterDotNet.MonoGame
                 foreach (SpriterFile file in folder.Files)
                 {
                     string path = FormatPath(folder, file, spriterName);
-                    
+
                     if (file.Type == SpriterFileType.Sound)
                     {
                         SoundEffect sound = LoadContent<SoundEffect>(path);
@@ -222,7 +238,7 @@ namespace SpriterDotNet.MonoGame
                         Texture2D texture = LoadContent<Texture2D>(path);
                         if (texture != null) animator.Register(folder.Id, file.Id, texture);
                     }
-                    
+
                 }
             }
         }

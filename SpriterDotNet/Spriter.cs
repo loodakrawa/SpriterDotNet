@@ -16,6 +16,9 @@ namespace SpriterDotNet
 
         [XmlElement("entity")]
         public SpriterEntity[] Entities;
+
+        [XmlArray("tag_list"), XmlArrayItem("i")]
+        public SpriterElement[] Tags;
     }
 
     [Serializable]
@@ -113,8 +116,8 @@ namespace SpriterDotNet
         [XmlElement("soundline")]
         public SpriterSoundline[] Soundlines;
 
-        [XmlArray("meta"), XmlArrayItem("varline")]
-        public SpriterVarline[] Varlines;
+        [XmlElement("meta")]
+        public SpriterMeta Meta;
 
         public SpriterAnimation()
         {
@@ -169,8 +172,8 @@ namespace SpriterDotNet
         [XmlElement("key")]
         public SpriterTimelineKey[] Keys;
 
-        [XmlArray("meta"), XmlArrayItem("varline")]
-        public SpriterVarline[] Varlines;
+        [XmlElement("meta")]
+        public SpriterMeta Meta;
     }
 
     [Serializable]
@@ -281,6 +284,16 @@ namespace SpriterDotNet
     }
 
     [Serializable]
+    public class SpriterMeta
+    {
+        [XmlElement("varline")]
+        public SpriterVarline[] Varlines;
+
+        [XmlElement("tagline")]
+        public SpriterTagline Tagline;
+    }
+
+    [Serializable]
     public class SpriterVarDef : SpriterElement
     {
         [XmlAttribute("type")]
@@ -329,6 +342,27 @@ namespace SpriterDotNet
     }
 
     [Serializable]
+    public class SpriterTagline
+    {
+        [XmlElement("key")]
+        public SpriterTaglineKey[] Keys;
+    }
+
+    [Serializable]
+    public class SpriterTaglineKey : SpriterKey
+    {
+        [XmlElement("tag")]
+        public SpriterTag[] Tags;
+    }
+
+    [Serializable]
+    public class SpriterTag : SpriterElement
+    {
+        [XmlAttribute("t")]
+        public int TagId;
+    }
+
+    [Serializable]
     public class SpriterSoundline : SpriterElement
     {
         [XmlElement("key")]
@@ -368,7 +402,7 @@ namespace SpriterDotNet
     }
 
     [Serializable]
-    public abstract class SpriterElement
+    public class SpriterElement
     {
         [XmlAttribute("id")]
         public int Id;

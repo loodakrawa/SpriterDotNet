@@ -29,7 +29,7 @@ namespace SpriterDotNet
             set { Time = value * Length; }
         }
 
-        protected FrameMetadata LastMetadata;
+        public FrameMetadata Metadata { get; private set; }
 
         private readonly IDictionary<string, SpriterAnimation> animations;
         private readonly IDictionary<int, IDictionary<int, TSprite>> sprites = new Dictionary<int, IDictionary<int, TSprite>>();
@@ -45,7 +45,7 @@ namespace SpriterDotNet
             animations = entity.Animations.ToDictionary(a => a.Name, a => a);
             Speed = 1.0f;
             Play(animations.Keys.First());
-            LastMetadata = new FrameMetadata();
+            Metadata = new FrameMetadata();
         }
 
         public IEnumerable<string> GetAnimations()
@@ -132,36 +132,6 @@ namespace SpriterDotNet
             Animate(elapsed);
         }
 
-        public ICollection<string> GetObjectNames()
-        {
-            return LastMetadata.ObjectVars.Keys;
-        }
-
-        public ICollection<string> GetObjectVarNames(string name)
-        {
-            return LastMetadata.ObjectVars[name].Keys;
-        }
-
-        public ICollection<string> GetVarNames()
-        {
-            return LastMetadata.AnimationVars.Keys;
-        }
-
-        public SpriterVarValue GetVarValue(string name)
-        {
-            return LastMetadata.AnimationVars[name];
-        }
-
-        public SpriterVarValue GetObjectVarValue(string objectName, string varName)
-        {
-            return LastMetadata.ObjectVars[objectName][varName];
-        }
-
-        public ICollection<string> GetEventNames(string name)
-        {
-            return CurrentAnimation.Eventlines.Select(e => e.Name).ToList();
-        }
-
         protected virtual void Animate(float deltaTime)
         {
             FrameData frameData;
@@ -193,7 +163,7 @@ namespace SpriterDotNet
             foreach (var entry in frameData.BoxData) ApplyBoxTransform(Entity.ObjectInfos[entry.Key], entry.Value);
             foreach (string eventName in metaData.Events) DispatchEvent(eventName);
 
-            LastMetadata = metaData;
+            Metadata = metaData;
         }
 
         protected virtual void ApplySpriteTransform(TSprite sprite, SpriterObject info)
