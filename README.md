@@ -17,9 +17,10 @@ Being a pure C# implementation, SpriterDotNet doesn't depend on any external lib
 * Variables
 * Tags
 * Character maps
+* Animation Blending
 
 ## How to use it
-1. Extend SpriterAnimator<TSprite, TSound> with generic parameters being the concrete types for the framework you're using and o verride ApplySpriteTransform and PlaySound methods
+1. Extend SpriterAnimator<TSprite, TSound> with generic parameters being the concrete types for the framework you're using and override ApplySpriteTransform and PlaySound methods
 2. Obtain a string with the SCML data
 3. Get a Spriter instance with SpriterParser.Parse
 4. Instantiate your SpriterAnimator class with the desired Entity
@@ -27,23 +28,26 @@ Being a pure C# implementation, SpriterDotNet doesn't depend on any external lib
 6. Call Step in every frame
 7. Control the animation with properties
 
-### Points
-* Override ApplyPointTransform
+#### Points
+* Override SpriterAnimator.ApplyPointTransform
 
-### Collision Rectangles
-* Override ApplyBoxTransform
+#### Collision Rectangles
+* Override SpriterAnimator.ApplyBoxTransform
 
-### Events
+#### Events
 * Subscribe to the SpriterAnimator.EventTriggered event
 
-### Variables
+#### Variables
 * Query SpriterAnimator.Metadata
 
-### Tags
+#### Tags
 * Query SpriterAnimator.Metadata
 
-### Character Maps
+#### Character Maps
 * Set SpriterAnimator.CharacterMap to desired value or null
+
+#### Animation Blending
+* Call SpriterAnimator.Transition or SpriterAnimator.Blend
 
 ## Feedback
 For questions, feedback, complaints, etc, use the related topic on [Spriter Forum](http://brashmonkey.com/forum/index.php?/topic/4166-spriterdotnet-an-implementation-for-all-c-frameworks/)
