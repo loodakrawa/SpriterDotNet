@@ -1,10 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <spriter_data scml_version="1.0" generator="BrashMonkey Spriter" generator_version="r4.1">
-    <folder id="0">
-        <file id="0" name="green.png" width="512" height="256" pivot_x="0" pivot_y="1"/>
-        <file id="1" name="red.png" width="256" height="128" pivot_x="0" pivot_y="1"/>
+    <folder id="0" name="images">
+        <file id="0" name="images/big.png" width="512" height="256" pivot_x="0" pivot_y="1"/>
+        <file id="1" name="images/small.png" width="256" height="128" pivot_x="0" pivot_y="1"/>
+    </folder>
+    <folder id="1" name="images_alternate1">
+        <file id="0" name="images_alternate1/big.png" width="512" height="256" pivot_x="0" pivot_y="1"/>
+        <file id="1" name="images_alternate1/small.png" width="256" height="128" pivot_x="0" pivot_y="1"/>
+    </folder>
+    <folder id="2" name="images_alternate2">
+        <file id="0" name="images_alternate2/big.png" width="512" height="256" pivot_x="0" pivot_y="1"/>
+        <file id="1" name="images_alternate2/small.png" width="256" height="128" pivot_x="0" pivot_y="1"/>
     </folder>
     <entity id="0" name="squares">
+        <character_map id="0" name="alternate 1">
+            <map folder="0" file="0" target_folder="1" target_file="0"/>
+            <map folder="0" file="1" target_folder="1" target_file="1"/>
+        </character_map>
+        <character_map id="1" name="alternate 2">
+            <map folder="0" file="1" target_folder="2" target_file="1"/>
+            <map folder="0" file="0"/>
+        </character_map>
         <animation id="0" name="ScaleX" length="1000" interval="100">
             <mainline>
                 <key id="0">

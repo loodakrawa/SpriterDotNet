@@ -18,6 +18,7 @@ namespace SpriterDotNet
         public SpriterEntity Entity { get; private set; }
         public SpriterAnimation CurrentAnimation { get; private set; }
         public SpriterAnimation NextAnimation { get; private set; }
+        public SpriterCharacterMap CharacterMap { get; set; }
 
         public string Name { get; private set; }
         public float Speed { get; set; }
@@ -38,10 +39,10 @@ namespace SpriterDotNet
         private float transitionTime;
         private float factor;
 
-        public SpriterAnimator(SpriterEntity entity, Spriter spriter)
+        public SpriterAnimator(SpriterEntity entity)
         {
             Entity = entity;
-            Spriter = spriter;
+            Spriter = entity.Spriter;
             animations = entity.Animations.ToDictionary(a => a.Name, a => a);
             Speed = 1.0f;
             Play(animations.Keys.First());
@@ -149,12 +150,16 @@ namespace SpriterDotNet
 
             foreach (SpriterObject info in frameData.SpriteData)
             {
-                TSprite obj = GetFromDict(info.FolderId, info.FileId, sprites);
+                int folderId;
+                int fileId;
+                if (!GetSpriteIds(info, out folderId, out fileId)) continue;
+                TSprite obj = GetFromDict(folderId, fileId, sprites);
                 ApplySpriteTransform(obj, info);
             }
 
             foreach (SpriterSound info in metaData.Sounds)
             {
+                
                 TSound sound = GetFromDict(info.FolderId, info.FileId, sounds);
                 PlaySound(sound, info);
             }
@@ -164,6 +169,25 @@ namespace SpriterDotNet
             foreach (string eventName in metaData.Events) DispatchEvent(eventName);
 
             Metadata = metaData;
+        }
+
+        protected bool GetSpriteIds(SpriterObject obj, out int folderId, out int fileId)
+        {
+            folderId = obj.FolderId;
+            fileId = obj.FileId;
+
+            if (CharacterMap == null) return true;
+
+            foreach(SpriterMapInstruction map in  CharacterMap.Maps)
+            {
+                if (map.FolderId != folderId || map.FileId != fileId) continue;
+                if (map.TargetFolderId < 0 || map.TargetFileId < 0) return false;
+                folderId = map.TargetFolderId;
+                fileId = map.TargetFileId;
+                return true;
+            }
+
+            return false;
         }
 
         protected virtual void ApplySpriteTransform(TSprite sprite, SpriterObject info)

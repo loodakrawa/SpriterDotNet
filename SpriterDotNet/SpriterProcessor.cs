@@ -11,6 +11,8 @@ namespace SpriterDotNet
     {
         public static FrameData GetFrameData(SpriterAnimation first, SpriterAnimation second, float targetTime, float factor)
         {
+            if (first == second) return GetFrameData(first, targetTime);
+
             float targetTimeSecond = targetTime / first.Length * second.Length;
 
             SpriterMainlineKey firstKeyA;

@@ -9,7 +9,6 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -23,16 +22,16 @@ namespace SpriterDotNet.MonoGame
 
         private static readonly IDictionary<string, string> Scmls = new Dictionary<string, string>
         {
-            { "Content/GreyGuyPlus/player_006.scml", "GreyGuyPlus"},
             { "Content/GreyGuy/player.scml", "GreyGuy"},
-            { "Content/TestSquares/squares.scml", "TestSquares"}
+            { "Content/TestSquares/squares.scml", "TestSquares"},
+            { "Content/GreyGuyPlus/player_006.scml", "GreyGuyPlus"}
         };
 
         private static readonly int Width = 1280;
         private static readonly int Height = 960;
         private static readonly float MaxSpeed = 5.0f;
         private static readonly float DeltaSpeed = 0.2f;
-        private static readonly string Instructions = "Enter = Next Scml\nSpace = Next Animation\nP = Anim Speed +\nO = Anim Speed -\nR = Reverse Direction\nX = Reset Animation\nT = Transition to Next Animation";
+        private static readonly string Instructions = "Enter = Next Scml\nSpace = Next Animation\nP = Anim Speed +\nO = Anim Speed -\nR = Reverse Direction\nX = Reset Animation\nT = Transition to Next Animation\nC = NextCharMap";
 
         private IList<MonogameSpriterAnimator> animators = new List<MonogameSpriterAnimator>();
         private MonogameSpriterAnimator currentAnimator;
@@ -76,7 +75,7 @@ namespace SpriterDotNet.MonoGame
 
                 foreach (SpriterEntity entity in spriter.Entities)
                 {
-                    var animator = new MonogameSpriterAnimator(spriter, entity, charPosition, spriteBatch, GraphicsDevice);
+                    var animator = new MonogameSpriterAnimator(entity, charPosition, spriteBatch, GraphicsDevice);
                     RegisterTextures(animator, spriter, spriterName);
                     animators.Add(animator);
                 }
@@ -126,6 +125,7 @@ namespace SpriterDotNet.MonoGame
             if (IsPressed(Keys.R)) currentAnimator.Speed = -currentAnimator.Speed;
             if (IsPressed(Keys.X)) currentAnimator.Play(currentAnimator.Name);
             if (IsPressed(Keys.T)) currentAnimator.Transition(GetNextAnimation(), 1000.0f);
+            if (IsPressed(Keys.C)) NextCharacterMap();
 
             oldState = Keyboard.GetState();
 
@@ -134,6 +134,22 @@ namespace SpriterDotNet.MonoGame
             metadata = "Variables:\n" + GetVarValues() + "\nTags:\n" + GetTagValues();
 
             base.Update(gameTime);
+        }
+
+        private void NextCharacterMap()
+        {
+            SpriterCharacterMap[] maps = currentAnimator.Entity.CharacterMaps;
+            if (maps == null || maps.Length == 0) return;
+            SpriterCharacterMap charMap = currentAnimator.CharacterMap;
+            if (charMap == null) charMap = maps[0]; 
+            else
+            {
+                int index = charMap.Id + 1;
+                if (index >= maps.Length) charMap = null;
+                else charMap = maps[index];
+            }
+
+            currentAnimator.CharacterMap = charMap;
         }
 
         private string GetVarValues()
@@ -252,7 +268,7 @@ namespace SpriterDotNet.MonoGame
             }
             catch
             {
-                Debug.WriteLine("Missing Asset: " + path);
+                System.Diagnostics.Debug.WriteLine("Missing Asset: " + path);
             }
 
             return asset;

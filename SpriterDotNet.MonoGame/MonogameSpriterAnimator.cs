@@ -18,7 +18,7 @@ namespace SpriterDotNet.MonoGame
         private Texture2D pointTexture;
         private IDictionary<string, Texture2D> boxTextures = new Dictionary<string, Texture2D>();
 
-        public MonogameSpriterAnimator(Spriter spriter, SpriterEntity entity, Vector2 charLocation, SpriteBatch spriteBatch, GraphicsDevice graphics) : base(entity, spriter)
+        public MonogameSpriterAnimator(SpriterEntity entity, Vector2 charLocation, SpriteBatch spriteBatch, GraphicsDevice graphics) : base(entity)
         {
             this.charLocation = charLocation;
             this.spriteBatch = spriteBatch;

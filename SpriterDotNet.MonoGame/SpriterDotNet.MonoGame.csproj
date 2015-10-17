@@ -67,6 +67,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Content\GreyGuyPlus\player_006.scml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Content\GreyGuy\player.scml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
