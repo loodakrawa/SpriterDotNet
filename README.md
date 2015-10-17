@@ -6,30 +6,44 @@ The goal of SpriterDotNet is to be as fast as possible while keeping the code cl
 Being a pure C# implementation, SpriterDotNet doesn't depend on any external libraries / frameworks. It focuses on simple and efficient calculations of all transforms at a given point in time. This allows using it with any framework just by mapping calculated transforms to concrete objects.
 
 ## Supported Features
-* Basic Animation
-* Bone Animation
-* Instant, Linear, Quadratic, Cubic, Quartic and Quintic curves
+* Basic animations
+* Bone animations
+* All curve types (Instant, Linear, Quadratic, Cubic, Quartic, Quintic, Bezier)
+* Points
+* Collision Rectangles
+* SubEntities
+* Events
+* Sounds
+* Variables
+* Tags
+* Character maps
 
 ## How to use it
-1. Obtain a string with the SCML data
-2. Get a Spriter instance with Spriter.Parse
-3. Invoke SpriterProcessor.GetDrawData with the desired animation and target time
-4. Apply the calculated transforms to concrete objects in the framework you're using
-5. goto 3.
+1. Extend SpriterAnimator<TSprite, TSound> with generic parameters being the concrete types for the framework you're using and o verride ApplySpriteTransform and PlaySound methods
+2. Obtain a string with the SCML data
+3. Get a Spriter instance with SpriterParser.Parse
+4. Instantiate your SpriterAnimator class with the desired Entity
+5. Register concrete objects which correspond to FolderId/FileId
+6. Call Step in every frame
+7. Control the animation with properties
 
-```
-Optionally, you can use SpriterAnimator<T> which is a basic player implementation.
-To use it:
+### Points
+* Override ApplyPointTransform
 
-1. Extend it (with T being the concrete object type that gets transformed, e.g. Sprite)
-2. Override the ApplyTransform method
-3. Instantiate it with the desired SpriterEntity as argument
-4. Register concrete objects which correspond to FolderId/FileId
-5. Call Step in every frame
-6. Control the animation with properties
+### Collision Rectangles
+* Override ApplyBoxTransform
 
-* Take SpriterDotNet.Monogame as an example
-```
+### Events
+* Subscribe to the SpriterAnimator.EventTriggered event
+
+### Variables
+* Query SpriterAnimator.Metadata
+
+### Tags
+* Query SpriterAnimator.Metadata
+
+### Character Maps
+* Set SpriterAnimator.CharacterMap to desired value or null
 
 ## Feedback
 For questions, feedback, complaints, etc, use the related topic on [Spriter Forum](http://brashmonkey.com/forum/index.php?/topic/4166-spriterdotnet-an-implementation-for-all-c-frameworks/)
