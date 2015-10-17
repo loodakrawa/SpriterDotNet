@@ -38,7 +38,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FrameData.cs" />
+    <Compile Include="FrameMetadata.cs" />
     <Compile Include="ISpriterParser.cs" />
+    <Compile Include="MathHelper.cs" />
     <Compile Include="Parser\XmlSpriterParser.cs" />
     <Compile Include="Spriter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

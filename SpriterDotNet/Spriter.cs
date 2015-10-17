@@ -16,6 +16,9 @@ namespace SpriterDotNet
 
         [XmlElement("entity")]
         public SpriterEntity[] Entities;
+
+        [XmlArray("tag_list"), XmlArrayItem("i")]
+        public SpriterElement[] Tags;
     }
 
     [Serializable]
@@ -28,6 +31,9 @@ namespace SpriterDotNet
     [Serializable]
     public class SpriterFile : SpriterElement
     {
+        [XmlAttribute("type")]
+        public SpriterFileType Type;
+
         [XmlAttribute("pivot_x")]
         public float PivotX;
 
@@ -50,45 +56,48 @@ namespace SpriterDotNet
     [Serializable]
     public class SpriterEntity : SpriterElement
     {
+        public Spriter Spriter;
+
+        [XmlElement("obj_info")]
+        public SpriterObjectInfo[] ObjectInfos;
+
         [XmlElement("character_map")]
         public SpriterCharacterMap[] CharacterMaps;
 
         [XmlElement("animation")]
         public SpriterAnimation[] Animations;
+
+        [XmlArray("var_defs"), XmlArrayItem("i")]
+        public SpriterVarDef[] Variables;
     }
 
     [Serializable]
-    public class SpriterCharacterMap : SpriterElement
+    public class SpriterObjectInfo : SpriterElement
     {
-        [XmlElement("map")]
-        public SpriterMapInstruction[] Maps;
-    }
+        [XmlAttribute("type")]
+        public SpriterObjectType ObjectType;
 
-    [Serializable]
-    public class SpriterMapInstruction
-    {
-        [XmlAttribute("folder")]
-        public int FolderId;
+        [XmlAttribute("w")]
+        public float Width;
 
-        [XmlAttribute("file")]
-        public int FileId;
+        [XmlAttribute("h")]
+        public float Height;
 
-        [XmlAttribute("target_folder")]
-        public int TargetFolderId;
+        [XmlAttribute("pivot_x")]
+        public float PivotX;
 
-        [XmlAttribute("target_file")]
-        public int TargetFileId;
+        [XmlAttribute("pivot_y")]
+        public float PivotY;
 
-        public SpriterMapInstruction()
-        {
-            TargetFolderId = -1;
-            TargetFileId = -1;
-        }
+        [XmlArray("var_defs"), XmlArrayItem("i")]
+        public SpriterVarDef[] Variables;
     }
 
     [Serializable]
     public class SpriterAnimation : SpriterElement
     {
+        public SpriterEntity Entity;
+
         [XmlAttribute("length")]
         public float Length;
 
@@ -96,10 +105,19 @@ namespace SpriterDotNet
         public bool Looping;
 
         [XmlArray("mainline"), XmlArrayItem("key")]
-        public SpriterMainLineKey[] MainlineKeys;
+        public SpriterMainlineKey[] MainlineKeys;
 
         [XmlElement("timeline")]
-        public SpriterTimeLine[] Timelines;
+        public SpriterTimeline[] Timelines;
+
+        [XmlElement("eventline")]
+        public SpriterEventline[] Eventlines;
+
+        [XmlElement("soundline")]
+        public SpriterSoundline[] Soundlines;
+
+        [XmlElement("meta")]
+        public SpriterMeta Meta;
 
         public SpriterAnimation()
         {
@@ -108,7 +126,7 @@ namespace SpriterDotNet
     }
 
     [Serializable]
-    public class SpriterMainLineKey : SpriterKey
+    public class SpriterMainlineKey : SpriterKey
     {
         [XmlElement("bone_ref")]
         public SpriterRef[] BoneRefs;
@@ -143,35 +161,41 @@ namespace SpriterDotNet
     }
 
     [Serializable]
-    public class SpriterTimeLine : SpriterElement
+    public class SpriterTimeline : SpriterElement
     {
         [XmlAttribute("object_type")]
         public SpriterObjectType ObjectType;
 
+        [XmlAttribute("obj")]
+        public int ObjectId;
+
         [XmlElement("key")]
-        public SpriterTimeLineKey[] Keys;
+        public SpriterTimelineKey[] Keys;
+
+        [XmlElement("meta")]
+        public SpriterMeta Meta;
     }
 
     [Serializable]
-    public class SpriterTimeLineKey : SpriterKey
+    public class SpriterTimelineKey : SpriterKey
     {
         [XmlAttribute("spin")]
         public int Spin;
 
-        [XmlElement("bone", typeof(SpriterSpatialInfo))]
-        public SpriterSpatialInfo BoneInfo;
+        [XmlElement("bone", typeof(SpriterSpatial))]
+        public SpriterSpatial BoneInfo;
 
-        [XmlElement("object", typeof(SpriterObjectInfo))]
-        public SpriterObjectInfo ObjectInfo;
+        [XmlElement("object", typeof(SpriterObject))]
+        public SpriterObject ObjectInfo;
 
-        public SpriterTimeLineKey()
+        public SpriterTimelineKey()
         {
             Spin = 1;
         }
     }
 
     [Serializable]
-    public class SpriterSpatialInfo
+    public class SpriterSpatial
     {
         [XmlAttribute("x")]
         public float X;
@@ -191,7 +215,7 @@ namespace SpriterDotNet
         [XmlAttribute("a")]
         public float Alpha;
 
-        public SpriterSpatialInfo()
+        public SpriterSpatial()
         {
             ScaleX = 1;
             ScaleY = 1;
@@ -200,8 +224,14 @@ namespace SpriterDotNet
     }
 
     [Serializable]
-    public class SpriterObjectInfo : SpriterSpatialInfo
+    public class SpriterObject : SpriterSpatial
     {
+        [XmlAttribute("animation")]
+        public int AnimationId;
+
+        [XmlAttribute("entity")]
+        public int EntityId;
+
         [XmlAttribute("folder")]
         public int FolderId;
 
@@ -214,7 +244,10 @@ namespace SpriterDotNet
         [XmlAttribute("pivot_y")]
         public float PivotY;
 
-        public SpriterObjectInfo()
+        [XmlAttribute("t")]
+        public float T;
+
+        public SpriterObject()
         {
             PivotX = float.NaN;
             PivotY = float.NaN;
@@ -222,7 +255,154 @@ namespace SpriterDotNet
     }
 
     [Serializable]
-    public abstract class SpriterElement
+    public class SpriterCharacterMap : SpriterElement
+    {
+        [XmlElement("map")]
+        public SpriterMapInstruction[] Maps;
+    }
+
+    [Serializable]
+    public class SpriterMapInstruction
+    {
+        [XmlAttribute("folder")]
+        public int FolderId;
+
+        [XmlAttribute("file")]
+        public int FileId;
+
+        [XmlAttribute("target_folder")]
+        public int TargetFolderId;
+
+        [XmlAttribute("target_file")]
+        public int TargetFileId;
+
+        public SpriterMapInstruction()
+        {
+            TargetFolderId = -1;
+            TargetFileId = -1;
+        }
+    }
+
+    [Serializable]
+    public class SpriterMeta
+    {
+        [XmlElement("varline")]
+        public SpriterVarline[] Varlines;
+
+        [XmlElement("tagline")]
+        public SpriterTagline Tagline;
+    }
+
+    [Serializable]
+    public class SpriterVarDef : SpriterElement
+    {
+        [XmlAttribute("type")]
+        public SpriterVarType Type;
+
+        [XmlAttribute("default")]
+        public string DefaultValue;
+
+        [NonSerialized, XmlIgnore]
+        public SpriterVarValue VariableValue;
+    }
+
+    [Serializable]
+    public class SpriterVarline : SpriterElement
+    {
+        [XmlAttribute("def")]
+        public int Def;
+
+        [XmlElement("key")]
+        public SpriterVarlineKey[] Keys;
+    }
+
+    [Serializable]
+    public class SpriterVarlineKey : SpriterKey
+    {
+        [XmlAttribute("val")]
+        public string Value;
+
+        [NonSerialized, XmlIgnore]
+        public SpriterVarValue VariableValue;
+    }
+
+    public struct SpriterVarValue
+    {
+        public SpriterVarType Type;
+        public string StringValue;
+        public float FloatValue;
+        public int IntValue;
+    }
+
+    [Serializable]
+    public class SpriterEventline : SpriterElement
+    {
+        [XmlElement("key")]
+        public SpriterKey[] Keys;
+    }
+
+    [Serializable]
+    public class SpriterTagline
+    {
+        [XmlElement("key")]
+        public SpriterTaglineKey[] Keys;
+    }
+
+    [Serializable]
+    public class SpriterTaglineKey : SpriterKey
+    {
+        [XmlElement("tag")]
+        public SpriterTag[] Tags;
+    }
+
+    [Serializable]
+    public class SpriterTag : SpriterElement
+    {
+        [XmlAttribute("t")]
+        public int TagId;
+    }
+
+    [Serializable]
+    public class SpriterSoundline : SpriterElement
+    {
+        [XmlElement("key")]
+        public SpriterSoundlineKey[] Keys;
+    }
+
+    [Serializable]
+    public class SpriterSoundlineKey : SpriterKey
+    {
+        [XmlElement("object")]
+        public SpriterSound SoundObject;
+    }
+
+    [Serializable]
+    public class SpriterSound : SpriterElement
+    {
+        [XmlAttribute("folder")]
+        public int FolderId;
+
+        [XmlAttribute("file")]
+        public int FileId;
+
+        [XmlAttribute("trigger")]
+        public bool Trigger;
+
+        [XmlAttribute("panning")]
+        public float Panning;
+
+        [XmlAttribute("volume")]
+        public float Volume;
+
+        public SpriterSound()
+        {
+            Trigger = true;
+            Volume = 1.0f;
+        }
+    }
+
+    [Serializable]
+    public class SpriterElement
     {
         [XmlAttribute("id")]
         public int Id;
@@ -232,7 +412,7 @@ namespace SpriterDotNet
     }
 
     [Serializable]
-    public abstract class SpriterKey : SpriterElement
+    public class SpriterKey : SpriterElement
     {
         [XmlAttribute("time")]
         public float Time;
@@ -255,7 +435,6 @@ namespace SpriterDotNet
         public SpriterKey()
         {
             Time = 0;
-            CurveType = SpriterCurveType.Linear;
         }
     }
 
@@ -287,11 +466,11 @@ namespace SpriterDotNet
     [Serializable]
     public enum SpriterCurveType
     {
-        [XmlEnum("instant")]
-        Instant,
-
         [XmlEnum("linear")]
         Linear,
+
+        [XmlEnum("instant")]
+        Instant,
 
         [XmlEnum("quadratic")]
         Quadratic,
@@ -303,6 +482,31 @@ namespace SpriterDotNet
         Quartic,
 
         [XmlEnum("quintic")]
-        Quintic
+        Quintic,
+
+        [XmlEnum("bezier")]
+        Bezier
+    }
+
+    [Serializable]
+    public enum SpriterFileType
+    {
+        Image,
+
+        [XmlEnum("sound")]
+        Sound
+    }
+
+    [Serializable]
+    public enum SpriterVarType
+    {
+        [XmlEnum("string")]
+        String,
+
+        [XmlEnum("int")]
+        Int,
+
+        [XmlEnum("float")]
+        Float
     }
 }

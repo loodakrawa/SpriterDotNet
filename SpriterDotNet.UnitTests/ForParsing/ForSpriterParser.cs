@@ -93,13 +93,13 @@ namespace SpriterDotNet.UnitTests.ForParsing
                             {
                                 Timelines = new []
                                 {
-                                    new SpriterTimeLine()
+                                    new SpriterTimeline()
                                     {
                                         Keys = new[]
                                         {
-                                            new SpriterTimeLineKey()
+                                            new SpriterTimelineKey()
                                             {
-                                                ObjectInfo = new SpriterObjectInfo ()
+                                                ObjectInfo = new SpriterObject ()
                                                 {
                                                     FolderId = 0,
                                                     FileId = 0,
@@ -127,7 +127,6 @@ namespace SpriterDotNet.UnitTests.ForParsing
         {
             private bool disposedValue = false;
             private readonly List<ISpriterParser> originalParsers;
-            private readonly Action<Spriter> originalInit;
 
             public SpriterParserTestScope()
             {

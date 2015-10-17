@@ -173,14 +173,14 @@ namespace SpriterDotNet.UnitTests.ForParsing
                 Length = 1000,
                 MainlineKeys = new []
                 {
-                    new SpriterMainLineKey(),
-                    new SpriterMainLineKey()
+                    new SpriterMainlineKey(),
+                    new SpriterMainlineKey()
                 },
                 Timelines = new []
                 {
-                    new SpriterTimeLine(),
-                    new SpriterTimeLine(),
-                    new SpriterTimeLine()
+                    new SpriterTimeline(),
+                    new SpriterTimeline(),
+                    new SpriterTimeline()
                 }
             });
         }
@@ -212,7 +212,7 @@ namespace SpriterDotNet.UnitTests.ForParsing
             var mainlineKeys = spriter.Entities.First().Animations.First().MainlineKeys;
             mainlineKeys.ShouldBeEquivalentTo(new[]
             {
-                new SpriterMainLineKey()
+                new SpriterMainlineKey()
                 {
                     Id=3,
                     Name = null,
@@ -234,7 +234,7 @@ namespace SpriterDotNet.UnitTests.ForParsing
                         new SpriterObjectRef()
                     }
                 },
-                new SpriterMainLineKey()
+                new SpriterMainlineKey()
                 {
                     Id=4,
                     Name = "some_key",
@@ -358,23 +358,23 @@ namespace SpriterDotNet.UnitTests.ForParsing
             var timelines = spriter.Entities.First().Animations.First().Timelines;
             timelines.ShouldBeEquivalentTo(new[]
             {
-                new SpriterTimeLine()
+                new SpriterTimeline()
                 {
                     Id=8,
                     Name = "p_leg_a",
                     Keys = new []{
-                        new SpriterTimeLineKey(),
-                        new SpriterTimeLineKey()
+                        new SpriterTimelineKey(),
+                        new SpriterTimelineKey()
                     },
                     ObjectType = SpriterObjectType.Sprite
                 },
-                new SpriterTimeLine()
+                new SpriterTimeline()
                 {
                     Id = 15,
                     Name = "pelvis",
                     Keys = new[]
                     {
-                        new SpriterTimeLineKey()
+                        new SpriterTimelineKey()
                     },
                     ObjectType = SpriterObjectType.Bone
                 }
@@ -406,21 +406,21 @@ namespace SpriterDotNet.UnitTests.ForParsing
             var timelineKeys = spriter.Entities.First().Animations.First().Timelines.First().Keys;
             timelineKeys.ShouldBeEquivalentTo(new[]
             {
-                new SpriterTimeLineKey()
+                new SpriterTimelineKey()
                 {
                     Id=0,
                     Name = null,
                     Spin = 0,
-                    ObjectInfo = new SpriterObjectInfo(),
+                    ObjectInfo = new SpriterObject(),
                     BoneInfo = null
                 },
-                new SpriterTimeLineKey()
+                new SpriterTimelineKey()
                 {
                     Id = 1,
                     Name = null,
                     Spin = 1,
                     ObjectInfo = null,
-                    BoneInfo = new SpriterSpatialInfo()
+                    BoneInfo = new SpriterSpatial()
                 }
             });
         }
@@ -452,7 +452,7 @@ namespace SpriterDotNet.UnitTests.ForParsing
             var spriter = new XmlSpriterParser().Parse(objectInfoScml);
             var timelineKeyObjectInfos = spriter.Entities.First().Animations.First().Timelines.First().Keys.Select(k => k.ObjectInfo).ToArray();
             timelineKeyObjectInfos.ShouldBeEquivalentTo(new[] {
-                new SpriterObjectInfo()
+                new SpriterObject()
                 {
                     FileId = 0,
                     FolderId = 3,
@@ -465,7 +465,7 @@ namespace SpriterDotNet.UnitTests.ForParsing
                     PivotX = float.NaN,
                     PivotY = float.NaN
                 },
-                new SpriterObjectInfo()
+                new SpriterObject()
                 {
                     FileId = 4,
                     FolderId = 2,
@@ -478,7 +478,7 @@ namespace SpriterDotNet.UnitTests.ForParsing
                     PivotX = float.NaN,
                     PivotY = float.NaN
                 },
-                new SpriterObjectInfo()
+                new SpriterObject()
                 {
                     FileId = 6,
                     FolderId = 7,
@@ -529,7 +529,7 @@ namespace SpriterDotNet.UnitTests.ForParsing
 
             boneInfos.ShouldBeEquivalentTo(new[]
             {
-                new SpriterSpatialInfo()
+                new SpriterSpatial()
                 {
                     X=5,
                     Y = 39.32879f,
@@ -538,7 +538,7 @@ namespace SpriterDotNet.UnitTests.ForParsing
                     ScaleY = 1.0f,
                     Alpha = 1.0f
                 },
-                new SpriterSpatialInfo()
+                new SpriterSpatial()
                 {
                     X=6.0f,
                     Y = 7.0f,
@@ -547,7 +547,7 @@ namespace SpriterDotNet.UnitTests.ForParsing
                     ScaleY = 6.0f,
                     Alpha = 1.0f
                 },
-                new SpriterSpatialInfo()
+                new SpriterSpatial()
                 {
                     X=9.0f,
                     Y = 8.0f,
@@ -556,11 +556,11 @@ namespace SpriterDotNet.UnitTests.ForParsing
                     ScaleY = 1.0f,
                     Alpha = 0.6f
                 },
-                new SpriterSpatialInfo()
+                new SpriterSpatial()
                 {
                     Alpha = float.NaN
                 },
-                new SpriterSpatialInfo()
+                new SpriterSpatial()
                 {
                     Alpha = 0.0f
                 }
