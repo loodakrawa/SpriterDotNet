@@ -49,6 +49,8 @@ Being a pure C# implementation, SpriterDotNet doesn't depend on any external lib
 #### Animation Blending
 * Call SpriterAnimator.Transition or SpriterAnimator.Blend
 
+**Animation blending is possible only between animations with identical hierarchies. Blending incompatible animations will cause strange behaviour. SpriterDotNet only performs a simple check to determine compatibility in order to avoid crashing but that might not be enough in some cases.**
+
 ## Feedback
 For questions, feedback, complaints, etc, use the related topic on [Spriter Forum](http://brashmonkey.com/forum/index.php?/topic/4166-spriterdotnet-an-implementation-for-all-c-frameworks/)
 
