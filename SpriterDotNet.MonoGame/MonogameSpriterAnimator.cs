@@ -63,7 +63,7 @@ namespace SpriterDotNet.MonoGame
             sound.Play(info.Volume, 0.0f, info.Panning);
         }
 
-        protected override void ApplyPointTransform(SpriterObject info)
+        protected override void ApplyPointTransform(string name, SpriterObject info)
         {
             if (pointTexture == null) return;
             ApplySpriteTransform(pointTexture, info);
