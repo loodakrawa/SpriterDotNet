@@ -128,6 +128,10 @@ namespace SpriterDotNetUnity
 
         protected override void PlaySound(AudioClip sound, SpriterSound info)
         {
+#if UNITY_EDITOR
+            if (!UnityEditor.EditorApplication.isPlayingOrWillChangePlaymode) return;
+#endif
+
             audioSource.panStereo = info.Panning;
             audioSource.PlayOneShot(sound, info.Volume);
         }

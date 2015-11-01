@@ -17,10 +17,13 @@ namespace SpriterDotNetUnity
 {
     public class SpriterImporter : AssetPostprocessor
     {
-        public static event Action<GameObject> EntityImported = e => { };
-
+        private static readonly string AutosaveExtension = ".autosave.scml";
         private static readonly string[] ScmlExtensions = new string[] { ".scml" };
-        private static readonly float DeltaZ = -0.001f;
+
+        public static float DeltaZ = -0.001f;
+        public static bool UseNativeTags = true;
+        
+        public static event Action<SpriterEntity, GameObject> EntityImported = (e,g) => { };
 
         private static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromPath)
         {
@@ -29,22 +32,11 @@ namespace SpriterDotNetUnity
                 if (!IsScml(asset)) continue;
                 CreateSpriter(asset);
             }
-
-            foreach (string asset in deletedAssets)
-            {
-                if (!IsScml(asset)) continue;
-            }
-
-            for (int i = 0; i < movedAssets.Length; i++)
-            {
-                string asset = movedAssets[i];
-                if (!IsScml(asset)) continue;
-            }
         }
 
         private static bool IsScml(string path)
         {
-            return ScmlExtensions.Any(path.EndsWith);
+            return ScmlExtensions.Any(path.EndsWith) && !path.EndsWith(AutosaveExtension);
         }
 
         private static void CreateSpriter(string path)
@@ -58,9 +50,13 @@ namespace SpriterDotNetUnity
 
             foreach (SpriterEntity entity in spriter.Entities)
             {
-                GameObject go = new GameObject(entity.Name, typeof(AudioSource), typeof(SpriterDotNetBehaviour));
+                GameObject go = new GameObject(entity.Name);
                 GameObject sprites = new GameObject("Sprites");
                 GameObject metadata = new GameObject("Metadata");
+
+                SpriterDotNetBehaviour behaviour = go.AddComponent<SpriterDotNetBehaviour>();
+                behaviour.UseNativeTags = UseNativeTags;
+                if (HasSound(entity)) go.AddComponent<AudioSource>();
 
                 sprites.SetParent(go);
                 metadata.SetParent(go);
@@ -69,8 +65,7 @@ namespace SpriterDotNetUnity
                 CreateSprites(entity, cd, spriter, sprites);
                 CreateCollisionRectangles(entity, cd, spriter, metadata);
                 CreatePoints(entity, cd, spriter, metadata);
-
-                SpriterDotNetBehaviour behaviour = go.GetComponent<SpriterDotNetBehaviour>();
+                
                 behaviour.EntityIndex = entity.Id;
                 behaviour.enabled = true;
                 behaviour.SpriterData = spriterData;
@@ -78,10 +73,10 @@ namespace SpriterDotNetUnity
 
                 CreatePrefab(go, rootFolder);
 
-                EntityImported(go);
+                EntityImported(entity, go);
             }
 
-            CreateTags(spriter);
+            if(UseNativeTags) CreateTags(spriter);
         }
 
         private static SpriterData CreateSpriterData(Spriter spriter, string rootFolder, string name)
@@ -218,28 +213,31 @@ namespace SpriterDotNetUnity
             SerializedObject tagManager = new SerializedObject(AssetDatabase.LoadAllAssetsAtPath("ProjectSettings/TagManager.asset")[0]);
             SerializedProperty tags = tagManager.FindProperty("tags");
 
-            foreach(SpriterElement tag in spriter.Tags)
-            {
-                for (int i = 0; i < tags.arraySize; i++)
-                {
-                    SerializedProperty t = tags.GetArrayElementAtIndex(i);
-                    if (t.stringValue.Equals(tag.Name)) continue;
-                }
-
-                ++tags.arraySize;
-                SerializedProperty newEntry = tags.GetArrayElementAtIndex(tags.arraySize - 1);
-                newEntry.stringValue = tag.Name;
-            }
+            foreach (SpriterElement tag in spriter.Tags) AddTag(tags, tag.Name);
 
             tagManager.ApplyModifiedProperties();
         }
 
-        public static void AddTag(SerializedProperty tags, string value)
+        private static void AddTag(SerializedProperty tags, string value)
         {
-           
+            for (int i = 0; i < tags.arraySize; i++)
+            {
+                SerializedProperty t = tags.GetArrayElementAtIndex(i);
+                if (t.stringValue.Equals(value)) return;
+            }
+
+            ++tags.arraySize;
+            SerializedProperty newEntry = tags.GetArrayElementAtIndex(tags.arraySize - 1);
+            newEntry.stringValue = value;
         }
 
-        public static int GetDrawablesCount(SpriterEntity entity)
+        private static bool HasSound(SpriterEntity entity)
+        {
+            foreach (SpriterAnimation animation in entity.Animations) if (animation.Soundlines != null && animation.Soundlines.Length > 0) return true;
+            return false;
+        }
+
+        private static int GetDrawablesCount(SpriterEntity entity)
         {
             int drawablesCount = 0;
 
@@ -252,7 +250,7 @@ namespace SpriterDotNetUnity
             return drawablesCount;
         }
 
-        public static int GetDrawablesCount(SpriterAnimation animation)
+        private static int GetDrawablesCount(SpriterAnimation animation)
         {
             int drawablesCount = 0;
 
@@ -313,4 +311,5 @@ namespace SpriterDotNetUnity
         }
     }
 }
+
 #endif

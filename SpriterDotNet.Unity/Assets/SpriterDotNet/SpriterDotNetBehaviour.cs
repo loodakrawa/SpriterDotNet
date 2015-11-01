@@ -31,6 +31,9 @@ namespace SpriterDotNetUnity
         [HideInInspector]
         public SpriterData SpriterData;
 
+        [HideInInspector]
+        public bool UseNativeTags;
+
         public UnitySpriterAnimator Animator { get; private set; }
 
         private string defaultTag;
@@ -43,24 +46,31 @@ namespace SpriterDotNetUnity
             Animator = new UnitySpriterAnimator(entity, ChildData, audioSource);
             RegisterSpritesAndSounds();
 
-            defaultTag = gameObject.tag;
+            if (UseNativeTags) defaultTag = gameObject.tag;
 
-            if (!UnityEditor.EditorApplication.isPlayingOrWillChangePlaymode) Animator.Step(0);
+            Animator.Step(0);
         }
 
         public void Update()
         {
+#if UNITY_EDITOR
+            if (!UnityEditor.EditorApplication.isPlayingOrWillChangePlaymode) return;
+#endif
+
             if (Animator == null) return;
             Animator.Step(Time.deltaTime * 1000.0f);
 
-            var tags = Animator.Metadata.AnimationTags;
-            if (tags != null && tags.Count > 0) gameObject.tag = tags[0];
-            else gameObject.tag = defaultTag;
+            if (UseNativeTags)
+            {
+                var tags = Animator.Metadata.AnimationTags;
+                if (tags != null && tags.Count > 0) gameObject.tag = tags[0];
+                else gameObject.tag = defaultTag;
+            }
         }
 
         private void RegisterSpritesAndSounds()
         {
-            foreach(SdnFileEntry entry in SpriterData.FileEntries)
+            foreach (SdnFileEntry entry in SpriterData.FileEntries)
             {
                 if (entry.Sprite != null) Animator.Register(entry.FolderId, entry.FileId, entry.Sprite);
                 else Animator.Register(entry.FolderId, entry.FileId, entry.Sound);
