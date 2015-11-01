@@ -5,6 +5,10 @@ A simple, fast and efficient Spriter implementation in pure C#
 The goal of SpriterDotNet is to be as fast as possible while keeping the code clean and readable. 
 Being a pure C# implementation, SpriterDotNet doesn't depend on any external libraries / frameworks. It focuses on simple and efficient calculations of all transforms at a given point in time. This allows using it with any framework just by mapping calculated transforms to concrete objects.
 
+## Completed Plugins
+* [Unity](https://github.com/loodakrawa/SpriterDotNet/tree/master/SpriterDotNet.Unity)
+* Monogame
+
 ## Supported Features
 * Basic animations
 * Bone animations
