@@ -56,6 +56,7 @@ namespace SpriterDotNet
     [Serializable]
     public class SpriterEntity : SpriterElement
     {
+        [NonSerialized]
         public Spriter Spriter;
 
         [XmlElement("obj_info")]
@@ -96,6 +97,7 @@ namespace SpriterDotNet
     [Serializable]
     public class SpriterAnimation : SpriterElement
     {
+        [NonSerialized]
         public SpriterEntity Entity;
 
         [XmlAttribute("length")]

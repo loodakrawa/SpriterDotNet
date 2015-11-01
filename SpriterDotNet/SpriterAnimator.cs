@@ -164,7 +164,7 @@ namespace SpriterDotNet
                 PlaySound(sound, info);
             }
 
-            foreach (SpriterObject info in frameData.PointData) ApplyPointTransform(info);
+            foreach (var entry in frameData.PointData) ApplyPointTransform(entry.Key, entry.Value);
             foreach (var entry in frameData.BoxData) ApplyBoxTransform(Entity.ObjectInfos[entry.Key], entry.Value);
             foreach (string eventName in metaData.Events) DispatchEvent(eventName);
 
@@ -198,7 +198,7 @@ namespace SpriterDotNet
         {
         }
 
-        protected virtual void ApplyPointTransform(SpriterObject info)
+        protected virtual void ApplyPointTransform(string name, SpriterObject info)
         {
         }
 

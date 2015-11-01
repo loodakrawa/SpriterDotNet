@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spriter_data scml_version="1.0" generator="BrashMonkey Spriter" generator_version="r4.1">
+    <folder id="0" name="images">
+        <file id="0" name="images/big.png" width="512" height="256" pivot_x="0" pivot_y="1"/>
+        <file id="1" name="images/small.png" width="256" height="128" pivot_x="0" pivot_y="1"/>
+    </folder>
+    <folder id="1" name="images_alternate1">
+        <file id="0" name="images_alternate1/big.png" width="512" height="256" pivot_x="0" pivot_y="1"/>
+        <file id="1" name="images_alternate1/small.png" width="256" height="128" pivot_x="0" pivot_y="1"/>
+    </folder>
+    <folder id="2" name="images_alternate2">
+        <file id="0" name="images_alternate2/big.png" width="512" height="256" pivot_x="0" pivot_y="1"/>
+        <file id="1" name="images_alternate2/small.png" width="256" height="128" pivot_x="0" pivot_y="1"/>
+    </folder>
+    <entity id="0" name="squares">
+        <obj_info name="bone_000" type="bone" w="483.009" h="10"/>
+        <obj_info name="bone_001" type="bone" w="271.131" h="10"/>
+        <obj_info name="box_000" type="box" w="51" h="126" pivot_x="0" pivot_y="0"/>
+        <character_map id="0" name="alternate 1">
+            <map folder="0" file="0" target_folder="1" target_file="0"/>
+            <map folder="0" file="1" target_folder="1" target_file="1"/>
+        </character_map>
+        <character_map id="1" name="alternate 2">
+            <map folder="0" file="1" target_folder="2" target_file="1"/>
+            <map folder="0" file="0"/>
+        </character_map>
+        <animation id="0" name="ScaleX" length="1000" interval="100">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" timeline="0" key="0" z_index="0"/>
+                </key>
+                <key id="1" time="500">
+                    <object_ref id="0" timeline="0" key="1" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="green">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" pivot_x="0.5" pivot_y="0.5" angle="0"/>
+                </key>
+                <key id="1" time="500" spin="0">
+                    <object folder="0" file="0" pivot_x="0.5" pivot_y="0.5" angle="0" scale_x="0.2"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="1" name="ScaleY" length="1000" interval="100">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" timeline="0" key="0" z_index="0"/>
+                </key>
+                <key id="1" time="500">
+                    <object_ref id="0" timeline="0" key="1" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="green">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" pivot_x="0.5" pivot_y="0.5" angle="0"/>
+                </key>
+                <key id="1" time="500" spin="0">
+                    <object folder="0" file="0" pivot_x="0.5" pivot_y="0.5" angle="0" scale_y="0.2"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="2" name="Instant" length="1000" interval="100">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="0" z_index="1"/>
+                </key>
+                <key id="1" time="500" curve_type="instant">
+                    <object_ref id="0" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="1" z_index="1"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="green">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" x="-437" y="116" angle="0"/>
+                </key>
+            </timeline>
+            <timeline id="1" name="red">
+                <key id="0" spin="-1">
+                    <object folder="0" file="1" x="75.083824" y="115.948194" pivot_x="0.000894" pivot_y="0.000311" angle="0"/>
+                </key>
+                <key id="1" time="500">
+                    <object folder="0" file="1" x="75.083824" y="115.948194" pivot_x="0.000894" pivot_y="0.000311" angle="270"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="3" name="Linear" length="1000" interval="100">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" timeline="0" key="1" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="0" z_index="1"/>
+                </key>
+                <key id="1" time="500">
+                    <object_ref id="0" timeline="0" key="3" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="1" z_index="1"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="green">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" x="-15.323456" y="-71.766528" angle="0"/>
+                </key>
+                <key id="1" spin="0">
+                    <object folder="0" file="0" x="-437" y="116" angle="0"/>
+                </key>
+                <key id="2" time="500" spin="0">
+                    <object folder="0" file="0" x="-437.000131" y="115.999991" pivot_x="0" pivot_y="1" angle="0"/>
+                </key>
+                <key id="3" time="500" spin="0">
+                    <object folder="0" file="0" x="-15.323587" y="-71.766537" pivot_x="0.823587" pivot_y="0.266537" angle="0"/>
+                </key>
+            </timeline>
+            <timeline id="1" name="red">
+                <key id="0" spin="-1">
+                    <object folder="0" file="1" x="75.083824" y="115.948194" pivot_x="0.000894" pivot_y="0.000311" angle="0"/>
+                </key>
+                <key id="1" time="500">
+                    <object folder="0" file="1" x="75.083824" y="115.948194" pivot_x="0.000894" pivot_y="0.000311" angle="270"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="4" name="Quadratic" length="1000" interval="100">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="0" z_index="1"/>
+                </key>
+                <key id="1" time="500" curve_type="quadratic" c1="0">
+                    <object_ref id="0" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="1" z_index="1"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="green">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" x="-437" y="116" angle="0"/>
+                </key>
+            </timeline>
+            <timeline id="1" name="red">
+                <key id="0" spin="-1">
+                    <object folder="0" file="1" x="75.083824" y="115.948194" pivot_x="0.000894" pivot_y="0.000311" angle="0"/>
+                </key>
+                <key id="1" time="500">
+                    <object folder="0" file="1" x="75.083824" y="115.948194" pivot_x="0.000894" pivot_y="0.000311" angle="270"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="5" name="Cubic" length="1000" interval="100">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="0" z_index="1"/>
+                </key>
+                <key id="1" time="500" curve_type="cubic" c1="0.995261" c2="0.8578">
+                    <object_ref id="0" timeline="0" key="1" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="1" z_index="1"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="green">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" x="-437" y="116" angle="0"/>
+                </key>
+                <key id="1" time="500" spin="0">
+                    <object folder="0" file="0" x="-437" y="116" angle="0"/>
+                </key>
+            </timeline>
+            <timeline id="1" name="red">
+                <key id="0" spin="-1">
+                    <object folder="0" file="1" x="75.083824" y="115.948194" pivot_x="0.000894" pivot_y="0.000311" angle="0"/>
+                </key>
+                <key id="1" time="500">
+                    <object folder="0" file="1" x="75.083824" y="115.948194" pivot_x="0.000894" pivot_y="0.000311" angle="270"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="6" name="Quartic" length="1000" interval="100">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="0" z_index="1"/>
+                </key>
+                <key id="1" time="500" curve_type="quartic" c1="0.938389" c2="0.0569" c3="0.184834">
+                    <object_ref id="0" timeline="0" key="1" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="1" z_index="1"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="green">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" x="-437" y="116" angle="0"/>
+                </key>
+                <key id="1" time="500" spin="0">
+                    <object folder="0" file="0" x="-437" y="116" angle="0"/>
+                </key>
+            </timeline>
+            <timeline id="1" name="red">
+                <key id="0" spin="-1">
+                    <object folder="0" file="1" x="75.083824" y="115.948194" pivot_x="0.000894" pivot_y="0.000311" angle="0"/>
+                </key>
+                <key id="1" time="500">
+                    <object folder="0" file="1" x="75.083824" y="115.948194" pivot_x="0.000894" pivot_y="0.000311" angle="270"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="7" name="Quintic" length="1000" interval="100">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="0" z_index="1"/>
+                </key>
+                <key id="1" time="500" curve_type="quintic" c1="0.173765" c2="0.8673" c3="0.9353" c4="0.113744">
+                    <object_ref id="0" timeline="0" key="1" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="1" z_index="1"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="green">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" x="-437" y="116" angle="0"/>
+                </key>
+                <key id="1" time="500" spin="0">
+                    <object folder="0" file="0" x="-437" y="116" angle="0"/>
+                </key>
+            </timeline>
+            <timeline id="1" name="red">
+                <key id="0" spin="-1">
+                    <object folder="0" file="1" x="75.083824" y="115.948194" pivot_x="0.000894" pivot_y="0.000311" angle="0"/>
+                </key>
+                <key id="1" time="500">
+                    <object folder="0" file="1" x="75.083824" y="115.948194" pivot_x="0.000894" pivot_y="0.000311" angle="270"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="8" name="Bezier" length="1000" interval="100">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="0" z_index="1"/>
+                </key>
+                <key id="1" time="500" curve_type="bezier" c1="0.4003" c2="0.995261" c3="0.8654" c4="0.161137">
+                    <object_ref id="0" timeline="0" key="1" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="1" z_index="1"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="green">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" x="-437" y="116" angle="0"/>
+                </key>
+                <key id="1" time="500" spin="0">
+                    <object folder="0" file="0" x="-437" y="116" angle="0"/>
+                </key>
+            </timeline>
+            <timeline id="1" name="red">
+                <key id="0" spin="-1">
+                    <object folder="0" file="1" x="75.083824" y="115.948194" pivot_x="0.000894" pivot_y="0.000311" angle="0"/>
+                </key>
+                <key id="1" time="500">
+                    <object folder="0" file="1" x="75.083824" y="115.948194" pivot_x="0.000894" pivot_y="0.000311" angle="270"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="9" name="Metadata" length="1000" interval="100">
+            <mainline>
+                <key id="0">
+                    <bone_ref id="0" timeline="2" key="0"/>
+                    <bone_ref id="1" parent="0" timeline="3" key="0"/>
+                    <object_ref id="0" parent="0" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" parent="1" timeline="1" key="0" z_index="1"/>
+                    <object_ref id="2" parent="1" timeline="4" key="1" z_index="2"/>
+                </key>
+                <key id="1" time="500">
+                    <bone_ref id="0" timeline="2" key="0"/>
+                    <bone_ref id="1" parent="0" timeline="3" key="1"/>
+                    <object_ref id="0" parent="0" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" parent="1" timeline="1" key="0" z_index="1"/>
+                    <object_ref id="2" parent="1" timeline="4" key="3" z_index="2"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="green">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" x="-18.701503" y="112.886021" angle="0.35587" scale_x="1"/>
+                </key>
+            </timeline>
+            <timeline id="1" name="red">
+                <key id="0" spin="0">
+                    <object folder="0" file="1" x="-3.995431" y="0.692285" pivot_x="0.000894" pivot_y="0.000311" angle="335.136303" scale_x="1"/>
+                </key>
+            </timeline>
+            <timeline id="2" obj="0" name="bone_000" object_type="bone">
+                <key id="0" spin="0">
+                    <bone x="-419" y="3" angle="359.64413" scale_x="1"/>
+                </key>
+            </timeline>
+            <timeline id="3" obj="1" name="bone_001" object_type="bone">
+                <key id="0" spin="-1">
+                    <bone x="494.282391" y="117.072276" angle="25.219566"/>
+                </key>
+                <key id="1" time="500">
+                    <bone x="494.282391" y="117.072276" angle="295.260639"/>
+                </key>
+            </timeline>
+            <timeline id="4" obj="2" name="box_000" object_type="box">
+                <key id="0" spin="-1">
+                    <object x="237.382578" y="-33.893722" pivot_x="0.561387" pivot_y="0.548079" angle="335.136303"/>
+                </key>
+                <key id="1" spin="-1">
+                    <object x="235.34752" y="29.808473" pivot_x="0" pivot_y="1" angle="335.136303"/>
+                </key>
+                <key id="2" time="500" spin="-1">
+                    <object x="277.193473" y="8.255138" pivot_x="0" pivot_y="1" angle="284.384638" scale_x="1"/>
+                </key>
+                <key id="3" time="500">
+                    <object x="229.149337" y="-33.624118" pivot_x="0.561387" pivot_y="0.548079" angle="284.384638" scale_x="1"/>
+                </key>
+            </timeline>
+        </animation>
+    </entity>
+</spriter_data>
