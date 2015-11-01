@@ -19,7 +19,7 @@ If you add new files, please add the following header in the beginning of the fi
 // Copyright (c) {YEAR} The original author or authors
 //
 // This software may be modified and distributed under the terms
-// of the MIT license.  See the LICENSE file for details.
+// of the zlib license.  See the LICENSE file for details.
 ```
 
 ## Git flow
