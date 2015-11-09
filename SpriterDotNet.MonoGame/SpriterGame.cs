@@ -132,7 +132,6 @@ namespace SpriterDotNet.MonoGame
             string entity = currentAnimator.Entity.Name;
             status = String.Format("{0} : {1}", entity, currentAnimator.Name);
             metadata = "Variables:\n" + GetVarValues() + "\nTags:\n" + GetTagValues();
-
             base.Update(gameTime);
         }
 

@@ -23,11 +23,7 @@ namespace SpriterDotNet
             SpriterMainlineKey secondKeyB;
             GetMainlineKeys(second.MainlineKeys, targetTimeSecond, out secondKeyA, out secondKeyB);
 
-            if (firstKeyA.BoneRefs.Length != secondKeyA.BoneRefs.Length
-                || firstKeyB.BoneRefs.Length != secondKeyB.BoneRefs.Length
-                || firstKeyA.ObjectRefs.Length != secondKeyA.ObjectRefs.Length
-                || firstKeyB.ObjectRefs.Length != secondKeyB.ObjectRefs.Length)
-                return GetFrameData(first, targetTime);
+            if (!WillItBlend(firstKeyA, secondKeyA) || !WillItBlend(firstKeyB, secondKeyB)) return GetFrameData(first, targetTime);
 
             float adjustedTimeFirst = AdjustTime(firstKeyA, firstKeyB, first.Length, targetTime);
             float adjustedTimeSecond = AdjustTime(secondKeyA, secondKeyB, second.Length, targetTimeSecond);
@@ -70,6 +66,25 @@ namespace SpriterDotNet
             }
 
             return frameData;
+        }
+
+        private static bool WillItBlend(SpriterMainlineKey firstKey, SpriterMainlineKey secondKey)
+        {
+            if (firstKey.BoneRefs != null)
+            {
+                if (secondKey.BoneRefs == null) return false;
+                if (firstKey.BoneRefs.Length != secondKey.BoneRefs.Length) return false;
+            }
+            else if (secondKey.BoneRefs != null) return false;
+
+            if (firstKey.ObjectRefs != null)
+            {
+                if (secondKey.ObjectRefs == null) return false;
+                if (firstKey.ObjectRefs.Length != secondKey.ObjectRefs.Length) return false;
+            }
+            else if (secondKey.ObjectRefs != null) return false;
+
+            return true;
         }
 
         public static FrameData GetFrameData(SpriterAnimation animation, float targetTime, SpriterSpatial parentInfo = null)
