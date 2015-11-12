@@ -26,12 +26,12 @@ If you add new files, please add the following header in the beginning of the fi
 
 In general, this is the recommended way of doing things:
 
-1. Develop new stuff in a feature branch (e.g. feature/name-of-feature)
+1. Develop new stuff in a feature branch branched from develop (e.g. feature/name-of-feature)
 2. After dev is done, squash commits into one (or a few meaningful ones)
-3. Sync your master with upstream
-4. Merge master into feature branch and fix all conflicts
-5. Create pull request from your feature branch to upstream master
-6. Sync your master with upstream when your pull request gets merged
+3. Sync with the upstream repo
+4. Merge develop into feature branch and fix all conflicts
+5. Create pull request from your feature branch to upstream develop
+6. Sync your repo with the upstream one after your pull request gets merged
 
 ##### Pull requests
 Describe what the pull request does as best as you can.
