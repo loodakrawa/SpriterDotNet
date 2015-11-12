@@ -1,3 +1,6 @@
+### 1.0.2
+* Fix changing pivots when blending animations
+
 ### 1.0.1
 * Add XML Documentation to SpriterAnimator
 * Fix blend compatibility test
