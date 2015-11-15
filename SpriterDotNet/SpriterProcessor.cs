@@ -101,6 +101,8 @@ namespace SpriterDotNet
 
             FrameData frameData = new FrameData();
 
+            if (keyA.ObjectRefs == null) return frameData;
+
             foreach (SpriterObjectRef objectRef in keyA.ObjectRefs)
             {
                 SpriterObject interpolated = GetObjectInfo(objectRef, animation, adjustedTime);
@@ -297,6 +299,7 @@ namespace SpriterDotNet
         private static void GetMainlineKeys(SpriterMainlineKey[] keys, float targetTime, out SpriterMainlineKey keyA, out SpriterMainlineKey keyB)
         {
             keyA = LastKeyForTime(keys, targetTime);
+            keyA = keyA ?? keys[keys.Length - 1];
             int nextKey = keyA.Id + 1;
             if (nextKey >= keys.Length) nextKey = 0;
             keyB = keys[nextKey];

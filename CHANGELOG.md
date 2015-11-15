@@ -1,3 +1,7 @@
+### 1.0.3
+* Fix bug when no keyframe in t = 0
+* Fix bug when keyframe has no object_refs
+
 ### 1.0.2
 * Fix changing pivots when blending animations
 
