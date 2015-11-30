@@ -11,25 +11,71 @@ namespace SpriterDotNet
 {
     public abstract class SpriterAnimator<TSprite, TSound>
     {
+        /// <summary>
+        /// Occurs when the animation finishes playing or loops.
+        /// </summary>
         public event Action<string> AnimationFinished = s => { };
+        
+        /// <summary>
+        /// Occurs when an animation events gets triggered.
+        /// </summary>
         public event Action<string> EventTriggered = s => { };
 
-        public Spriter Spriter { get; private set; }
+        /// <summary>
+        /// The animated Entity.
+        /// </summary>
         public SpriterEntity Entity { get; private set; }
+        
+        /// <summary>
+        /// The current animation.
+        /// </summary>
         public SpriterAnimation CurrentAnimation { get; private set; }
+        
+        /// <summary>
+        /// The animation transitioned to or blended with the current animation.
+        /// </summary>
         public SpriterAnimation NextAnimation { get; private set; }
+        
+        /// <summary>
+        /// The current character map. If set to null, the default is used.
+        /// </summary>
         public SpriterCharacterMap CharacterMap { get; set; }
 
+        /// <summary>
+        /// The name of the current animation.
+        /// </summary>
         public string Name { get; private set; }
+        
+        /// <summary>
+        /// Playback speed. Defaults to 1.0f. Negative values reverse the animation.<para />
+        /// For example:<para />
+        /// 0.5f corresponds to 50% of the default speed<para />
+        /// 2.0f corresponds to 200% of the default speed<para />
+        /// </summary>
         public float Speed { get; set; }
-        public float Length { get; set; }
+
+        /// <summary>
+        /// The legth of the current animation in milliseconds.
+        /// </summary>
+        public float Length { get; private set; }
+        
+        /// <summary>
+        /// The current time in milliseconds.
+        /// </summary>
         public float Time { get; set; }
+        
+        /// <summary>
+        /// The current progress. Ranges from 0.0f - 1.0f.
+        /// </summary>
         public float Progress
         {
             get { return Time / Length; }
             set { Time = value * Length; }
         }
 
+        /// <summary>
+        /// Contains all the frame metadata. Updated on every call to Step.
+        /// </summary>
         public FrameMetadata Metadata { get; private set; }
 
         private readonly IDictionary<string, SpriterAnimation> animations;
@@ -39,37 +85,53 @@ namespace SpriterDotNet
         private float transitionTime;
         private float factor;
 
-        public SpriterAnimator(SpriterEntity entity)
+        /// <summary>
+        /// Sole constructor. Creates a new instance which animates the given entity.
+        /// </summary>
+        protected SpriterAnimator(SpriterEntity entity)
         {
             Entity = entity;
-            Spriter = entity.Spriter;
             animations = entity.Animations.ToDictionary(a => a.Name, a => a);
             Speed = 1.0f;
-            Play(animations.Keys.First());
             Metadata = new FrameMetadata();
         }
 
+        /// <summary>
+        /// Returns a list of all the animations for the entity
+        /// </summary>
         public IEnumerable<string> GetAnimations()
         {
             return animations.Keys;
         }
 
+        /// <summary>
+        /// Register the sprite for the given folderId and fileId.
+        /// </summary>
         public void Register(int folderId, int fileId, TSprite obj)
         {
             AddToDict(folderId, fileId, obj, sprites);
         }
 
+        /// <summary>
+        /// Register the sound for the given folderId and fileId.
+        /// </summary>
         public void Register(int folderId, int fileId, TSound obj)
         {
             AddToDict(folderId, fileId, obj, sounds);
         }
 
+        /// <summary>
+        /// Plays the animation with the given name. Playback starts from the beginning.
+        /// </summary>
         public virtual void Play(string name)
         {
             SpriterAnimation animation = animations[name];
             Play(animation);
         }
 
+        /// <summary>
+        /// Plays the given animation. Playback starts from the beginning.
+        /// </summary>
         public virtual void Play(SpriterAnimation animation)
         {
             Progress = 0;
@@ -81,13 +143,26 @@ namespace SpriterDotNet
             Length = CurrentAnimation.Length;
         }
 
+        /// <summary>
+        /// Transitions to given animation doing a progressive blend in the given time.
+        /// <remarks>Animation blending works only for animations with identical hierarchies.</remarks>
+        /// </summary>
         public virtual void Transition(string name, float totalTransitionTime)
         {
             this.totalTransitionTime = totalTransitionTime;
-            transitionTime = 0;
+            transitionTime = 0.0f;
+            factor = 0.0f;
             NextAnimation = animations[name];
         }
 
+        /// <summary>
+        /// Blends two animations with the given weight factor. Factor ranges from 0.0f - 1.0f.<para />
+        /// Animation blending works only for animations with identical hierarchies.<para />
+        /// For example:<para />
+        /// factor == 0.0f corresponds to 100% of the first animation and 0% of the second<para />
+        /// factor == 0.25f corresponds to 75% of the first animation and 25% of the second<para />
+        /// factor == 0.5f corresponds to 50% of each animation<para />
+        /// </summary>
         public virtual void Blend(string first, string second, float factor)
         {
             Play(first);
@@ -96,8 +171,13 @@ namespace SpriterDotNet
             this.factor = factor;
         }
 
+        /// <summary>
+        /// Advances the animation for the deltaTime increment.
+        /// </summary>
         public virtual void Step(float deltaTime)
         {
+            if(CurrentAnimation == null) Play(animations.Keys.First());
+
             float elapsed = deltaTime * Speed;
 
             if (NextAnimation != null && totalTransitionTime != 0.0f)
@@ -133,6 +213,9 @@ namespace SpriterDotNet
             Animate(elapsed);
         }
 
+        /// <summary>
+        /// Gets the transform information for all object types and calls the relevant apply method for each one.
+        /// </summary>
         protected virtual void Animate(float deltaTime)
         {
             FrameData frameData;
@@ -159,7 +242,6 @@ namespace SpriterDotNet
 
             foreach (SpriterSound info in metaData.Sounds)
             {
-                
                 TSound sound = GetFromDict(info.FolderId, info.FileId, sounds);
                 PlaySound(sound, info);
             }
@@ -171,7 +253,10 @@ namespace SpriterDotNet
             Metadata = metaData;
         }
 
-        protected bool GetSpriteIds(SpriterObject obj, out int folderId, out int fileId)
+        /// <summary>
+        /// Gets the folderId and fileId for the given SpriterObject based on the current character map or default
+        /// </summary>
+        protected virtual bool GetSpriteIds(SpriterObject obj, out int folderId, out int fileId)
         {
             folderId = obj.FolderId;
             fileId = obj.FileId;
@@ -190,22 +275,37 @@ namespace SpriterDotNet
             return false;
         }
 
+        /// <summary>
+        /// Applies the transform to the concrete sprite isntance.
+        /// </summary>
         protected virtual void ApplySpriteTransform(TSprite sprite, SpriterObject info)
         {
         }
 
+        /// <summary>
+        /// Plays the concrete sound isntance.
+        /// </summary>
         protected virtual void PlaySound(TSound sound, SpriterSound info)
         {
         }
 
+        /// <summary>
+        /// Applies the transforms for the point with the given name.
+        /// </summary>
         protected virtual void ApplyPointTransform(string name, SpriterObject info)
         {
         }
 
+        /// <summary>
+        /// Applies the transform for the given box.
+        /// </summary>
         protected virtual void ApplyBoxTransform(SpriterObjectInfo objInfo, SpriterObject info)
         {
         }
 
+        /// <summary>
+        /// Dispatches event when triggered in animation.
+        /// </summary>
         protected virtual void DispatchEvent(string eventName)
         {
             EventTriggered(eventName);

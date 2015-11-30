@@ -22,8 +22,8 @@ namespace SpriterDotNetUnity
 
         public static float DeltaZ = -0.001f;
         public static bool UseNativeTags = true;
-        
-        public static event Action<SpriterEntity, GameObject> EntityImported = (e,g) => { };
+
+        public static event Action<SpriterEntity, GameObject> EntityImported = (e, p) => { };
 
         private static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromPath)
         {
@@ -65,18 +65,18 @@ namespace SpriterDotNetUnity
                 CreateSprites(entity, cd, spriter, sprites);
                 CreateCollisionRectangles(entity, cd, spriter, metadata);
                 CreatePoints(entity, cd, spriter, metadata);
-                
+
                 behaviour.EntityIndex = entity.Id;
                 behaviour.enabled = true;
                 behaviour.SpriterData = spriterData;
                 behaviour.ChildData = cd;
 
-                CreatePrefab(go, rootFolder);
+                GameObject prefab = CreatePrefab(go, rootFolder);
 
-                EntityImported(entity, go);
+                EntityImported(entity, prefab);
             }
 
-            if(UseNativeTags) CreateTags(spriter);
+            if (UseNativeTags) CreateTags(spriter);
         }
 
         private static SpriterData CreateSpriterData(Spriter spriter, string rootFolder, string name)
@@ -91,15 +91,18 @@ namespace SpriterDotNetUnity
             return data;
         }
 
-        private static void CreatePrefab(GameObject go, string folder)
+        private static GameObject CreatePrefab(GameObject go, string folder)
         {
             string prefabPath = folder + "/" + go.name + ".prefab";
             GameObject existing = AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);
 
-            if (existing != null) PrefabUtility.ReplacePrefab(go, existing, ReplacePrefabOptions.Default);
-            else PrefabUtility.CreatePrefab(prefabPath, go, ReplacePrefabOptions.Default);
+            GameObject prefab;
+            if (existing != null) prefab = PrefabUtility.ReplacePrefab(go, existing, ReplacePrefabOptions.Default);
+            else prefab = PrefabUtility.CreatePrefab(prefabPath, go, ReplacePrefabOptions.Default);
 
             GameObject.DestroyImmediate(go);
+
+            return prefab;
         }
 
         private static void CreateSprites(SpriterEntity entity, ChildData cd, Spriter spriter, GameObject parent)

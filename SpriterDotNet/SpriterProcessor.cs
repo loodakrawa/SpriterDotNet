@@ -23,11 +23,7 @@ namespace SpriterDotNet
             SpriterMainlineKey secondKeyB;
             GetMainlineKeys(second.MainlineKeys, targetTimeSecond, out secondKeyA, out secondKeyB);
 
-            if (firstKeyA.BoneRefs.Length != secondKeyA.BoneRefs.Length
-                || firstKeyB.BoneRefs.Length != secondKeyB.BoneRefs.Length
-                || firstKeyA.ObjectRefs.Length != secondKeyA.ObjectRefs.Length
-                || firstKeyB.ObjectRefs.Length != secondKeyB.ObjectRefs.Length)
-                return GetFrameData(first, targetTime);
+            if (!WillItBlend(firstKeyA, secondKeyA) || !WillItBlend(firstKeyB, secondKeyB)) return GetFrameData(first, targetTime);
 
             float adjustedTimeFirst = AdjustTime(firstKeyA, firstKeyB, first.Length, targetTime);
             float adjustedTimeSecond = AdjustTime(secondKeyA, secondKeyB, second.Length, targetTimeSecond);
@@ -63,6 +59,8 @@ namespace SpriterDotNet
 
                 SpriterObject info = Interpolate(interpolatedFirst, interpolatedSecond, factor, 1);
                 info.Angle = MathHelper.CloserAngleLinear(interpolatedFirst.Angle, interpolatedSecond.Angle, factor);
+                info.PivotX = MathHelper.Linear(interpolatedFirst.PivotX, interpolatedSecond.PivotX, factor);
+                info.PivotY = MathHelper.Linear(interpolatedFirst.PivotY, interpolatedSecond.PivotY, factor);
 
                 if (boneInfos != null && objectRefFirst.ParentId >= 0) ApplyParentTransform(info, boneInfos[objectRefFirst.ParentId]);
 
@@ -70,6 +68,25 @@ namespace SpriterDotNet
             }
 
             return frameData;
+        }
+
+        private static bool WillItBlend(SpriterMainlineKey firstKey, SpriterMainlineKey secondKey)
+        {
+            if (firstKey.BoneRefs != null)
+            {
+                if (secondKey.BoneRefs == null) return false;
+                if (firstKey.BoneRefs.Length != secondKey.BoneRefs.Length) return false;
+            }
+            else if (secondKey.BoneRefs != null) return false;
+
+            if (firstKey.ObjectRefs != null)
+            {
+                if (secondKey.ObjectRefs == null) return false;
+                if (firstKey.ObjectRefs.Length != secondKey.ObjectRefs.Length) return false;
+            }
+            else if (secondKey.ObjectRefs != null) return false;
+
+            return true;
         }
 
         public static FrameData GetFrameData(SpriterAnimation animation, float targetTime, SpriterSpatial parentInfo = null)
@@ -83,6 +100,8 @@ namespace SpriterDotNet
             SpriterSpatial[] boneInfos = GetBoneInfos(keyA, animation, targetTime, parentInfo);
 
             FrameData frameData = new FrameData();
+
+            if (keyA.ObjectRefs == null) return frameData;
 
             foreach (SpriterObjectRef objectRef in keyA.ObjectRefs)
             {
@@ -280,6 +299,7 @@ namespace SpriterDotNet
         private static void GetMainlineKeys(SpriterMainlineKey[] keys, float targetTime, out SpriterMainlineKey keyA, out SpriterMainlineKey keyB)
         {
             keyA = LastKeyForTime(keys, targetTime);
+            keyA = keyA ?? keys[keys.Length - 1];
             int nextKey = keyA.Id + 1;
             if (nextKey >= keys.Length) nextKey = 0;
             keyB = keys[nextKey];

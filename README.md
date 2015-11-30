@@ -32,6 +32,19 @@ Being a pure C# implementation, SpriterDotNet doesn't depend on any external lib
 6. Call Step in every frame
 7. Control the animation with properties
 
+### SpriterAnimator
+This class contains the majority of Properties and Methods necessary to control the animation.
+
+###### Properties
+* Speed - Playback speed. Negative speeds reverse the animation
+* Time - The current time in animation in milliseconds
+* Progress - The progress of animation. Ranges from 0.0f to 1.0f
+
+######  Methods
+* Play(string name) - Plays the given animation
+* Transition(string name, float totalTransitionTime) - Transitions to given animation doing a progressive blend in the given time
+* Blend - Blends two animations with the given weight factor
+
 #### Points
 * Override SpriterAnimator.ApplyPointTransform
 
