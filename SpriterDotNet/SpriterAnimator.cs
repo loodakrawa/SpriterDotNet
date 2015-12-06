@@ -84,6 +84,7 @@ namespace SpriterDotNet
         private float totalTransitionTime;
         private float transitionTime;
         private float factor;
+        private readonly FrameData FrameData = new FrameData();
 
         /// <summary>
         /// Sole constructor. Creates a new instance which animates the given entity.
@@ -218,20 +219,21 @@ namespace SpriterDotNet
         /// </summary>
         protected virtual void Animate(float deltaTime)
         {
-            FrameData frameData;
-            FrameMetadata metaData;
+            FrameData.Clear();
+            Metadata.Clear();
+
             if (NextAnimation == null)
             {
-                frameData = SpriterProcessor.GetFrameData(CurrentAnimation, Time);
-                metaData = SpriterProcessor.GetFrameMetadata(CurrentAnimation, Time, deltaTime);
+                SpriterProcessor.UpdateFrameData(FrameData, CurrentAnimation, Time);
+                SpriterProcessor.UpdateFrameMetadata(Metadata, CurrentAnimation, Time, deltaTime);
             }
             else
             {
-                frameData = SpriterProcessor.GetFrameData(CurrentAnimation, NextAnimation, Time, factor);
-                metaData = SpriterProcessor.GetFrameMetadata(CurrentAnimation, NextAnimation, Time, deltaTime, factor);
+                SpriterProcessor.UpdateFrameData(FrameData, CurrentAnimation, NextAnimation, Time, factor);
+                SpriterProcessor.GetFrameMetadata(Metadata, CurrentAnimation, NextAnimation, Time, deltaTime, factor);
             }
 
-            foreach (SpriterObject info in frameData.SpriteData)
+            foreach (SpriterObject info in FrameData.SpriteData)
             {
                 int folderId;
                 int fileId;
@@ -240,17 +242,15 @@ namespace SpriterDotNet
                 ApplySpriteTransform(obj, info);
             }
 
-            foreach (SpriterSound info in metaData.Sounds)
+            foreach (SpriterSound info in Metadata.Sounds)
             {
                 TSound sound = GetFromDict(info.FolderId, info.FileId, sounds);
                 PlaySound(sound, info);
             }
 
-            foreach (var entry in frameData.PointData) ApplyPointTransform(entry.Key, entry.Value);
-            foreach (var entry in frameData.BoxData) ApplyBoxTransform(Entity.ObjectInfos[entry.Key], entry.Value);
-            foreach (string eventName in metaData.Events) DispatchEvent(eventName);
-
-            Metadata = metaData;
+            foreach (var entry in FrameData.PointData) ApplyPointTransform(entry.Key, entry.Value);
+            foreach (var entry in FrameData.BoxData) ApplyBoxTransform(Entity.ObjectInfos[entry.Key], entry.Value);
+            foreach (string eventName in Metadata.Events) DispatchEvent(eventName);
         }
 
         /// <summary>

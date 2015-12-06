@@ -9,9 +9,13 @@ namespace SpriterDotNet
 {
     public static class SpriterProcessor
     {
-        public static FrameData GetFrameData(SpriterAnimation first, SpriterAnimation second, float targetTime, float factor)
+        public static void UpdateFrameData(FrameData frameData, SpriterAnimation first, SpriterAnimation second, float targetTime, float factor)
         {
-            if (first == second) return GetFrameData(first, targetTime);
+            if (first == second)
+            {
+                UpdateFrameData(frameData, first, targetTime);
+                return;
+            }
 
             float targetTimeSecond = targetTime / first.Length * second.Length;
 
@@ -23,7 +27,11 @@ namespace SpriterDotNet
             SpriterMainlineKey secondKeyB;
             GetMainlineKeys(second.MainlineKeys, targetTimeSecond, out secondKeyA, out secondKeyB);
 
-            if (!WillItBlend(firstKeyA, secondKeyA) || !WillItBlend(firstKeyB, secondKeyB)) return GetFrameData(first, targetTime);
+            if (!WillItBlend(firstKeyA, secondKeyA) || !WillItBlend(firstKeyB, secondKeyB))
+            {
+                UpdateFrameData(frameData, first, targetTime);
+                return;
+            }
 
             float adjustedTimeFirst = AdjustTime(firstKeyA, firstKeyB, first.Length, targetTime);
             float adjustedTimeSecond = AdjustTime(secondKeyA, secondKeyB, second.Length, targetTimeSecond);
@@ -33,7 +41,7 @@ namespace SpriterDotNet
             SpriterSpatial[] boneInfos = null;
             if (boneInfosA != null && boneInfosB != null)
             {
-                boneInfos = new SpriterSpatial[boneInfosA.Length];
+                boneInfos = ObjectPool.GetArray<SpriterSpatial>(boneInfosA.Length);
                 for (int i = 0; i < boneInfosA.Length; ++i)
                 {
                     SpriterSpatial boneA = boneInfosA[i];
@@ -46,8 +54,6 @@ namespace SpriterDotNet
 
             SpriterMainlineKey baseKey = factor < 0.5f ? firstKeyA : firstKeyB;
             SpriterAnimation currentAnimation = factor < 0.5f ? first : second;
-
-            FrameData frameData = new FrameData();
 
             for (int i = 0; i < baseKey.ObjectRefs.Length; ++i)
             {
@@ -65,9 +71,14 @@ namespace SpriterDotNet
                 if (boneInfos != null && objectRefFirst.ParentId >= 0) ApplyParentTransform(info, boneInfos[objectRefFirst.ParentId]);
 
                 AddSpatialData(info, currentAnimation.Timelines[objectRefFirst.TimelineId], currentAnimation.Entity.Spriter, targetTime, frameData);
+
+                ObjectPool.ReturnObject(interpolatedFirst);
+                ObjectPool.ReturnObject(interpolatedSecond);
             }
 
-            return frameData;
+            ObjectPool.ReturnObject(boneInfosA);
+            ObjectPool.ReturnObject(boneInfosB);
+            ObjectPool.ReturnObject(boneInfos);
         }
 
         private static bool WillItBlend(SpriterMainlineKey firstKey, SpriterMainlineKey secondKey)
@@ -89,7 +100,7 @@ namespace SpriterDotNet
             return true;
         }
 
-        public static FrameData GetFrameData(SpriterAnimation animation, float targetTime, SpriterSpatial parentInfo = null)
+        public static void UpdateFrameData(FrameData frameData, SpriterAnimation animation, float targetTime, SpriterSpatial parentInfo = null)
         {
             SpriterMainlineKey keyA;
             SpriterMainlineKey keyB;
@@ -99,9 +110,7 @@ namespace SpriterDotNet
 
             SpriterSpatial[] boneInfos = GetBoneInfos(keyA, animation, targetTime, parentInfo);
 
-            FrameData frameData = new FrameData();
-
-            if (keyA.ObjectRefs == null) return frameData;
+            if (keyA.ObjectRefs == null) return;
 
             foreach (SpriterObjectRef objectRef in keyA.ObjectRefs)
             {
@@ -111,22 +120,20 @@ namespace SpriterDotNet
                 AddSpatialData(interpolated, animation.Timelines[objectRef.TimelineId], animation.Entity.Spriter, targetTime, frameData);
             }
 
-            return frameData;
+            ObjectPool.ReturnObject(boneInfos);
         }
 
-        public static FrameMetadata GetFrameMetadata(SpriterAnimation first, SpriterAnimation second, float targetTime, float deltaTime, float factor)
+        public static void GetFrameMetadata(FrameMetadata metadata, SpriterAnimation first, SpriterAnimation second, float targetTime, float deltaTime, float factor)
         {
             SpriterAnimation currentAnimation = factor < 0.5f ? first : second;
-            return GetFrameMetadata(currentAnimation, targetTime, deltaTime);
+            UpdateFrameMetadata(metadata, currentAnimation, targetTime, deltaTime);
         }
 
-        public static FrameMetadata GetFrameMetadata(SpriterAnimation animation, float targetTime, float deltaTime, SpriterSpatial parentInfo = null)
+        public static void UpdateFrameMetadata(FrameMetadata metadata, SpriterAnimation animation, float targetTime, float deltaTime, SpriterSpatial parentInfo = null)
         {
-            FrameMetadata metadata = new FrameMetadata();
             AddVariableAndTagData(animation, targetTime, metadata);
             AddEventData(animation, targetTime, deltaTime, metadata);
             AddSoundData(animation, targetTime, deltaTime, metadata);
-            return metadata;
         }
 
         private static void AddVariableAndTagData(SpriterAnimation animation, float targetTime, FrameMetadata metadata)
@@ -260,7 +267,7 @@ namespace SpriterDotNet
                 case SpriterObjectType.Entity:
                     SpriterAnimation newAnim = spriter.Entities[info.EntityId].Animations[info.AnimationId];
                     float newTargetTime = info.T * newAnim.Length;
-                    frameData.SpriteData.AddRange(GetFrameData(newAnim, newTargetTime, info).SpriteData);
+                    UpdateFrameData(frameData, newAnim, newTargetTime, info);
                     break;
                 case SpriterObjectType.Point:
                     frameData.PointData[timeline.Name] = info;
@@ -274,7 +281,7 @@ namespace SpriterDotNet
         private static SpriterSpatial[] GetBoneInfos(SpriterMainlineKey key, SpriterAnimation animation, float targetTime, SpriterSpatial parentInfo = null)
         {
             if (key.BoneRefs == null) return null;
-            SpriterSpatial[] ret = new SpriterSpatial[key.BoneRefs.Length];
+            SpriterSpatial[] ret = ObjectPool.GetArray<SpriterSpatial>(key.BoneRefs.Length);
 
             for (int i = 0; i < key.BoneRefs.Length; ++i)
             {
@@ -402,45 +409,48 @@ namespace SpriterDotNet
 
         private static SpriterSpatial Interpolate(SpriterSpatial a, SpriterSpatial b, float f, int spin)
         {
-            return new SpriterSpatial
-            {
-                Angle = MathHelper.AngleLinear(a.Angle, b.Angle, spin, f),
-                X = MathHelper.Linear(a.X, b.X, f),
-                Y = MathHelper.Linear(a.Y, b.Y, f),
-                ScaleX = MathHelper.Linear(a.ScaleX, b.ScaleX, f),
-                ScaleY = MathHelper.Linear(a.ScaleY, b.ScaleY, f)
-            };
+            SpriterSpatial ss = ObjectPool.GetObject<SpriterSpatial>();
+
+            ss.Angle = MathHelper.AngleLinear(a.Angle, b.Angle, spin, f);
+            ss.X = MathHelper.Linear(a.X, b.X, f);
+            ss.Y = MathHelper.Linear(a.Y, b.Y, f);
+            ss.ScaleX = MathHelper.Linear(a.ScaleX, b.ScaleX, f);
+            ss.ScaleY = MathHelper.Linear(a.ScaleY, b.ScaleY, f);
+
+            return ss;
         }
 
         private static SpriterObject Interpolate(SpriterObject a, SpriterObject b, float f, int spin)
         {
-            return new SpriterObject
-            {
-                Angle = MathHelper.AngleLinear(a.Angle, b.Angle, spin, f),
-                Alpha = MathHelper.Linear(a.Alpha, b.Alpha, f),
-                X = MathHelper.Linear(a.X, b.X, f),
-                Y = MathHelper.Linear(a.Y, b.Y, f),
-                ScaleX = MathHelper.Linear(a.ScaleX, b.ScaleX, f),
-                ScaleY = MathHelper.Linear(a.ScaleY, b.ScaleY, f),
-                PivotX = a.PivotX,
-                PivotY = a.PivotY,
-                FileId = a.FileId,
-                FolderId = a.FolderId,
-                EntityId = a.EntityId,
-                AnimationId = a.AnimationId,
-                T = MathHelper.Linear(a.T, b.T, f)
-            };
+            SpriterObject so = ObjectPool.GetObject<SpriterObject>();
+
+            so.Angle = MathHelper.AngleLinear(a.Angle, b.Angle, spin, f);
+            so.Alpha = MathHelper.Linear(a.Alpha, b.Alpha, f);
+            so.X = MathHelper.Linear(a.X, b.X, f);
+            so.Y = MathHelper.Linear(a.Y, b.Y, f);
+            so.ScaleX = MathHelper.Linear(a.ScaleX, b.ScaleX, f);
+            so.ScaleY = MathHelper.Linear(a.ScaleY, b.ScaleY, f);
+            so.PivotX = a.PivotX;
+            so.PivotY = a.PivotY;
+            so.FileId = a.FileId;
+            so.FolderId = a.FolderId;
+            so.EntityId = a.EntityId;
+            so.AnimationId = a.AnimationId;
+            so.T = MathHelper.Linear(a.T, b.T, f);
+
+            return so;
         }
 
         private static SpriterVarValue Interpolate(SpriterVarValue valA, SpriterVarValue valB, float factor)
         {
-            return new SpriterVarValue
-            {
-                Type = valA.Type,
-                StringValue = valA.StringValue,
-                FloatValue = MathHelper.Linear(valA.FloatValue, valB.FloatValue, factor),
-                IntValue = (int)MathHelper.Linear(valA.IntValue, valB.IntValue, factor)
-            };
+            SpriterVarValue ret = new SpriterVarValue();
+
+            ret.Type = valA.Type;
+            ret.StringValue = valA.StringValue;
+            ret.FloatValue = MathHelper.Linear(valA.FloatValue, valB.FloatValue, factor);
+            ret.IntValue = (int)MathHelper.Linear(valA.IntValue, valB.IntValue, factor);
+
+            return ret;
         }
 
         private static void ApplyParentTransform(SpriterSpatial child, SpriterSpatial parent)
@@ -461,26 +471,25 @@ namespace SpriterDotNet
 
         private static SpriterSpatial Copy(SpriterSpatial info)
         {
-            SpriterSpatial copy = new SpriterSpatial();
+            SpriterSpatial copy = ObjectPool.GetObject<SpriterSpatial>();
             FillFrom(copy, info);
             return copy;
         }
 
         private static SpriterObject Copy(SpriterObject info)
         {
-            SpriterObject copy = new SpriterObject
-            {
-                AnimationId = info.AnimationId,
-                EntityId = info.EntityId,
-                FileId = info.FileId,
-                FolderId = info.FolderId,
-                PivotX = info.PivotX,
-                PivotY = info.PivotY,
-                T = info.T
-            };
+            SpriterObject so = ObjectPool.GetObject<SpriterObject>();
 
-            FillFrom(copy, info);
-            return copy;
+            so.AnimationId = info.AnimationId;
+            so.EntityId = info.EntityId;
+            so.FileId = info.FileId;
+            so.FolderId = info.FolderId;
+            so.PivotX = info.PivotX;
+            so.PivotY = info.PivotY;
+            so.T = info.T;
+
+            FillFrom(so, info);
+            return so;
         }
 
         private static void FillFrom(SpriterSpatial target, SpriterSpatial source)

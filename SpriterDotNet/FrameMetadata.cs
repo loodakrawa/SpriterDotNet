@@ -47,5 +47,16 @@ namespace SpriterDotNet
             }
             tags.Add(tag);
         }
+
+        public void Clear()
+        {
+            ObjectPool.ReturnChildren(ObjectVars);
+            ObjectPool.ReturnChildren(ObjectTags);
+            ObjectPool.ReturnChildren(Sounds);
+
+            AnimationVars.Clear();
+            AnimationTags.Clear();
+            Events.Clear();
+        }
     }
 }

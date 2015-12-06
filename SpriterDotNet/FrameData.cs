@@ -19,5 +19,12 @@ namespace SpriterDotNet
             PointData = new Dictionary<string, SpriterObject>();
             BoxData = new Dictionary<int, SpriterObject>();
         }
+
+        public void Clear()
+        {
+            ObjectPool.ReturnChildren(SpriteData);
+            ObjectPool.ReturnChildren(PointData);
+            ObjectPool.ReturnChildren(BoxData);
+        }
     }
 }
