@@ -219,16 +219,16 @@ namespace SpriterDotNet
         protected virtual void Animate(float deltaTime)
         {
             FrameData frameData;
-            FrameMetadata metaData;
+            FrameMetadata metaData = null;
             if (NextAnimation == null)
             {
                 frameData = SpriterProcessor.GetFrameData(CurrentAnimation, Time);
-                metaData = SpriterProcessor.GetFrameMetadata(CurrentAnimation, Time, deltaTime);
+                if(SpriterConfig.MetadataEnabled) metaData = SpriterProcessor.GetFrameMetadata(CurrentAnimation, Time, deltaTime);
             }
             else
             {
                 frameData = SpriterProcessor.GetFrameData(CurrentAnimation, NextAnimation, Time, factor);
-                metaData = SpriterProcessor.GetFrameMetadata(CurrentAnimation, NextAnimation, Time, deltaTime, factor);
+                if (SpriterConfig.MetadataEnabled) metaData = SpriterProcessor.GetFrameMetadata(CurrentAnimation, NextAnimation, Time, deltaTime, factor);
             }
 
             foreach (SpriterObject info in frameData.SpriteData)
@@ -240,17 +240,20 @@ namespace SpriterDotNet
                 ApplySpriteTransform(obj, info);
             }
 
-            foreach (SpriterSound info in metaData.Sounds)
+            if (SpriterConfig.MetadataEnabled)
             {
-                TSound sound = GetFromDict(info.FolderId, info.FileId, sounds);
-                PlaySound(sound, info);
+                foreach (SpriterSound info in metaData.Sounds)
+                {
+                    TSound sound = GetFromDict(info.FolderId, info.FileId, sounds);
+                    PlaySound(sound, info);
+                }
+
+                foreach (var entry in frameData.PointData) ApplyPointTransform(entry.Key, entry.Value);
+                foreach (var entry in frameData.BoxData) ApplyBoxTransform(Entity.ObjectInfos[entry.Key], entry.Value);
+                foreach (string eventName in metaData.Events) DispatchEvent(eventName);
+
+                Metadata = metaData;
             }
-
-            foreach (var entry in frameData.PointData) ApplyPointTransform(entry.Key, entry.Value);
-            foreach (var entry in frameData.BoxData) ApplyBoxTransform(Entity.ObjectInfos[entry.Key], entry.Value);
-            foreach (string eventName in metaData.Events) DispatchEvent(eventName);
-
-            Metadata = metaData;
         }
 
         /// <summary>

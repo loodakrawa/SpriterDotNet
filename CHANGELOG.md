@@ -1,3 +1,9 @@
+##### 1.1.0
+* Add flags to control Metadata calculations
+* Unity importer retains transform values on prefab replace
+* Fix bug when Animation has no Timelines
+* Fix bug when Entity has no ObjectInfos
+
 ##### 1.0.4
 * Fix SpriterImporter to pass prefab instead of destroyed tmp object
 
