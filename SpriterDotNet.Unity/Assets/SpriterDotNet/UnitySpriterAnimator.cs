@@ -13,6 +13,7 @@ namespace SpriterDotNetUnity
         private const float DefaultPPU = 100.0f;
         private const float DefaultPivot = 0.5f;
 
+        private Dictionary<string, Sprite> swappedSprites = new Dictionary<string, Sprite>();
         private ChildData childData;
         private SpriteRenderer[] renderers;
         private AudioSource audioSource;
@@ -70,7 +71,7 @@ namespace SpriterDotNetUnity
 
             float ppu = sprite.pixelsPerUnit;
 
-            renderer.sprite = sprite;
+            renderer.sprite = GetSprite(sprite);
             Vector3 size = sprite.bounds.size;
             float spritePivotX = sprite.pivot.x / ppu / size.x;
             float spritePivotY = sprite.pivot.y / ppu / size.y;
@@ -134,6 +135,21 @@ namespace SpriterDotNetUnity
 
             audioSource.panStereo = info.Panning;
             audioSource.PlayOneShot(sound, info.Volume);
+        }
+
+        public void UnswapSprite(string name) {
+            if (swappedSprites.ContainsKey(name)) { swappedSprites.Remove(name); }
+        }
+        
+        public void SwapSprite(string name, Sprite sprite) {
+                swappedSprites[name] = sprite;
+        }
+
+        Sprite GetSprite(Sprite sprite) {
+            if (swappedSprites.ContainsKey(sprite.name)) {
+                return swappedSprites[sprite.name];
+            }
+            return sprite;
         }
     }
 }
