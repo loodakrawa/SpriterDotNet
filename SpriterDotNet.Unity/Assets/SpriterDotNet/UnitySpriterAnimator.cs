@@ -10,6 +10,13 @@ namespace SpriterDotNetUnity
 {
     public class UnitySpriterAnimator : SpriterAnimator<Sprite, AudioClip>
     {
+        //Add dictionary signatures to assist Unity in AOT Compilation (Required on Consoles)
+        public Dictionary<int, IDictionary<int, Sprite>> aot_Sprites = new Dictionary<int, IDictionary<int, Sprite>>();
+        public Dictionary<int, Sprite> aot_SpritesInner = new Dictionary<int, Sprite>();
+        public Dictionary<int, IDictionary<int, AudioClip>> aot_Audio = new Dictionary<int, IDictionary<int, AudioClip>>();
+        public Dictionary<int, AudioClip> aot_AudioInner = new Dictionary<int, AudioClip>();
+
+
         private const float DefaultPPU = 100.0f;
         private const float DefaultPivot = 0.5f;
 
