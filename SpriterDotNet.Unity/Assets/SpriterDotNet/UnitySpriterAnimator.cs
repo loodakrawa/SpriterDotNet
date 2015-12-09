@@ -4,6 +4,7 @@
 // of the zlib license.  See the LICENSE file for details.
 
 using SpriterDotNet;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace SpriterDotNetUnity
@@ -135,5 +136,13 @@ namespace SpriterDotNetUnity
             audioSource.panStereo = info.Panning;
             audioSource.PlayOneShot(sound, info.Volume);
         }
+
+        /// <summary>
+        /// In order to compile on console with AOT-Only, we must provide public definitions for some of the generic classes used internally.
+        /// </summary>
+        public Dictionary<int, Sprite> aot_SpritesByInt = new Dictionary<int, Sprite>();
+        public Dictionary<int, IDictionary<int, Sprite>> aot_SpriteByIntNested = new Dictionary<int, IDictionary<int, Sprite>>();
+        public Dictionary<int, AudioClip> aot_AudioByInt = new Dictionary<int, AudioClip>();
+        public Dictionary<int, IDictionary<int, AudioClip>> aot_AudioByIntNested = new Dictionary<int, IDictionary<int, AudioClip>>();
     }
 }
