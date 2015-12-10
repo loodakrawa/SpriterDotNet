@@ -63,6 +63,11 @@ namespace SpriterDotNet
         /// The current time in milliseconds.
         /// </summary>
         public float Time { get; set; }
+
+        /// <summary>
+        /// Allow external class to check if an animation exists for a given name.
+        /// </summary>
+        public bool HasAnimation(string name) { return animations.ContainsKey(name); }
         
         /// <summary>
         /// The current progress. Ranges from 0.0f - 1.0f.
