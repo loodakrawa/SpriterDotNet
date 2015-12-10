@@ -46,6 +46,7 @@
     <Compile Include="Spriter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SpriterAnimator.cs" />
+    <Compile Include="SpriterConfig.cs" />
     <Compile Include="SpriterParser.cs" />
     <Compile Include="SpriterProcessor.cs" />
   </ItemGroup>

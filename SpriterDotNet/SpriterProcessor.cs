@@ -123,9 +123,9 @@ namespace SpriterDotNet
         public static FrameMetadata GetFrameMetadata(SpriterAnimation animation, float targetTime, float deltaTime, SpriterSpatial parentInfo = null)
         {
             FrameMetadata metadata = new FrameMetadata();
-            AddVariableAndTagData(animation, targetTime, metadata);
-            AddEventData(animation, targetTime, deltaTime, metadata);
-            AddSoundData(animation, targetTime, deltaTime, metadata);
+            if (SpriterConfig.VarsEnabled || SpriterConfig.TagsEnabled) AddVariableAndTagData(animation, targetTime, metadata);
+            if (SpriterConfig.EventsEnabled) AddEventData(animation, targetTime, deltaTime, metadata);
+            if (SpriterConfig.SoundsEnabled) AddSoundData(animation, targetTime, deltaTime, metadata);
             return metadata;
         }
 
@@ -133,7 +133,7 @@ namespace SpriterDotNet
         {
             if (animation.Meta == null) return;
 
-            if (animation.Meta.Varlines != null && animation.Meta.Varlines.Length > 0)
+            if (SpriterConfig.VarsEnabled && animation.Meta.Varlines != null && animation.Meta.Varlines.Length > 0)
             {
                 foreach (SpriterVarline varline in animation.Meta.Varlines)
                 {
@@ -144,7 +144,7 @@ namespace SpriterDotNet
 
             SpriterElement[] tags = animation.Entity.Spriter.Tags;
             SpriterTagline tagline = animation.Meta.Tagline;
-            if (tagline != null && tagline.Keys != null && tagline.Keys.Length > 0)
+            if (SpriterConfig.TagsEnabled && tagline != null && tagline.Keys != null && tagline.Keys.Length > 0)
             {
                 SpriterTaglineKey key = LastKeyForTime<SpriterTaglineKey>(tagline.Keys, targetTime);
                 if (key != null && key.Tags != null) foreach (SpriterTag tag in key.Tags) metadata.AnimationTags.Add(tags[tag.TagId].Name);
@@ -157,7 +157,7 @@ namespace SpriterDotNet
 
                 SpriterObjectInfo objInfo = GetObjectInfo(animation, timeline.Name);
 
-                if (meta.Varlines != null && meta.Varlines.Length > 0)
+                if (SpriterConfig.VarsEnabled && meta.Varlines != null && meta.Varlines.Length > 0)
                 {
                     foreach (SpriterVarline varline in timeline.Meta.Varlines)
                     {
@@ -166,7 +166,7 @@ namespace SpriterDotNet
                     }
                 }
 
-                if (meta.Tagline != null && meta.Tagline.Keys != null && meta.Tagline.Keys.Length > 0)
+                if (SpriterConfig.TagsEnabled && meta.Tagline != null && meta.Tagline.Keys != null && meta.Tagline.Keys.Length > 0)
                 {
                     SpriterTaglineKey key = LastKeyForTime<SpriterTaglineKey>(tagline.Keys, targetTime);
                     if (key != null && key.Tags != null) foreach (SpriterTag tag in key.Tags) metadata.AddObjectTag(objInfo.Name, tags[tag.TagId].Name);
