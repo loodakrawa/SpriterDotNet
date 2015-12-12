@@ -9,29 +9,29 @@ namespace SpriterDotNet
 {
     public class FrameMetadata
     {
-        public IDictionary<string, SpriterVarValue> AnimationVars { get; private set; }
-        public IDictionary<string, IDictionary<string, SpriterVarValue>> ObjectVars { get; private set; }
-        public IList<string> AnimationTags { get; private set; }
-        public IDictionary<string, IList<string>> ObjectTags { get; private set; }
-        public IList<string> Events { get; private set; }
-        public IList<SpriterSound> Sounds { get; private set; }
+        public Dictionary<string, SpriterVarValue> AnimationVars { get; private set; }
+        public Dictionary<string, Dictionary<string, SpriterVarValue>> ObjectVars { get; private set; }
+        public List<string> AnimationTags { get; private set; }
+        public Dictionary<string, List<string>> ObjectTags { get; private set; }
+        public List<string> Events { get; private set; }
+        public List<SpriterSound> Sounds { get; private set; }
 
         public FrameMetadata()
         {
             AnimationVars = new Dictionary<string, SpriterVarValue>();
-            ObjectVars = new Dictionary<string, IDictionary<string, SpriterVarValue>>();
+            ObjectVars = new Dictionary<string, Dictionary<string, SpriterVarValue>>();
             AnimationTags = new List<string>();
-            ObjectTags = new Dictionary<string, IList<string>>();
+            ObjectTags = new Dictionary<string, List<string>>();
             Events = new List<string>();
             Sounds = new List<SpriterSound>();
         }
 
         public void AddObjectVar(string objectName, string varName, SpriterVarValue value)
         {
-            IDictionary<string, SpriterVarValue> values;
+            Dictionary<string, SpriterVarValue> values;
             if (!ObjectVars.TryGetValue(objectName, out values))
             {
-                values = new Dictionary<string, SpriterVarValue>();
+                values = SpriterObjectPool.GetObject<Dictionary<string, SpriterVarValue>>();
                 ObjectVars[objectName] = values;
             }
             values[varName] = value;
@@ -39,10 +39,10 @@ namespace SpriterDotNet
 
         public void AddObjectTag(string objectName, string tag)
         {
-            IList<string> tags;
+            List<string> tags;
             if(!ObjectTags.TryGetValue(objectName, out tags))
             {
-                tags = new List<string>();
+                tags = SpriterObjectPool.GetObject<List<string>>();
                 ObjectTags[objectName] = tags;
             }
             tags.Add(tag);
@@ -50,8 +50,19 @@ namespace SpriterDotNet
 
         public void Clear()
         {
+            var varE = ObjectVars.GetEnumerator();
+            while (varE.MoveNext()) SpriterObjectPool.ReturnStructDict(varE.Current.Value);
             ObjectVars.Clear();
+
+            var tagE = ObjectTags.GetEnumerator();
+            while (tagE.MoveNext())
+            {
+                var list = tagE.Current.Value;
+                list.Clear();
+                SpriterObjectPool.ReturnObject(list);
+            }
             ObjectTags.Clear();
+
             Sounds.Clear();
             AnimationVars.Clear();
             AnimationTags.Clear();

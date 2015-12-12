@@ -5,9 +5,9 @@ namespace SpriterDotNet
 {
     public static class SpriterObjectPool
     {
-        private static readonly IDictionary<Type, Stack<object>> Pools = new Dictionary<Type, Stack<object>>();
-        private static readonly IDictionary<Type, Stack<object>> ArrayPools = new Dictionary<Type, Stack<object>>();
-        private static readonly IDictionary<Type, int> ArraySizes = new Dictionary<Type, int>();
+        private static readonly Dictionary<Type, Stack<object>> Pools = new Dictionary<Type, Stack<object>>();
+        private static readonly Dictionary<Type, Stack<object>> ArrayPools = new Dictionary<Type, Stack<object>>();
+        private static readonly Dictionary<Type, int> ArraySizes = new Dictionary<Type, int>();
 
         public static T[] GetArray<T>(int capacity)
         {
@@ -70,6 +70,17 @@ namespace SpriterDotNet
             }
         }
 
+        public static void ReturnStructDict<K, T>(Dictionary<K, T> obj) where T : struct
+        {
+            if (!SpriterConfig.PoolingEnabled || obj == null) return;
+            obj.Clear();
+
+            Type type = obj.GetType();
+
+            var pool = GetPool(type, Pools);
+            pool.Push(obj);
+        }
+
         public static void ReturnChildren<T>(List<T> list) where T : class
         {
             if (SpriterConfig.PoolingEnabled)
@@ -79,7 +90,7 @@ namespace SpriterDotNet
             list.Clear();
         }
 
-        public static void ReturnChildren<K, T>(IDictionary<K, T> dict) where T : class
+        public static void ReturnChildren<K, T>(Dictionary<K, T> dict) where T : class
         {
             if (SpriterConfig.PoolingEnabled)
             {
@@ -93,12 +104,12 @@ namespace SpriterDotNet
             dict.Clear();
         }
 
-        private static Stack<object> GetPool<T>(IDictionary<Type, Stack<object>> pools)
+        private static Stack<object> GetPool<T>(Dictionary<Type, Stack<object>> pools)
         {
             return GetPool(typeof(T), pools);
         }
 
-        private static Stack<object> GetPool(Type type, IDictionary<Type, Stack<object>> pools)
+        private static Stack<object> GetPool(Type type, Dictionary<Type, Stack<object>> pools)
         {
             Stack<object> pool;
 
