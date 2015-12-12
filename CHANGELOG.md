@@ -1,6 +1,10 @@
+##### 1.1.1
+* Unity importer retains components during prefab replace
+* Add sprite swapping capabilities
+
 ##### 1.1.0
 * Add flags to control Metadata calculations
-* Unity importer retains transform values on prefab replace
+* Unity importer retains transform values during prefab replace
 * Fix bug when Animation has no Timelines
 * Fix bug when Entity has no ObjectInfos
 

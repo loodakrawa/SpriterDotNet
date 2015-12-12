@@ -19,6 +19,8 @@ namespace SpriterDotNetUnity
     {
         private static readonly string AutosaveExtension = ".autosave.scml";
         private static readonly string[] ScmlExtensions = new string[] { ".scml" };
+        private static readonly string ObjectNameSprites = "Sprites";
+        private static readonly string ObjectNameMetadata = "Metadata";
 
         public static float DeltaZ = -0.001f;
         public static bool UseNativeTags = true;
@@ -51,8 +53,8 @@ namespace SpriterDotNetUnity
             foreach (SpriterEntity entity in spriter.Entities)
             {
                 GameObject go = new GameObject(entity.Name);
-                GameObject sprites = new GameObject("Sprites");
-                GameObject metadata = new GameObject("Metadata");
+                GameObject sprites = new GameObject(ObjectNameSprites);
+                GameObject metadata = new GameObject(ObjectNameMetadata);
 
                 SpriterDotNetBehaviour behaviour = go.AddComponent<SpriterDotNetBehaviour>();
                 behaviour.UseNativeTags = UseNativeTags;
@@ -107,14 +109,32 @@ namespace SpriterDotNetUnity
 
         private static GameObject ReplacePrefab(GameObject go, GameObject prefab, string path)
         {
-            Transform pt = prefab.transform;
-            Transform t = go.transform;
+            GameObject existing = GameObject.Instantiate(prefab);
+            MoveChild(go, existing, ObjectNameSprites);
+            MoveChild(go, existing, ObjectNameMetadata);
 
-            t.localScale = pt.localScale;
-            t.localPosition = pt.localPosition;
-            t.localRotation = pt.localRotation;
+            SpriterDotNetBehaviour sdnbNew = go.GetComponent<SpriterDotNetBehaviour>();
+            SpriterDotNetBehaviour sdnbExisting = existing.GetComponent<SpriterDotNetBehaviour>();
+            sdnbExisting.ChildData = sdnbNew.ChildData;
+            sdnbExisting.EntityIndex = sdnbNew.EntityIndex;
+            sdnbExisting.SpriterData = sdnbNew.SpriterData;
+            sdnbExisting.UseNativeTags = sdnbNew.UseNativeTags;
 
-            return PrefabUtility.ReplacePrefab(go, prefab, ReplacePrefabOptions.Default);
+            GameObject createdPrefab = PrefabUtility.ReplacePrefab(existing, prefab, ReplacePrefabOptions.Default);
+            GameObject.DestroyImmediate(existing);
+            return createdPrefab;
+        }
+
+        private static void MoveChild(GameObject from, GameObject to, string name)
+        {
+            Transform toChild = to.transform.Find(name);
+            GameObject.DestroyImmediate(toChild.gameObject);
+
+            Transform fromChild = from.transform.Find(name);
+            fromChild.SetParent(to.transform);
+            fromChild.localPosition = Vector3.zero;
+            fromChild.localRotation = Quaternion.identity;
+            fromChild.localScale = Vector3.one;
         }
 
         private static void CreateSprites(SpriterEntity entity, ChildData cd, Spriter spriter, GameObject parent)
