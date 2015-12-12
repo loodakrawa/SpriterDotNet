@@ -6,11 +6,20 @@ namespace SpriterDotNet
         /// <summary>
         /// Disables ALL metadata calculations.
         /// </summary>
-        public static bool MetadataEnabled { get; set; } = true;
+        public static bool MetadataEnabled { get; set; }
 
-        public static bool VarsEnabled { get; set; } = true;
-        public static bool TagsEnabled { get; set; } = true;
-        public static bool EventsEnabled { get; set; } = true;
-        public static bool SoundsEnabled { get; set; } = true;
+        public static bool VarsEnabled { get; set; }
+        public static bool TagsEnabled { get; set; } 
+        public static bool EventsEnabled { get; set; } 
+        public static bool SoundsEnabled { get; set; }
+
+        static SpriterConfig() 
+        {
+            MetadataEnabled = true;
+            VarsEnabled = true;
+            TagsEnabled = true;
+            EventsEnabled = true;
+            SoundsEnabled = true;
+        }
     }
 }
