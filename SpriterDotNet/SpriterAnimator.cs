@@ -239,8 +239,9 @@ namespace SpriterDotNet
                 if (SpriterConfig.MetadataEnabled) SpriterProcessor.GetFrameMetadata(Metadata, CurrentAnimation, NextAnimation, Time, deltaTime, factor);
             }
 
-            foreach (SpriterObject info in FrameData.SpriteData)
+            for (int i = 0; i < FrameData.SpriteData.Count; ++i)
             {
+                SpriterObject info = FrameData.SpriteData[i];
                 int folderId;
                 int fileId;
                 if (!GetSpriteIds(info, out folderId, out fileId)) continue;
@@ -251,14 +252,31 @@ namespace SpriterDotNet
 
             if (SpriterConfig.MetadataEnabled)
             {
-                foreach (SpriterSound info in Metadata.Sounds)
+                for (int i = 0; i < Metadata.Sounds.Count; ++i)
                 {
+                    SpriterSound info = Metadata.Sounds[i];
                     TSound sound = GetFromDict(info.FolderId, info.FileId, sounds);
                     PlaySound(sound, info);
                 }
-                foreach (var entry in FrameData.PointData) ApplyPointTransform(entry.Key, entry.Value);
-                foreach (var entry in FrameData.BoxData) ApplyBoxTransform(Entity.ObjectInfos[entry.Key], entry.Value);
-                foreach (string eventName in Metadata.Events) DispatchEvent(eventName);
+
+                var pointE = FrameData.PointData.GetEnumerator();
+                while (pointE.MoveNext())
+                {
+                    var e = pointE.Current;
+                    ApplyPointTransform(e.Key, e.Value);
+                }
+
+                var boxE = FrameData.BoxData.GetEnumerator();
+                while (boxE.MoveNext())
+                {
+                    var e = boxE.Current;
+                    ApplyBoxTransform(Entity.ObjectInfos[e.Key], e.Value);
+                }
+
+                for (int i = 0; i < Metadata.Events.Count; ++i)
+                {
+                    DispatchEvent(Metadata.Events[i]);
+                }
             }
         }
 
@@ -272,8 +290,9 @@ namespace SpriterDotNet
 
             if (CharacterMap == null) return true;
 
-            foreach (SpriterMapInstruction map in CharacterMap.Maps)
+            for (int i=0; i<CharacterMap.Maps.Length; ++i)
             {
+                SpriterMapInstruction map = CharacterMap.Maps[i];
                 if (map.FolderId != folderId || map.FileId != fileId) continue;
                 if (map.TargetFolderId < 0 || map.TargetFileId < 0) return false;
                 folderId = map.TargetFolderId;

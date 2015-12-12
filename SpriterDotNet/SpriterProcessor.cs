@@ -112,8 +112,9 @@ namespace SpriterDotNet
 
             if (keyA.ObjectRefs == null) return;
 
-            foreach (SpriterObjectRef objectRef in keyA.ObjectRefs)
+            for (int i = 0; i < keyA.ObjectRefs.Length; ++i)
             {
+                SpriterObjectRef objectRef = keyA.ObjectRefs[i];
                 SpriterObject interpolated = GetObjectInfo(objectRef, animation, adjustedTime);
                 if (boneInfos != null && objectRef.ParentId >= 0) ApplyParentTransform(interpolated, boneInfos[objectRef.ParentId]);
 
@@ -142,8 +143,9 @@ namespace SpriterDotNet
 
             if (SpriterConfig.VarsEnabled && animation.Meta.Varlines != null && animation.Meta.Varlines.Length > 0)
             {
-                foreach (SpriterVarline varline in animation.Meta.Varlines)
+                for (int i = 0; i < animation.Meta.Varlines.Length; ++i)
                 {
+                    SpriterVarline varline = animation.Meta.Varlines[i];
                     SpriterVarDef variable = animation.Entity.Variables[varline.Def];
                     metadata.AnimationVars[variable.Name] = GetVariableValue(animation, variable, varline, targetTime);
                 }
@@ -154,11 +156,19 @@ namespace SpriterDotNet
             if (SpriterConfig.TagsEnabled && tagline != null && tagline.Keys != null && tagline.Keys.Length > 0)
             {
                 SpriterTaglineKey key = LastKeyForTime<SpriterTaglineKey>(tagline.Keys, targetTime);
-                if (key != null && key.Tags != null) foreach (SpriterTag tag in key.Tags) metadata.AnimationTags.Add(tags[tag.TagId].Name);
+                if (key != null && key.Tags != null)
+                {
+                    for (int i = 0; i < key.Tags.Length; ++i)
+                    {
+                        SpriterTag tag = key.Tags[i];
+                        metadata.AnimationTags.Add(tags[tag.TagId].Name);
+                    }
+                }
             }
 
-            foreach (SpriterTimeline timeline in animation.Timelines)
+            for (int i = 0; i < animation.Timelines.Length; ++i)
             {
+                SpriterTimeline timeline = animation.Timelines[i];
                 SpriterMeta meta = timeline.Meta;
                 if (meta == null) continue;
 
@@ -166,8 +176,9 @@ namespace SpriterDotNet
 
                 if (SpriterConfig.VarsEnabled && meta.Varlines != null && meta.Varlines.Length > 0)
                 {
-                    foreach (SpriterVarline varline in timeline.Meta.Varlines)
+                    for (int j = 0; j < timeline.Meta.Varlines.Length; ++j)
                     {
+                        SpriterVarline varline = timeline.Meta.Varlines[j];
                         SpriterVarDef variable = objInfo.Variables[varline.Def];
                         metadata.AddObjectVar(objInfo.Name, variable.Name, GetVariableValue(animation, variable, varline, targetTime));
                     }
@@ -176,7 +187,14 @@ namespace SpriterDotNet
                 if (SpriterConfig.TagsEnabled && meta.Tagline != null && meta.Tagline.Keys != null && meta.Tagline.Keys.Length > 0)
                 {
                     SpriterTaglineKey key = LastKeyForTime<SpriterTaglineKey>(tagline.Keys, targetTime);
-                    if (key != null && key.Tags != null) foreach (SpriterTag tag in key.Tags) metadata.AddObjectTag(objInfo.Name, tags[tag.TagId].Name);
+                    if (key != null && key.Tags != null)
+                    {
+                        for (int j = 0; j < key.Tags.Length; ++j)
+                        {
+                            SpriterTag tag = key.Tags[j];
+                            metadata.AddObjectTag(objInfo.Name, tags[tag.TagId].Name);
+                        }
+                    }
                 }
             }
         }
@@ -184,8 +202,9 @@ namespace SpriterDotNet
         private static SpriterObjectInfo GetObjectInfo(SpriterAnimation animation, string name)
         {
             SpriterObjectInfo objInfo = null;
-            foreach (SpriterObjectInfo info in animation.Entity.ObjectInfos)
+            for (int i = 0; i < animation.Entity.ObjectInfos.Length; ++i)
             {
+                SpriterObjectInfo info = animation.Entity.ObjectInfos[i];
                 if (info.Name == name)
                 {
                     objInfo = info;
@@ -220,10 +239,12 @@ namespace SpriterDotNet
             if (animation.Eventlines == null) return;
 
             float previousTime = targetTime - deltaTime;
-            foreach (SpriterEventline eventline in animation.Eventlines)
+            for (int i = 0; i < animation.Eventlines.Length; ++i)
             {
-                foreach (SpriterKey key in eventline.Keys)
+                SpriterEventline eventline = animation.Eventlines[i];
+                for (int j = 0; j < eventline.Keys.Length; ++j)
                 {
+                    SpriterKey key = eventline.Keys[j];
                     if (IsTriggered(key, targetTime, previousTime, animation.Length)) metadata.Events.Add(eventline.Name);
                 }
             }
@@ -234,10 +255,12 @@ namespace SpriterDotNet
             if (animation.Soundlines == null) return;
 
             float previousTime = targetTime - deltaTime;
-            foreach (SpriterSoundline soundline in animation.Soundlines)
+            for (int i = 0; i < animation.Soundlines.Length; ++i)
             {
-                foreach (SpriterSoundlineKey key in soundline.Keys)
+                SpriterSoundline soundline = animation.Soundlines[i];
+                for (int j = 0; j < soundline.Keys.Length; ++j)
                 {
+                    SpriterSoundlineKey key = soundline.Keys[j];
                     SpriterSound sound = key.SoundObject;
                     if (sound.Trigger && IsTriggered(key, targetTime, previousTime, animation.Length)) metadata.Sounds.Add(sound);
                 }
@@ -315,8 +338,9 @@ namespace SpriterDotNet
         private static T LastKeyForTime<T>(T[] keys, float targetTime) where T : SpriterKey
         {
             T current = null;
-            foreach (T key in keys)
+            for (int i = 0; i < keys.Length; ++i)
             {
+                T key = keys[i];
                 if (key.Time > targetTime) break;
                 current = key;
             }

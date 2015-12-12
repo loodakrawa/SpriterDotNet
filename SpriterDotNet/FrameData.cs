@@ -10,8 +10,8 @@ namespace SpriterDotNet
     public class FrameData
     {
         public List<SpriterObject> SpriteData { get; private set; }
-        public IDictionary<string, SpriterObject> PointData { get; private set; }
-        public IDictionary<int, SpriterObject> BoxData { get; private set; }
+        public Dictionary<string, SpriterObject> PointData { get; private set; }
+        public Dictionary<int, SpriterObject> BoxData { get; private set; }
 
         public FrameData()
         {

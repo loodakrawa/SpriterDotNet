@@ -70,15 +70,26 @@ namespace SpriterDotNet
             }
         }
 
-        public static void ReturnChildren<T>(ICollection<T> collection) where T : class
+        public static void ReturnChildren<T>(List<T> list) where T : class
         {
-            if(SpriterConfig.PoolingEnabled) foreach (T t in collection) ReturnObject<T>(t);
-            collection.Clear();
+            if (SpriterConfig.PoolingEnabled)
+            {
+                for (int i=0; i<list.Count; ++i) ReturnObject<T>(list[i]);
+            }
+            list.Clear();
         }
 
         public static void ReturnChildren<K, T>(IDictionary<K, T> dict) where T : class
         {
-            if (SpriterConfig.PoolingEnabled) foreach (var entry in dict) ReturnObject<T>(entry.Value);
+            if (SpriterConfig.PoolingEnabled)
+            {
+                var enumerator = dict.GetEnumerator();
+                while(enumerator.MoveNext())
+                {
+                    var e = enumerator.Current;
+                    ReturnObject<T>(e.Value);
+                }
+            }
             dict.Clear();
         }
 
