@@ -83,6 +83,11 @@ namespace SpriterDotNet
         /// </summary>
         public FrameMetadata Metadata { get; private set; }
 
+        /// <summary>
+        /// Contains all the sprites that have been manually swapped.
+        /// </summary>
+        protected IDictionary<string, TSprite> swappedSprites = new Dictionary<string, TSprite>();
+
         private readonly IDictionary<string, SpriterAnimation> animations;
         private readonly IDictionary<int, IDictionary<int, TSprite>> sprites = new Dictionary<int, IDictionary<int, TSprite>>();
         private readonly IDictionary<int, IDictionary<int, TSound>> sounds = new Dictionary<int, IDictionary<int, TSound>>();
@@ -281,6 +286,31 @@ namespace SpriterDotNet
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// Remove a manually swapped sprite by name
+        /// </summary>
+        public void UnswapSprite(string name) 
+        {
+            if (swappedSprites.ContainsKey(name)) swappedSprites.Remove(name);
+        }
+
+        /// <summary>
+        /// Swap one sprite for another, pass the name of the spriter piece you'd like to target, and a Sprite instance to replace it with.
+        /// </summary>
+        public void SwapSprite(string name, TSprite sprite) 
+        {
+            swappedSprites[name] = sprite;
+        }
+
+        /// <summary>
+        /// Internal function to lookup swapped sprites.
+        /// </summary>
+        protected TSprite GetSwappedSprite(string name) 
+        {
+            if (swappedSprites.ContainsKey(name)) return swappedSprites[name];
+            return default(TSprite);
         }
 
         /// <summary>
