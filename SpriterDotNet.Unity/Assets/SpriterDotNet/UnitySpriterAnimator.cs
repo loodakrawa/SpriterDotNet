@@ -71,8 +71,7 @@ namespace SpriterDotNetUnity
 
             float ppu = sprite.pixelsPerUnit;
 
-            var swappedSprite = GetSwappedSprite(sprite.name);
-            renderer.sprite = swappedSprite ?? sprite;
+            renderer.sprite = sprite;
             Vector3 size = sprite.bounds.size;
             float spritePivotX = sprite.pivot.x / ppu / size.x;
             float spritePivotY = sprite.pivot.y / ppu / size.y;
