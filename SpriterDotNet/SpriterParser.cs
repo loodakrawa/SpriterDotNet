@@ -55,6 +55,8 @@ namespace SpriterDotNet
 
         private static void InitInfos(SpriterAnimation animation)
         {
+            if (animation.Timelines == null) animation.Timelines = new SpriterTimeline[0];
+
             var infos = from t in animation.Timelines
                         from k in t.Keys
                         let o = k.ObjectInfo

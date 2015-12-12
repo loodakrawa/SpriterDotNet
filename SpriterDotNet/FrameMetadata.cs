@@ -50,10 +50,9 @@ namespace SpriterDotNet
 
         public void Clear()
         {
-            ObjectPool.ReturnChildren(ObjectVars);
-            ObjectPool.ReturnChildren(ObjectTags);
-            ObjectPool.ReturnChildren(Sounds);
-
+            ObjectVars.Clear();
+            ObjectTags.Clear();
+            Sounds.Clear();
             AnimationVars.Clear();
             AnimationTags.Clear();
             Events.Clear();

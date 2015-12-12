@@ -41,7 +41,7 @@ namespace SpriterDotNet
             SpriterSpatial[] boneInfos = null;
             if (boneInfosA != null && boneInfosB != null)
             {
-                boneInfos = ObjectPool.GetArray<SpriterSpatial>(boneInfosA.Length);
+                boneInfos = SpriterObjectPool.GetArray<SpriterSpatial>(boneInfosA.Length);
                 for (int i = 0; i < boneInfosA.Length; ++i)
                 {
                     SpriterSpatial boneA = boneInfosA[i];
@@ -72,13 +72,13 @@ namespace SpriterDotNet
 
                 AddSpatialData(info, currentAnimation.Timelines[objectRefFirst.TimelineId], currentAnimation.Entity.Spriter, targetTime, frameData);
 
-                ObjectPool.ReturnObject(interpolatedFirst);
-                ObjectPool.ReturnObject(interpolatedSecond);
+                SpriterObjectPool.ReturnObject(interpolatedFirst);
+                SpriterObjectPool.ReturnObject(interpolatedSecond);
             }
 
-            ObjectPool.ReturnObject(boneInfosA);
-            ObjectPool.ReturnObject(boneInfosB);
-            ObjectPool.ReturnObject(boneInfos);
+            SpriterObjectPool.ReturnObject(boneInfosA);
+            SpriterObjectPool.ReturnObject(boneInfosB);
+            SpriterObjectPool.ReturnObject(boneInfos);
         }
 
         private static bool WillItBlend(SpriterMainlineKey firstKey, SpriterMainlineKey secondKey)
@@ -120,7 +120,7 @@ namespace SpriterDotNet
                 AddSpatialData(interpolated, animation.Timelines[objectRef.TimelineId], animation.Entity.Spriter, targetTime, frameData);
             }
 
-            ObjectPool.ReturnObject(boneInfos);
+            SpriterObjectPool.ReturnObject(boneInfos);
         }
 
         public static void GetFrameMetadata(FrameMetadata metadata, SpriterAnimation first, SpriterAnimation second, float targetTime, float deltaTime, float factor)
@@ -131,16 +131,16 @@ namespace SpriterDotNet
 
         public static void UpdateFrameMetadata(FrameMetadata metadata, SpriterAnimation animation, float targetTime, float deltaTime, SpriterSpatial parentInfo = null)
         {
-            AddVariableAndTagData(animation, targetTime, metadata);
-            AddEventData(animation, targetTime, deltaTime, metadata);
-            AddSoundData(animation, targetTime, deltaTime, metadata);
+            if (SpriterConfig.VarsEnabled || SpriterConfig.TagsEnabled) AddVariableAndTagData(animation, targetTime, metadata);
+            if (SpriterConfig.EventsEnabled) AddEventData(animation, targetTime, deltaTime, metadata);
+            if (SpriterConfig.SoundsEnabled) AddSoundData(animation, targetTime, deltaTime, metadata);
         }
 
         private static void AddVariableAndTagData(SpriterAnimation animation, float targetTime, FrameMetadata metadata)
         {
             if (animation.Meta == null) return;
 
-            if (animation.Meta.Varlines != null && animation.Meta.Varlines.Length > 0)
+            if (SpriterConfig.VarsEnabled && animation.Meta.Varlines != null && animation.Meta.Varlines.Length > 0)
             {
                 foreach (SpriterVarline varline in animation.Meta.Varlines)
                 {
@@ -151,7 +151,7 @@ namespace SpriterDotNet
 
             SpriterElement[] tags = animation.Entity.Spriter.Tags;
             SpriterTagline tagline = animation.Meta.Tagline;
-            if (tagline != null && tagline.Keys != null && tagline.Keys.Length > 0)
+            if (SpriterConfig.TagsEnabled && tagline != null && tagline.Keys != null && tagline.Keys.Length > 0)
             {
                 SpriterTaglineKey key = LastKeyForTime<SpriterTaglineKey>(tagline.Keys, targetTime);
                 if (key != null && key.Tags != null) foreach (SpriterTag tag in key.Tags) metadata.AnimationTags.Add(tags[tag.TagId].Name);
@@ -164,7 +164,7 @@ namespace SpriterDotNet
 
                 SpriterObjectInfo objInfo = GetObjectInfo(animation, timeline.Name);
 
-                if (meta.Varlines != null && meta.Varlines.Length > 0)
+                if (SpriterConfig.VarsEnabled && meta.Varlines != null && meta.Varlines.Length > 0)
                 {
                     foreach (SpriterVarline varline in timeline.Meta.Varlines)
                     {
@@ -173,7 +173,7 @@ namespace SpriterDotNet
                     }
                 }
 
-                if (meta.Tagline != null && meta.Tagline.Keys != null && meta.Tagline.Keys.Length > 0)
+                if (SpriterConfig.TagsEnabled && meta.Tagline != null && meta.Tagline.Keys != null && meta.Tagline.Keys.Length > 0)
                 {
                     SpriterTaglineKey key = LastKeyForTime<SpriterTaglineKey>(tagline.Keys, targetTime);
                     if (key != null && key.Tags != null) foreach (SpriterTag tag in key.Tags) metadata.AddObjectTag(objInfo.Name, tags[tag.TagId].Name);
@@ -281,7 +281,7 @@ namespace SpriterDotNet
         private static SpriterSpatial[] GetBoneInfos(SpriterMainlineKey key, SpriterAnimation animation, float targetTime, SpriterSpatial parentInfo = null)
         {
             if (key.BoneRefs == null) return null;
-            SpriterSpatial[] ret = ObjectPool.GetArray<SpriterSpatial>(key.BoneRefs.Length);
+            SpriterSpatial[] ret = SpriterObjectPool.GetArray<SpriterSpatial>(key.BoneRefs.Length);
 
             for (int i = 0; i < key.BoneRefs.Length; ++i)
             {
@@ -409,7 +409,7 @@ namespace SpriterDotNet
 
         private static SpriterSpatial Interpolate(SpriterSpatial a, SpriterSpatial b, float f, int spin)
         {
-            SpriterSpatial ss = ObjectPool.GetObject<SpriterSpatial>();
+            SpriterSpatial ss = SpriterObjectPool.GetObject<SpriterSpatial>();
 
             ss.Angle = MathHelper.AngleLinear(a.Angle, b.Angle, spin, f);
             ss.X = MathHelper.Linear(a.X, b.X, f);
@@ -422,7 +422,7 @@ namespace SpriterDotNet
 
         private static SpriterObject Interpolate(SpriterObject a, SpriterObject b, float f, int spin)
         {
-            SpriterObject so = ObjectPool.GetObject<SpriterObject>();
+            SpriterObject so = SpriterObjectPool.GetObject<SpriterObject>();
 
             so.Angle = MathHelper.AngleLinear(a.Angle, b.Angle, spin, f);
             so.Alpha = MathHelper.Linear(a.Alpha, b.Alpha, f);
@@ -471,14 +471,14 @@ namespace SpriterDotNet
 
         private static SpriterSpatial Copy(SpriterSpatial info)
         {
-            SpriterSpatial copy = ObjectPool.GetObject<SpriterSpatial>();
+            SpriterSpatial copy = SpriterObjectPool.GetObject<SpriterSpatial>();
             FillFrom(copy, info);
             return copy;
         }
 
         private static SpriterObject Copy(SpriterObject info)
         {
-            SpriterObject so = ObjectPool.GetObject<SpriterObject>();
+            SpriterObject so = SpriterObjectPool.GetObject<SpriterObject>();
 
             so.AnimationId = info.AnimationId;
             so.EntityId = info.EntityId;

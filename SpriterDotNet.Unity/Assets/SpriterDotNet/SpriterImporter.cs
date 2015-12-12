@@ -94,15 +94,27 @@ namespace SpriterDotNetUnity
         private static GameObject CreatePrefab(GameObject go, string folder)
         {
             string prefabPath = folder + "/" + go.name + ".prefab";
-            GameObject existing = AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);
+            GameObject existingPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);
 
             GameObject prefab;
-            if (existing != null) prefab = PrefabUtility.ReplacePrefab(go, existing, ReplacePrefabOptions.Default);
+            if (existingPrefab != null) prefab = ReplacePrefab(go, existingPrefab, prefabPath);
             else prefab = PrefabUtility.CreatePrefab(prefabPath, go, ReplacePrefabOptions.Default);
 
             GameObject.DestroyImmediate(go);
 
             return prefab;
+        }
+
+        private static GameObject ReplacePrefab(GameObject go, GameObject prefab, string path)
+        {
+            Transform pt = prefab.transform;
+            Transform t = go.transform;
+
+            t.localScale = pt.localScale;
+            t.localPosition = pt.localPosition;
+            t.localRotation = pt.localRotation;
+
+            return PrefabUtility.ReplacePrefab(go, prefab, ReplacePrefabOptions.Default);
         }
 
         private static void CreateSprites(SpriterEntity entity, ChildData cd, Spriter spriter, GameObject parent)

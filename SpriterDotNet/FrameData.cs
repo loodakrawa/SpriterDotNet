@@ -22,9 +22,9 @@ namespace SpriterDotNet
 
         public void Clear()
         {
-            ObjectPool.ReturnChildren(SpriteData);
-            ObjectPool.ReturnChildren(PointData);
-            ObjectPool.ReturnChildren(BoxData);
+            SpriterObjectPool.ReturnChildren(SpriteData);
+            SpriterObjectPool.ReturnChildren(PointData);
+            SpriterObjectPool.ReturnChildren(BoxData);
         }
     }
 }
