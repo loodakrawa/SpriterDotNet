@@ -38,6 +38,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="SpriterObjectPool.cs" />
     <Compile Include="FrameData.cs" />
     <Compile Include="FrameMetadata.cs" />
     <Compile Include="ISpriterParser.cs" />

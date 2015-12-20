@@ -90,6 +90,7 @@ namespace SpriterDotNet
         private float totalTransitionTime;
         private float transitionTime;
         private float factor;
+        private readonly FrameData FrameData = new FrameData();
 
         /// <summary>
         /// Sole constructor. Creates a new instance which animates the given entity.
@@ -224,21 +225,23 @@ namespace SpriterDotNet
         /// </summary>
         protected virtual void Animate(float deltaTime)
         {
-            FrameData frameData;
-            FrameMetadata metaData = null;
+            FrameData.Clear();
+            Metadata.Clear();
+
             if (NextAnimation == null)
             {
-                frameData = SpriterProcessor.GetFrameData(CurrentAnimation, Time);
-                if (SpriterConfig.MetadataEnabled) metaData = SpriterProcessor.GetFrameMetadata(CurrentAnimation, Time, deltaTime);
+                SpriterProcessor.UpdateFrameData(FrameData, CurrentAnimation, Time);
+                if (SpriterConfig.MetadataEnabled) SpriterProcessor.UpdateFrameMetadata(Metadata, CurrentAnimation, Time, deltaTime);
             }
             else
             {
-                frameData = SpriterProcessor.GetFrameData(CurrentAnimation, NextAnimation, Time, factor);
-                if (SpriterConfig.MetadataEnabled) metaData = SpriterProcessor.GetFrameMetadata(CurrentAnimation, NextAnimation, Time, deltaTime, factor);
+                SpriterProcessor.UpdateFrameData(FrameData, CurrentAnimation, NextAnimation, Time, factor);
+                if (SpriterConfig.MetadataEnabled) SpriterProcessor.GetFrameMetadata(Metadata, CurrentAnimation, NextAnimation, Time, deltaTime, factor);
             }
 
-            foreach (SpriterObject info in frameData.SpriteData)
+            for (int i = 0; i < FrameData.SpriteData.Count; ++i)
             {
+                SpriterObject info = FrameData.SpriteData[i];
                 int folderId;
                 int fileId;
                 if (!GetSpriteIds(info, out folderId, out fileId)) continue;
@@ -249,17 +252,31 @@ namespace SpriterDotNet
 
             if (SpriterConfig.MetadataEnabled)
             {
-                foreach (SpriterSound info in metaData.Sounds)
+                for (int i = 0; i < Metadata.Sounds.Count; ++i)
                 {
+                    SpriterSound info = Metadata.Sounds[i];
                     TSound sound = GetFromDict(info.FolderId, info.FileId, sounds);
                     PlaySound(sound, info);
                 }
 
-                foreach (var entry in frameData.PointData) ApplyPointTransform(entry.Key, entry.Value);
-                foreach (var entry in frameData.BoxData) ApplyBoxTransform(Entity.ObjectInfos[entry.Key], entry.Value);
-                foreach (string eventName in metaData.Events) DispatchEvent(eventName);
+                var pointE = FrameData.PointData.GetEnumerator();
+                while (pointE.MoveNext())
+                {
+                    var e = pointE.Current;
+                    ApplyPointTransform(e.Key, e.Value);
+                }
 
-                Metadata = metaData;
+                var boxE = FrameData.BoxData.GetEnumerator();
+                while (boxE.MoveNext())
+                {
+                    var e = boxE.Current;
+                    ApplyBoxTransform(Entity.ObjectInfos[e.Key], e.Value);
+                }
+
+                for (int i = 0; i < Metadata.Events.Count; ++i)
+                {
+                    DispatchEvent(Metadata.Events[i]);
+                }
             }
         }
 
@@ -273,8 +290,9 @@ namespace SpriterDotNet
 
             if (CharacterMap == null) return true;
 
-            foreach (SpriterMapInstruction map in CharacterMap.Maps)
+            for (int i=0; i<CharacterMap.Maps.Length; ++i)
             {
+                SpriterMapInstruction map = CharacterMap.Maps[i];
                 if (map.FolderId != folderId || map.FileId != fileId) continue;
                 if (map.TargetFolderId < 0 || map.TargetFileId < 0) return false;
                 folderId = map.TargetFolderId;

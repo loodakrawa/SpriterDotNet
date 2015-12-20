@@ -4,7 +4,7 @@ namespace SpriterDotNet
     public static class SpriterConfig
     {
         /// <summary>
-        /// Disables ALL metadata calculations.
+        /// Enables ALL metadata calculations.
         /// </summary>
         public static bool MetadataEnabled { get; set; }
 
@@ -13,6 +13,11 @@ namespace SpriterDotNet
         public static bool EventsEnabled { get; set; } 
         public static bool SoundsEnabled { get; set; }
 
+        /// <summary>
+        /// Enables object pooling
+        /// </summary>
+        public static bool PoolingEnabled { get; set; }
+
         static SpriterConfig() 
         {
             MetadataEnabled = true;
@@ -20,6 +25,7 @@ namespace SpriterDotNet
             TagsEnabled = true;
             EventsEnabled = true;
             SoundsEnabled = true;
+            PoolingEnabled = true;
         }
     }
 }
