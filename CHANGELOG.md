@@ -1,3 +1,6 @@
+##### 1.1.2
+* Reduce garbage generation to 0
+
 ##### 1.1.1
 * Unity importer retains components during prefab replace
 * Add sprite swapping capabilities
