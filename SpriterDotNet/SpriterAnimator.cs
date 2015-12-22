@@ -3,6 +3,7 @@
 // This software may be modified and distributed under the terms
 // of the zlib license.  See the LICENSE file for details.
 
+using SpriterDotNet.AnimationDataProvider;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -83,6 +84,11 @@ namespace SpriterDotNet
         /// </summary>
         public FrameMetadata Metadata { get; private set; }
 
+        /// <summary>
+        /// The provider of the animation data.
+        /// </summary>
+        public IAnimationDataProvider DataProvider { get; set; }
+
         private readonly IDictionary<string, SpriterAnimation> animations;
         private readonly IDictionary<int, IDictionary<int, TSprite>> sprites = new Dictionary<int, IDictionary<int, TSprite>>();
         private readonly IDictionary<TSprite, TSprite> swappedSprites = new Dictionary<TSprite, TSprite>();
@@ -90,7 +96,6 @@ namespace SpriterDotNet
         private float totalTransitionTime;
         private float transitionTime;
         private float factor;
-        private readonly FrameData FrameData = new FrameData();
 
         /// <summary>
         /// Sole constructor. Creates a new instance which animates the given entity.
@@ -101,6 +106,7 @@ namespace SpriterDotNet
             animations = entity.Animations.ToDictionary(a => a.Name, a => a);
             Speed = 1.0f;
             Metadata = new FrameMetadata();
+            DataProvider = new DefaultAnimationDataProvider();
         }
 
         /// <summary>
@@ -225,23 +231,12 @@ namespace SpriterDotNet
         /// </summary>
         protected virtual void Animate(float deltaTime)
         {
-            FrameData.Clear();
-            Metadata.Clear();
+            FrameData frameData = DataProvider.GetFrameData(Time, deltaTime, factor, CurrentAnimation, NextAnimation);
+            if (SpriterConfig.MetadataEnabled) Metadata = DataProvider.GetFrameMetadata(Time, deltaTime, factor, CurrentAnimation, NextAnimation);
 
-            if (NextAnimation == null)
+            for (int i = 0; i < frameData.SpriteData.Count; ++i)
             {
-                SpriterProcessor.UpdateFrameData(FrameData, CurrentAnimation, Time);
-                if (SpriterConfig.MetadataEnabled) SpriterProcessor.UpdateFrameMetadata(Metadata, CurrentAnimation, Time, deltaTime);
-            }
-            else
-            {
-                SpriterProcessor.UpdateFrameData(FrameData, CurrentAnimation, NextAnimation, Time, factor);
-                if (SpriterConfig.MetadataEnabled) SpriterProcessor.GetFrameMetadata(Metadata, CurrentAnimation, NextAnimation, Time, deltaTime, factor);
-            }
-
-            for (int i = 0; i < FrameData.SpriteData.Count; ++i)
-            {
-                SpriterObject info = FrameData.SpriteData[i];
+                SpriterObject info = frameData.SpriteData[i];
                 int folderId;
                 int fileId;
                 if (!GetSpriteIds(info, out folderId, out fileId)) continue;
@@ -259,14 +254,14 @@ namespace SpriterDotNet
                     PlaySound(sound, info);
                 }
 
-                var pointE = FrameData.PointData.GetEnumerator();
+                var pointE = frameData.PointData.GetEnumerator();
                 while (pointE.MoveNext())
                 {
                     var e = pointE.Current;
                     ApplyPointTransform(e.Key, e.Value);
                 }
 
-                var boxE = FrameData.BoxData.GetEnumerator();
+                var boxE = frameData.BoxData.GetEnumerator();
                 while (boxE.MoveNext())
                 {
                     var e = boxE.Current;

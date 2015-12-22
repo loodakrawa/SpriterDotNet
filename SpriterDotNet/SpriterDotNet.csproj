@@ -38,6 +38,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AnimationDataProvider\DefaultAnimationDataProvider.cs" />
+    <Compile Include="AnimationDataProvider\SnapshotAnimationDataProvider.cs" />
+    <Compile Include="IAnimationDataProvider.cs" />
     <Compile Include="SpriterObjectPool.cs" />
     <Compile Include="FrameData.cs" />
     <Compile Include="FrameMetadata.cs" />
