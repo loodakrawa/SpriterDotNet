@@ -35,8 +35,6 @@ namespace SpriterDotNet.AnimationDataProvider
             return data;
         }
 
-        public override bool SupportsBlending { get { return false; } }
-
         private readonly IDictionary<string, FrameData[]> data;
 
         public SnapshotAnimationDataProvider(IDictionary<string, FrameData[]> data)

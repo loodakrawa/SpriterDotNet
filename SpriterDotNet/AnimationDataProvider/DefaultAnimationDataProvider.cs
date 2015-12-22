@@ -10,8 +10,6 @@ namespace SpriterDotNet.AnimationDataProvider
         private readonly FrameData data = new FrameData();
         private readonly FrameMetadata metadata = new FrameMetadata();
 
-        public virtual bool SupportsBlending { get { return true; } }
-
         public virtual FrameData GetFrameData(float time, float deltaTime, float factor, SpriterAnimation first, SpriterAnimation second = null)
         {
             data.Clear();
