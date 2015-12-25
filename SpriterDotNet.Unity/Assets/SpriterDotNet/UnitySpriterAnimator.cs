@@ -85,6 +85,8 @@ namespace SpriterDotNetUnity
             child.transform.localPosition = new Vector3(deltaX, deltaY, child.transform.localPosition.z);
             child.transform.localScale = new Vector3(info.ScaleX, info.ScaleY, 1);
 
+            renderer.sortingOrder = index;
+
             ++index;
         }
 

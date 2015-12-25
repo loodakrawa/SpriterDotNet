@@ -22,7 +22,6 @@ namespace SpriterDotNetUnity
         private static readonly string ObjectNameSprites = "Sprites";
         private static readonly string ObjectNameMetadata = "Metadata";
 
-        public static float DeltaZ = -0.001f;
         public static bool UseNativeTags = true;
 
         public static event Action<SpriterEntity, GameObject> EntityImported = (e, p) => { };
@@ -155,7 +154,7 @@ namespace SpriterDotNetUnity
                 cd.SpritePivots[i] = pivot;
                 cd.Sprites[i] = child;
 
-                child.transform.localPosition = new Vector3(0, 0, DeltaZ * i);
+                child.transform.localPosition = Vector3.zero;
 
                 child.AddComponent<SpriteRenderer>();
             }
