@@ -3,6 +3,7 @@
 // This software may be modified and distributed under the terms
 // of the zlib license.  See the LICENSE file for details.
 
+using SpriterDotNet.AnimationDataProvider;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +16,7 @@ namespace SpriterDotNet
         /// Occurs when the animation finishes playing or loops.
         /// </summary>
         public event Action<string> AnimationFinished = s => { };
-        
+
         /// <summary>
         /// Occurs when an animation events gets triggered.
         /// </summary>
@@ -25,17 +26,17 @@ namespace SpriterDotNet
         /// The animated Entity.
         /// </summary>
         public SpriterEntity Entity { get; private set; }
-        
+
         /// <summary>
         /// The current animation.
         /// </summary>
         public SpriterAnimation CurrentAnimation { get; private set; }
-        
+
         /// <summary>
         /// The animation transitioned to or blended with the current animation.
         /// </summary>
         public SpriterAnimation NextAnimation { get; private set; }
-        
+
         /// <summary>
         /// The current character map. If set to null, the default is used.
         /// </summary>
@@ -45,7 +46,7 @@ namespace SpriterDotNet
         /// The name of the current animation.
         /// </summary>
         public string Name { get; private set; }
-        
+
         /// <summary>
         /// Playback speed. Defaults to 1.0f. Negative values reverse the animation.<para />
         /// For example:<para />
@@ -58,12 +59,17 @@ namespace SpriterDotNet
         /// The legth of the current animation in milliseconds.
         /// </summary>
         public float Length { get; private set; }
-        
+
         /// <summary>
         /// The current time in milliseconds.
         /// </summary>
         public float Time { get; set; }
-        
+
+        /// <summary>
+        /// Allow external class to check if an animation exists for a given name.
+        /// </summary>
+        public bool HasAnimation(string name) { return animations.ContainsKey(name); }
+
         /// <summary>
         /// The current progress. Ranges from 0.0f - 1.0f.
         /// </summary>
@@ -78,8 +84,14 @@ namespace SpriterDotNet
         /// </summary>
         public FrameMetadata Metadata { get; private set; }
 
+        /// <summary>
+        /// The provider of the animation data.
+        /// </summary>
+        public IAnimationDataProvider DataProvider { get; set; }
+
         private readonly IDictionary<string, SpriterAnimation> animations;
         private readonly IDictionary<int, IDictionary<int, TSprite>> sprites = new Dictionary<int, IDictionary<int, TSprite>>();
+        private readonly IDictionary<TSprite, TSprite> swappedSprites = new Dictionary<TSprite, TSprite>();
         private readonly IDictionary<int, IDictionary<int, TSound>> sounds = new Dictionary<int, IDictionary<int, TSound>>();
         private float totalTransitionTime;
         private float transitionTime;
@@ -94,6 +106,7 @@ namespace SpriterDotNet
             animations = entity.Animations.ToDictionary(a => a.Name, a => a);
             Speed = 1.0f;
             Metadata = new FrameMetadata();
+            DataProvider = new DefaultAnimationDataProvider();
         }
 
         /// <summary>
@@ -176,7 +189,7 @@ namespace SpriterDotNet
         /// </summary>
         public virtual void Step(float deltaTime)
         {
-            if(CurrentAnimation == null) Play(animations.Keys.First());
+            if (CurrentAnimation == null) Play(animations.Keys.First());
 
             float elapsed = deltaTime * Speed;
 
@@ -218,39 +231,48 @@ namespace SpriterDotNet
         /// </summary>
         protected virtual void Animate(float deltaTime)
         {
-            FrameData frameData;
-            FrameMetadata metaData;
-            if (NextAnimation == null)
-            {
-                frameData = SpriterProcessor.GetFrameData(CurrentAnimation, Time);
-                metaData = SpriterProcessor.GetFrameMetadata(CurrentAnimation, Time, deltaTime);
-            }
-            else
-            {
-                frameData = SpriterProcessor.GetFrameData(CurrentAnimation, NextAnimation, Time, factor);
-                metaData = SpriterProcessor.GetFrameMetadata(CurrentAnimation, NextAnimation, Time, deltaTime, factor);
-            }
+            FrameData frameData = DataProvider.GetFrameData(Time, deltaTime, factor, CurrentAnimation, NextAnimation);
+            if (SpriterConfig.MetadataEnabled) Metadata = DataProvider.GetFrameMetadata(Time, deltaTime, factor, CurrentAnimation, NextAnimation);
 
-            foreach (SpriterObject info in frameData.SpriteData)
+            for (int i = 0; i < frameData.SpriteData.Count; ++i)
             {
+                SpriterObject info = frameData.SpriteData[i];
                 int folderId;
                 int fileId;
                 if (!GetSpriteIds(info, out folderId, out fileId)) continue;
                 TSprite obj = GetFromDict(folderId, fileId, sprites);
+                obj = GetSwappedSprite(obj);
                 ApplySpriteTransform(obj, info);
             }
 
-            foreach (SpriterSound info in metaData.Sounds)
+            if (SpriterConfig.MetadataEnabled)
             {
-                TSound sound = GetFromDict(info.FolderId, info.FileId, sounds);
-                PlaySound(sound, info);
+                for (int i = 0; i < Metadata.Sounds.Count; ++i)
+                {
+                    SpriterSound info = Metadata.Sounds[i];
+                    TSound sound = GetFromDict(info.FolderId, info.FileId, sounds);
+                    PlaySound(sound, info);
+                }
+
+                var pointE = frameData.PointData.GetEnumerator();
+                while (pointE.MoveNext())
+                {
+                    var e = pointE.Current;
+                    ApplyPointTransform(e.Key, e.Value);
+                }
+
+                var boxE = frameData.BoxData.GetEnumerator();
+                while (boxE.MoveNext())
+                {
+                    var e = boxE.Current;
+                    ApplyBoxTransform(Entity.ObjectInfos[e.Key], e.Value);
+                }
+
+                for (int i = 0; i < Metadata.Events.Count; ++i)
+                {
+                    DispatchEvent(Metadata.Events[i]);
+                }
             }
-
-            foreach (var entry in frameData.PointData) ApplyPointTransform(entry.Key, entry.Value);
-            foreach (var entry in frameData.BoxData) ApplyBoxTransform(Entity.ObjectInfos[entry.Key], entry.Value);
-            foreach (string eventName in metaData.Events) DispatchEvent(eventName);
-
-            Metadata = metaData;
         }
 
         /// <summary>
@@ -263,8 +285,9 @@ namespace SpriterDotNet
 
             if (CharacterMap == null) return true;
 
-            foreach(SpriterMapInstruction map in  CharacterMap.Maps)
+            for (int i=0; i<CharacterMap.Maps.Length; ++i)
             {
+                SpriterMapInstruction map = CharacterMap.Maps[i];
                 if (map.FolderId != folderId || map.FileId != fileId) continue;
                 if (map.TargetFolderId < 0 || map.TargetFileId < 0) return false;
                 folderId = map.TargetFolderId;
@@ -273,6 +296,31 @@ namespace SpriterDotNet
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// Remove a manually swapped sprite by name
+        /// </summary>
+        public void UnswapSprite(TSprite original)
+        {
+            if (swappedSprites.ContainsKey(original)) swappedSprites.Remove(original);
+        }
+
+        /// <summary>
+        /// Swap one sprite for another, pass the name of the spriter piece you'd like to target, and a Sprite instance to replace it with.
+        /// </summary>
+        public void SwapSprite(TSprite original, TSprite replacement)
+        {
+            swappedSprites[original] = replacement;
+        }
+
+        /// <summary>
+        /// Internal function to lookup swapped sprites.
+        /// </summary>
+        private TSprite GetSwappedSprite(TSprite original)
+        {
+            if (swappedSprites.ContainsKey(original)) return swappedSprites[original];
+            return original;
         }
 
         /// <summary>

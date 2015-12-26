@@ -42,6 +42,7 @@ namespace SpriterDotNet
             foreach (SpriterEntity entity in spriter.Entities)
             {
                 entity.Spriter = spriter;
+                if (entity.ObjectInfos == null) entity.ObjectInfos = new SpriterObjectInfo[0];
                 foreach (SpriterAnimation animation in entity.Animations)
                 {
                     animation.Entity = entity;
@@ -54,6 +55,8 @@ namespace SpriterDotNet
 
         private static void InitInfos(SpriterAnimation animation)
         {
+            if (animation.Timelines == null) animation.Timelines = new SpriterTimeline[0];
+
             var infos = from t in animation.Timelines
                         from k in t.Keys
                         let o = k.ObjectInfo

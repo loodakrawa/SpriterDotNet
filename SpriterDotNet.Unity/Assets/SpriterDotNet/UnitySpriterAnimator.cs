@@ -4,12 +4,15 @@
 // of the zlib license.  See the LICENSE file for details.
 
 using SpriterDotNet;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace SpriterDotNetUnity
 {
     public class UnitySpriterAnimator : SpriterAnimator<Sprite, AudioClip>
     {
+        public string SortingLayer { get; set; }
+
         private const float DefaultPPU = 100.0f;
         private const float DefaultPivot = 0.5f;
 
@@ -78,11 +81,15 @@ namespace SpriterDotNetUnity
             float deltaX = (spritePivotX - info.PivotX) * size.x * info.ScaleX;
             float deltaY = (spritePivotY - info.PivotY) * size.y * info.ScaleY;
 
-            renderer.color = new Color(1.0f, 1.0f, 1.0f, info.Alpha);
+            Color c = renderer.color;
+            renderer.color = new Color(c.r, c.g, c.b, info.Alpha);
             pivot.transform.localEulerAngles = new Vector3(0, 0, info.Angle);
             pivot.transform.localPosition = new Vector3(info.X / ppu, info.Y / ppu, 0);
             child.transform.localPosition = new Vector3(deltaX, deltaY, child.transform.localPosition.z);
             child.transform.localScale = new Vector3(info.ScaleX, info.ScaleY, 1);
+
+            renderer.sortingLayerName = SortingLayer;
+            renderer.sortingOrder = index;
 
             ++index;
         }
@@ -135,5 +142,13 @@ namespace SpriterDotNetUnity
             audioSource.panStereo = info.Panning;
             audioSource.PlayOneShot(sound, info.Volume);
         }
+
+        /// <summary>
+        /// In order to compile on console with AOT-Only, we must provide public definitions for some of the generic classes used internally.
+        /// </summary>
+        public Dictionary<int, Sprite> aot_SpritesByInt = new Dictionary<int, Sprite>();
+        public Dictionary<int, IDictionary<int, Sprite>> aot_SpriteByIntNested = new Dictionary<int, IDictionary<int, Sprite>>();
+        public Dictionary<int, AudioClip> aot_AudioByInt = new Dictionary<int, AudioClip>();
+        public Dictionary<int, IDictionary<int, AudioClip>> aot_AudioByIntNested = new Dictionary<int, IDictionary<int, AudioClip>>();
     }
 }

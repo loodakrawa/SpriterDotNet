@@ -1,3 +1,22 @@
+##### 1.2.0
+* Add support for animation data providers
+* Fix bug that caused sprite color to reset on every frame
+* Use sortOrder instead of z coordinate for z-index
+* Add ability to choose sorting layer
+
+##### 1.1.2
+* Reduce garbage generation to 0
+
+##### 1.1.1
+* Unity importer retains components during prefab replace
+* Add sprite swapping capabilities
+
+##### 1.1.0
+* Add flags to control Metadata calculations
+* Unity importer retains transform values during prefab replace
+* Fix bug when Animation has no Timelines
+* Fix bug when Entity has no ObjectInfos
+
 ##### 1.0.4
 * Fix SpriterImporter to pass prefab instead of destroyed tmp object
 

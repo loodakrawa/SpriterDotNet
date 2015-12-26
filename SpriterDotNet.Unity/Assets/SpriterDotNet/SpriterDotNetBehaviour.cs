@@ -23,6 +23,9 @@ namespace SpriterDotNetUnity
     public class SpriterDotNetBehaviour : MonoBehaviour
     {
         [HideInInspector]
+        public string SortingLayer;
+
+        [HideInInspector]
         public ChildData ChildData;
 
         [HideInInspector]
@@ -58,6 +61,8 @@ namespace SpriterDotNetUnity
 #endif
 
             if (Animator == null) return;
+
+            Animator.SortingLayer = SortingLayer;
             Animator.Step(Time.deltaTime * 1000.0f);
 
             if (UseNativeTags)
