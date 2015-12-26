@@ -1,3 +1,9 @@
+##### 1.2.0
+* Add support for animation data providers
+* Fix bug that caused sprite color to reset on every frame
+* Use sortOrder instead of z coordinate for z-index
+* Add ability to choose sorting layer
+
 ##### 1.1.2
 * Reduce garbage generation to 0
 
