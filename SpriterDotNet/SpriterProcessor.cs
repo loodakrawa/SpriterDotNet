@@ -117,6 +117,7 @@ namespace SpriterDotNet
                 SpriterObjectRef objectRef = keyA.ObjectRefs[i];
                 SpriterObject interpolated = GetObjectInfo(objectRef, animation, adjustedTime);
                 if (boneInfos != null && objectRef.ParentId >= 0) ApplyParentTransform(interpolated, boneInfos[objectRef.ParentId]);
+                else if(parentInfo != null) ApplyParentTransform(interpolated, parentInfo);
 
                 AddSpatialData(interpolated, animation.Timelines[objectRef.TimelineId], animation.Entity.Spriter, targetTime, frameData);
             }

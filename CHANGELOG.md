@@ -1,3 +1,8 @@
+##### 1.2.1
+* Fix bug where the subentity doesn't have any bones
+* Fix bug with object pool for arrays of size 0
+* Add Scale to MonogameSpriterAnimator
+
 ##### 1.2.0
 * Add support for animation data providers
 * Fix bug that caused sprite color to reset on every frame

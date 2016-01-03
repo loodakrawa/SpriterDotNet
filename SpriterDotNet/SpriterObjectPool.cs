@@ -20,7 +20,6 @@ namespace SpriterDotNet
 
             if (size == 0)
             {
-                size = capacity;
                 ArraySizes[type] = capacity;
             }
 
