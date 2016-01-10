@@ -17,6 +17,12 @@ namespace SpriterDotNetUnity
         public GameObject[] BoxPivots;
         public GameObject[] Boxes;
         public GameObject[] Points;
+
+        public Transform[] SpritePivotTransforms;
+        public Transform[] SpriteTransforms;
+        public Transform[] BoxPivotTransforms;
+        public Transform[] BoxTransforms;
+        public Transform[] PointTransforms;
     }
 
     [ExecuteInEditMode]

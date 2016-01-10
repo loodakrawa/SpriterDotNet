@@ -1,3 +1,7 @@
+##### 1.2.2
+* Cache Unity transforms
+* Add Metadata to SnapshotAnimationDataProvider
+
 ##### 1.2.1
 * Fix bug where the subentity doesn't have any bones
 * Fix bug with object pool for arrays of size 0
