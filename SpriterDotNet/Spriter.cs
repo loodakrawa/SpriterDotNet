@@ -8,7 +8,10 @@ using System.Xml.Serialization;
 
 namespace SpriterDotNet
 {
-    [Serializable, XmlRoot("spriter_data")]
+#if !PORTABLE
+[Serializable]
+#endif
+    [XmlRoot("spriter_data")]
     public class Spriter
     {
         [XmlElement("folder")]
@@ -21,14 +24,18 @@ namespace SpriterDotNet
         public SpriterElement[] Tags;
     }
 
-    [Serializable]
+#if !PORTABLE
+[Serializable]
+#endif
     public class SpriterFolder : SpriterElement
     {
         [XmlElement("file")]
         public SpriterFile[] Files;
     }
 
-    [Serializable]
+#if !PORTABLE
+[Serializable]
+#endif
     public class SpriterFile : SpriterElement
     {
         [XmlAttribute("type")]
@@ -53,10 +60,14 @@ namespace SpriterDotNet
         }
     }
 
-    [Serializable]
+#if !PORTABLE
+[Serializable]
+#endif
     public class SpriterEntity : SpriterElement
     {
+#if !PORTABLE
         [NonSerialized]
+#endif
         public Spriter Spriter;
 
         [XmlElement("obj_info")]
@@ -72,7 +83,9 @@ namespace SpriterDotNet
         public SpriterVarDef[] Variables;
     }
 
-    [Serializable]
+#if !PORTABLE
+[Serializable]
+#endif
     public class SpriterObjectInfo : SpriterElement
     {
         [XmlAttribute("type")]
@@ -94,10 +107,14 @@ namespace SpriterDotNet
         public SpriterVarDef[] Variables;
     }
 
-    [Serializable]
+#if !PORTABLE
+[Serializable]
+#endif
     public class SpriterAnimation : SpriterElement
     {
+#if !PORTABLE
         [NonSerialized]
+#endif
         public SpriterEntity Entity;
 
         [XmlAttribute("length")]
@@ -127,7 +144,9 @@ namespace SpriterDotNet
         }
     }
 
-    [Serializable]
+#if !PORTABLE
+[Serializable]
+#endif
     public class SpriterMainlineKey : SpriterKey
     {
         [XmlElement("bone_ref")]
@@ -137,7 +156,9 @@ namespace SpriterDotNet
         public SpriterObjectRef[] ObjectRefs;
     }
 
-    [Serializable]
+#if !PORTABLE
+[Serializable]
+#endif
     public class SpriterRef : SpriterElement
     {
         [XmlAttribute("parent")]
@@ -155,14 +176,18 @@ namespace SpriterDotNet
         }
     }
 
-    [Serializable]
+#if !PORTABLE
+[Serializable]
+#endif
     public class SpriterObjectRef : SpriterRef
     {
         [XmlAttribute("z_index")]
         public int ZIndex;
     }
 
-    [Serializable]
+#if !PORTABLE
+[Serializable]
+#endif
     public class SpriterTimeline : SpriterElement
     {
         [XmlAttribute("object_type")]
@@ -178,7 +203,9 @@ namespace SpriterDotNet
         public SpriterMeta Meta;
     }
 
-    [Serializable]
+#if !PORTABLE
+[Serializable]
+#endif
     public class SpriterTimelineKey : SpriterKey
     {
         [XmlAttribute("spin")]
@@ -196,7 +223,9 @@ namespace SpriterDotNet
         }
     }
 
-    [Serializable]
+#if !PORTABLE
+[Serializable]
+#endif
     public class SpriterSpatial
     {
         [XmlAttribute("x")]
@@ -225,7 +254,9 @@ namespace SpriterDotNet
         }
     }
 
-    [Serializable]
+#if !PORTABLE
+[Serializable]
+#endif
     public class SpriterObject : SpriterSpatial
     {
         [XmlAttribute("animation")]
@@ -256,14 +287,18 @@ namespace SpriterDotNet
         }
     }
 
-    [Serializable]
+#if !PORTABLE
+[Serializable]
+#endif
     public class SpriterCharacterMap : SpriterElement
     {
         [XmlElement("map")]
         public SpriterMapInstruction[] Maps;
     }
 
-    [Serializable]
+#if !PORTABLE
+[Serializable]
+#endif
     public class SpriterMapInstruction
     {
         [XmlAttribute("folder")]
@@ -285,7 +320,9 @@ namespace SpriterDotNet
         }
     }
 
-    [Serializable]
+#if !PORTABLE
+[Serializable]
+#endif
     public class SpriterMeta
     {
         [XmlElement("varline")]
@@ -295,7 +332,9 @@ namespace SpriterDotNet
         public SpriterTagline Tagline;
     }
 
-    [Serializable]
+#if !PORTABLE
+[Serializable]
+#endif
     public class SpriterVarDef : SpriterElement
     {
         [XmlAttribute("type")]
@@ -304,11 +343,16 @@ namespace SpriterDotNet
         [XmlAttribute("default")]
         public string DefaultValue;
 
-        [NonSerialized, XmlIgnore]
+#if !PORTABLE
+        [NonSerialized]
+#endif
+        [XmlIgnore]
         public SpriterVarValue VariableValue;
     }
 
-    [Serializable]
+#if !PORTABLE
+[Serializable]
+#endif
     public class SpriterVarline : SpriterElement
     {
         [XmlAttribute("def")]
@@ -318,13 +362,18 @@ namespace SpriterDotNet
         public SpriterVarlineKey[] Keys;
     }
 
-    [Serializable]
+#if !PORTABLE
+[Serializable]
+#endif
     public class SpriterVarlineKey : SpriterKey
     {
         [XmlAttribute("val")]
         public string Value;
 
-        [NonSerialized, XmlIgnore]
+#if !PORTABLE
+        [NonSerialized]
+#endif
+        [XmlIgnore]
         public SpriterVarValue VariableValue;
     }
 
@@ -336,49 +385,63 @@ namespace SpriterDotNet
         public int IntValue;
     }
 
-    [Serializable]
+#if !PORTABLE
+[Serializable]
+#endif
     public class SpriterEventline : SpriterElement
     {
         [XmlElement("key")]
         public SpriterKey[] Keys;
     }
 
-    [Serializable]
+#if !PORTABLE
+[Serializable]
+#endif
     public class SpriterTagline
     {
         [XmlElement("key")]
         public SpriterTaglineKey[] Keys;
     }
 
-    [Serializable]
+#if !PORTABLE
+[Serializable]
+#endif
     public class SpriterTaglineKey : SpriterKey
     {
         [XmlElement("tag")]
         public SpriterTag[] Tags;
     }
 
-    [Serializable]
+#if !PORTABLE
+[Serializable]
+#endif
     public class SpriterTag : SpriterElement
     {
         [XmlAttribute("t")]
         public int TagId;
     }
 
-    [Serializable]
+#if !PORTABLE
+[Serializable]
+#endif
     public class SpriterSoundline : SpriterElement
     {
         [XmlElement("key")]
         public SpriterSoundlineKey[] Keys;
     }
 
-    [Serializable]
+#if !PORTABLE
+[Serializable]
+#endif
     public class SpriterSoundlineKey : SpriterKey
     {
         [XmlElement("object")]
         public SpriterSound SoundObject;
     }
 
-    [Serializable]
+#if !PORTABLE
+[Serializable]
+#endif
     public class SpriterSound : SpriterElement
     {
         [XmlAttribute("folder")]
@@ -403,7 +466,9 @@ namespace SpriterDotNet
         }
     }
 
-    [Serializable]
+#if !PORTABLE
+[Serializable]
+#endif
     public class SpriterElement
     {
         [XmlAttribute("id")]
@@ -413,7 +478,9 @@ namespace SpriterDotNet
         public string Name;
     }
 
-    [Serializable]
+#if !PORTABLE
+[Serializable]
+#endif
     public class SpriterKey : SpriterElement
     {
         [XmlAttribute("time")]
@@ -440,7 +507,9 @@ namespace SpriterDotNet
         }
     }
 
-    [Serializable]
+#if !PORTABLE
+[Serializable]
+#endif
     public enum SpriterObjectType
     {
         [XmlEnum("sprite")]
@@ -465,7 +534,9 @@ namespace SpriterDotNet
         Variable
     }
 
-    [Serializable]
+#if !PORTABLE
+[Serializable]
+#endif
     public enum SpriterCurveType
     {
         [XmlEnum("linear")]
@@ -490,7 +561,9 @@ namespace SpriterDotNet
         Bezier
     }
 
-    [Serializable]
+#if !PORTABLE
+[Serializable]
+#endif
     public enum SpriterFileType
     {
         Image,
@@ -499,7 +572,9 @@ namespace SpriterDotNet
         Sound
     }
 
-    [Serializable]
+#if !PORTABLE
+[Serializable]
+#endif
     public enum SpriterVarType
     {
         [XmlEnum("string")]

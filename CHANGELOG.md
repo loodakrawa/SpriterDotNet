@@ -1,3 +1,6 @@
+##### 1.3
+* Convert SpriterDotNet to a PCL
+
 ##### 1.2.2
 * Cache Unity transforms
 * Add Metadata to SnapshotAnimationDataProvider
