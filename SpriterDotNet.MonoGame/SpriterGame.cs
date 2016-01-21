@@ -31,7 +31,7 @@ namespace SpriterDotNet.MonoGame
         private static readonly int Height = 960;
         private static readonly float MaxSpeed = 5.0f;
         private static readonly float DeltaSpeed = 0.2f;
-        private static readonly string Instructions = "Enter = Next Scml\nSpace = Next Animation\nP = Anim Speed +\nO = Anim Speed -\nR = Reverse Direction\nX = Reset Animation\nT = Transition to Next Animation\nC = NextCharMap";
+        private static readonly string Instructions = "Enter = Next Scml\nSpace = Next Animation\nP = Anim Speed +\nO = Anim Speed -\nR = Reverse Direction\nX = Reset Animation\nT = Transition to Next Animation\nC = Push Next CharMap\nC = Pop CharMap";
 
         private IList<MonogameSpriterAnimator> animators = new List<MonogameSpriterAnimator>();
         private MonogameSpriterAnimator currentAnimator;
@@ -41,6 +41,7 @@ namespace SpriterDotNet.MonoGame
         private KeyboardState oldState;
         private string status;
         private string metadata;
+        private int charMapIndex;
         private Fps fps = new Fps();
 
         public SpriteGame()
@@ -125,7 +126,8 @@ namespace SpriterDotNet.MonoGame
             if (IsPressed(Keys.R)) currentAnimator.Speed = -currentAnimator.Speed;
             if (IsPressed(Keys.X)) currentAnimator.Play(currentAnimator.Name);
             if (IsPressed(Keys.T)) currentAnimator.Transition(GetNextAnimation(), 1000.0f);
-            if (IsPressed(Keys.C)) NextCharacterMap();
+            if (IsPressed(Keys.C)) PushCharacterMap();
+            if (IsPressed(Keys.V)) PopCharacterMap();
 
             oldState = Keyboard.GetState();
 
@@ -135,20 +137,20 @@ namespace SpriterDotNet.MonoGame
             base.Update(gameTime);
         }
 
-        private void NextCharacterMap()
+        private void PushCharacterMap()
         {
             SpriterCharacterMap[] maps = currentAnimator.Entity.CharacterMaps;
+            if (charMapIndex >= maps.Length) return;
             if (maps == null || maps.Length == 0) return;
-            SpriterCharacterMap charMap = currentAnimator.CharacterMap;
-            if (charMap == null) charMap = maps[0]; 
-            else
-            {
-                int index = charMap.Id + 1;
-                if (index >= maps.Length) charMap = null;
-                else charMap = maps[index];
-            }
+            currentAnimator.PushCharMap(maps[charMapIndex]);
+            ++charMapIndex;
+        }
 
-            currentAnimator.CharacterMap = charMap;
+        private void PopCharacterMap()
+        {
+            currentAnimator.PopCharMap();
+            --charMapIndex;
+            if (charMapIndex < 0) charMapIndex = 0;
         }
 
         private string GetVarValues()
@@ -199,7 +201,7 @@ namespace SpriterDotNet.MonoGame
             foreach (string tag in metadata.AnimationTags) sb.AppendLine(tag);
             foreach (var objectEntry in metadata.ObjectTags)
             {
-                foreach(string tag in objectEntry.Value) sb.Append(objectEntry.Key).Append(".").AppendLine(tag);
+                foreach (string tag in objectEntry.Value) sb.Append(objectEntry.Key).Append(".").AppendLine(tag);
             }
 
             return sb.ToString();
