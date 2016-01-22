@@ -41,7 +41,6 @@ namespace SpriterDotNet.MonoGame
         private KeyboardState oldState;
         private string status;
         private string metadata;
-        private int charMapIndex;
         private Fps fps = new Fps();
 
         public SpriteGame()
@@ -127,7 +126,7 @@ namespace SpriterDotNet.MonoGame
             if (IsPressed(Keys.X)) currentAnimator.Play(currentAnimator.Name);
             if (IsPressed(Keys.T)) currentAnimator.Transition(GetNextAnimation(), 1000.0f);
             if (IsPressed(Keys.C)) PushCharacterMap();
-            if (IsPressed(Keys.V)) PopCharacterMap();
+            if (IsPressed(Keys.V)) currentAnimator.PopCharMap();
 
             oldState = Keyboard.GetState();
 
@@ -140,17 +139,17 @@ namespace SpriterDotNet.MonoGame
         private void PushCharacterMap()
         {
             SpriterCharacterMap[] maps = currentAnimator.Entity.CharacterMaps;
-            if (charMapIndex >= maps.Length) return;
             if (maps == null || maps.Length == 0) return;
-            currentAnimator.PushCharMap(maps[charMapIndex]);
-            ++charMapIndex;
-        }
+            SpriterCharacterMap charMap = currentAnimator.CharacterMap;
+            if (charMap == null) charMap = maps[0];
+            else
+            {
+                int index = charMap.Id + 1;
+                if (index >= maps.Length) charMap = null;
+                else charMap = maps[index];
+            }
 
-        private void PopCharacterMap()
-        {
-            currentAnimator.PopCharMap();
-            --charMapIndex;
-            if (charMapIndex < 0) charMapIndex = 0;
+            if(charMap != null) currentAnimator.PushCharMap(charMap);
         }
 
         private string GetVarValues()

@@ -38,6 +38,11 @@ namespace SpriterDotNet
         public SpriterAnimation NextAnimation { get; private set; }
 
         /// <summary>
+        /// The current character map. If set to null, the default is used.
+        /// </summary>
+        public SpriterCharacterMap CharacterMap { get { return charMaps.Count > 0 ? charMaps.Peek() : null; } }
+
+        /// <summary>
         /// The name of the current animation.
         /// </summary>
         public string Name { get; private set; }
@@ -87,8 +92,8 @@ namespace SpriterDotNet
         private readonly Dictionary<string, SpriterAnimation> animations;
         private readonly Dictionary<int, Dictionary<int, TSprite>> sprites = new Dictionary<int, Dictionary<int, TSprite>>();
         private readonly Dictionary<TSprite, TSprite> swappedSprites = new Dictionary<TSprite, TSprite>();
-        private readonly Dictionary<TSprite, Stack<KeyValuePair<int, int>>> charMaps = new Dictionary<TSprite, Stack<KeyValuePair<int, int>>>();
-        private int charMapCount;
+        private readonly Dictionary<TSprite, KeyValuePair<int, int>> charMapValues = new Dictionary<TSprite, KeyValuePair<int, int>>();
+        private readonly Stack<SpriterCharacterMap> charMaps = new Stack<SpriterCharacterMap>();
         private readonly Dictionary<int, Dictionary<int, TSound>> sounds = new Dictionary<int, Dictionary<int, TSound>>();
         private float totalTransitionTime;
         private float transitionTime;
@@ -277,15 +282,10 @@ namespace SpriterDotNet
         {
             TSprite sprite = GetFromDict(obj.FolderId, obj.FileId, sprites);
 
-            if (charMaps.Count == 0) return sprite;
+            if (!charMapValues.ContainsKey(sprite)) return sprite;
 
-            Stack<KeyValuePair<int, int>> mappings;
-            charMaps.TryGetValue(sprite, out mappings);
-
-            if (mappings == null || mappings.Count == 0) return sprite;
-
-            KeyValuePair<int, int> ins = mappings.Peek();
-            return GetFromDict(ins.Key, ins.Value, sprites);
+            KeyValuePair<int, int> mapping = charMapValues[sprite];
+            return GetFromDict(mapping.Key, mapping.Value, sprites);
         }
 
         /// <summary>
@@ -306,36 +306,33 @@ namespace SpriterDotNet
 
         public virtual void PushCharMap(SpriterCharacterMap charMap)
         {
+            ApplyCharMap(charMap);
+            charMaps.Push(charMap);
+        }
+
+        public virtual void PopCharMap()
+        {
+            if (charMaps.Count == 0) return;
+            charMaps.Pop();
+            ApplyCharMap(charMaps.Count > 0 ? charMaps.Peek() : null);
+        }
+
+        protected virtual void ApplyCharMap(SpriterCharacterMap charMap)
+        {
+            if(charMap == null)
+            {
+                charMapValues.Clear();
+                return;
+            }
+
             for (int i = 0; i < charMap.Maps.Length; ++i)
             {
                 SpriterMapInstruction map = charMap.Maps[i];
                 TSprite sprite = GetFromDict(map.FolderId, map.FileId, sprites);
                 if (sprite == null) continue;
 
-                Stack<KeyValuePair<int, int>> values;
-                charMaps.TryGetValue(sprite, out values);
-                if (values == null)
-                {
-                    values = new Stack<KeyValuePair<int, int>>();
-                    charMaps[sprite] = values;
-                }
-
-                values.Push(new KeyValuePair<int, int>(map.TargetFolderId, map.TargetFileId));
+                charMapValues[sprite] = new KeyValuePair<int, int>(map.TargetFolderId, map.TargetFileId);
             }
-
-            ++charMapCount;
-        }
-
-        public virtual void PopCharMap()
-        {
-            if (charMapCount == 0) return;
-            var cme = charMaps.GetEnumerator();
-            while (cme.MoveNext())
-            {
-                Stack<KeyValuePair<int, int>> values = cme.Current.Value;
-                if(values.Count >= charMapCount) values.Pop();
-            }
-            --charMapCount;
         }
 
         /// <summary>

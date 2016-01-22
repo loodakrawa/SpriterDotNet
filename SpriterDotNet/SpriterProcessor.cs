@@ -110,7 +110,11 @@ namespace SpriterDotNet
 
             SpriterSpatial[] boneInfos = GetBoneInfos(keyA, animation, targetTime, parentInfo);
 
-            if (keyA.ObjectRefs == null) return;
+            if (keyA.ObjectRefs == null)
+            {
+                SpriterObjectPool.ReturnObject(boneInfos);
+                return;
+            }
 
             for (int i = 0; i < keyA.ObjectRefs.Length; ++i)
             {
