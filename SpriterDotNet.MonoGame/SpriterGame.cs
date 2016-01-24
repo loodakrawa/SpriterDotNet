@@ -31,7 +31,8 @@ namespace SpriterDotNet.MonoGame
         private static readonly int Height = 960;
         private static readonly float MaxSpeed = 5.0f;
         private static readonly float DeltaSpeed = 0.2f;
-        private static readonly string Instructions = "Enter = Next Scml\nSpace = Next Animation\nP = Anim Speed +\nO = Anim Speed -\nR = Reverse Direction\nX = Reset Animation\nT = Transition to Next Animation\nC = Push Next CharMap\nC = Pop CharMap";
+        private static readonly string Instructions = "Enter = Next Scml\nSpace = Next Animation\nP = Anim Speed +\nO = Anim Speed -\n" + 
+            "R = Reverse Direction\nX = Reset Animation\nT = Transition to Next Animation\nC = Push Next CharMap\nV = Pop CharMap";
 
         private IList<MonogameSpriterAnimator> animators = new List<MonogameSpriterAnimator>();
         private MonogameSpriterAnimator currentAnimator;
