@@ -1,4 +1,8 @@
-##### 1.3
+##### 1.3.1
+* Add support for stacking Character Maps
+* Fix an unnecessary memory allocation
+
+##### 1.3.0
 * Convert SpriterDotNet to a PCL
 
 ##### 1.2.2
