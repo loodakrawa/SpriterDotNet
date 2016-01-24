@@ -110,13 +110,18 @@ namespace SpriterDotNet
 
             SpriterSpatial[] boneInfos = GetBoneInfos(keyA, animation, targetTime, parentInfo);
 
-            if (keyA.ObjectRefs == null) return;
+            if (keyA.ObjectRefs == null)
+            {
+                SpriterObjectPool.ReturnObject(boneInfos);
+                return;
+            }
 
             for (int i = 0; i < keyA.ObjectRefs.Length; ++i)
             {
                 SpriterObjectRef objectRef = keyA.ObjectRefs[i];
                 SpriterObject interpolated = GetObjectInfo(objectRef, animation, adjustedTime);
                 if (boneInfos != null && objectRef.ParentId >= 0) ApplyParentTransform(interpolated, boneInfos[objectRef.ParentId]);
+                else if(parentInfo != null) ApplyParentTransform(interpolated, parentInfo);
 
                 AddSpatialData(interpolated, animation.Timelines[objectRef.TimelineId], animation.Entity.Spriter, targetTime, frameData);
             }

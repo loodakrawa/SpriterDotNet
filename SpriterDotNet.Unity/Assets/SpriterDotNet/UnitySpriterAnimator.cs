@@ -67,6 +67,9 @@ namespace SpriterDotNetUnity
         {
             GameObject child = childData.Sprites[index];
             GameObject pivot = childData.SpritePivots[index];
+            Transform childTransform = childData.SpriteTransforms[index];
+            Transform pivotTransform = childData.SpritePivotTransforms[index];
+
             child.SetActive(true);
             pivot.SetActive(true);
             SpriteRenderer renderer = renderers[index];
@@ -83,10 +86,10 @@ namespace SpriterDotNetUnity
 
             Color c = renderer.color;
             renderer.color = new Color(c.r, c.g, c.b, info.Alpha);
-            pivot.transform.localEulerAngles = new Vector3(0, 0, info.Angle);
-            pivot.transform.localPosition = new Vector3(info.X / ppu, info.Y / ppu, 0);
-            child.transform.localPosition = new Vector3(deltaX, deltaY, child.transform.localPosition.z);
-            child.transform.localScale = new Vector3(info.ScaleX, info.ScaleY, 1);
+            pivotTransform.localEulerAngles = new Vector3(0, 0, info.Angle);
+            pivotTransform.localPosition = new Vector3(info.X / ppu, info.Y / ppu, 0);
+            childTransform.localPosition = new Vector3(deltaX, deltaY, childTransform.localPosition.z);
+            childTransform.localScale = new Vector3(info.ScaleX, info.ScaleY, 1);
 
             renderer.sortingLayerName = SortingLayer;
             renderer.sortingOrder = index;
@@ -98,6 +101,8 @@ namespace SpriterDotNetUnity
         {
             GameObject child = childData.Boxes[boxIndex];
             GameObject pivot = childData.BoxPivots[boxIndex];
+            Transform childTransform = childData.BoxTransforms[boxIndex];
+            Transform pivotTransform = childData.BoxPivotTransforms[boxIndex];
             child.SetActive(true);
             pivot.SetActive(true);
 
@@ -112,23 +117,24 @@ namespace SpriterDotNetUnity
             float deltaX = (DefaultPivot - info.PivotX) * w * info.ScaleX;
             float deltaY = (DefaultPivot - info.PivotY) * h * info.ScaleY;
 
-            pivot.transform.localEulerAngles = new Vector3(0, 0, info.Angle);
-            pivot.transform.localPosition = new Vector3(info.X / DefaultPPU, info.Y / DefaultPPU, 0);
-            child.transform.localPosition = new Vector3(deltaX, deltaY, child.transform.localPosition.z);
-            child.transform.localScale = new Vector3(info.ScaleX, info.ScaleY, 1);
+            pivotTransform.localEulerAngles = new Vector3(0, 0, info.Angle);
+            pivotTransform.localPosition = new Vector3(info.X / DefaultPPU, info.Y / DefaultPPU, 0);
+            childTransform.localPosition = new Vector3(deltaX, deltaY, childTransform.localPosition.z);
+            childTransform.localScale = new Vector3(info.ScaleX, info.ScaleY, 1);
             ++boxIndex;
         }
 
         protected override void ApplyPointTransform(string name, SpriterObject info)
         {
             GameObject point = childData.Points[pointIndex];
+            Transform pointTransform = childData.PointTransforms[pointIndex];
             point.name = name;
             point.SetActive(true);
 
             float x = info.X / DefaultPPU;
             float y = info.Y / DefaultPPU;
 
-            point.transform.localPosition = new Vector3(x, y, point.transform.localPosition.z);
+            pointTransform.localPosition = new Vector3(x, y, pointTransform.localPosition.z);
 
             ++pointIndex;
         }
