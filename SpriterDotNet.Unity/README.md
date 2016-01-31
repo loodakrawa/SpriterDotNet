@@ -6,6 +6,8 @@ This distribution comes with 2 different packages:
 * SpriterDotNet.Unity.unitypackage (contains just the library)
 * SpriterDotNet.Unity.Examples.unitypackage (contains the library and a couple of examples)
 
+**IMPORTANT: Make sure that all the images referenced in the .scml are imported as Sprites.**
+
 ## Basic Usage
 The most easy way of using SpriterDotBNet.Unity with your own animations is the following:
 * Install SpriterDotNet.Unity.Examples.unitypackage
