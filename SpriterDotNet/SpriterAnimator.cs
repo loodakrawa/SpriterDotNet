@@ -193,6 +193,7 @@ namespace SpriterDotNet
         {
             if (CurrentAnimation == null) Play(animations.Keys.First());
 
+            float initialTime = Time;
             float elapsed = deltaTime * Speed;
 
             if (NextAnimation != null && totalTransitionTime != 0.0f)
@@ -216,13 +217,13 @@ namespace SpriterDotNet
             {
                 if (CurrentAnimation.Looping) Time += Length;
                 else Time = 0.0f;
-                AnimationFinished(Name);
+                if(Time != initialTime) AnimationFinished(Name);
             }
             else if (Time >= Length)
             {
                 if (CurrentAnimation.Looping) Time -= Length;
                 else Time = Length;
-                AnimationFinished(Name);
+                if (Time != initialTime) AnimationFinished(Name);
             }
 
             Animate(elapsed);

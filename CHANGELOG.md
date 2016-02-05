@@ -1,3 +1,7 @@
+##### 1.3.2
+* Fix AnimationFinished event triggering repeatedly for non looping animations
+* Fix Timelines.Meta.Varlines not getting initialised
+
 ##### 1.3.1
 * Add support for stacking Character Maps
 * Fix an unnecessary memory allocation
