@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>7142d477-6358-443e-85ef-27c94de0c7f4</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>SpriterDotNet</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)AnimationDataProvider\DefaultAnimationDataProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AnimationDataProvider\SnapshotAnimationDataProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FrameData.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FrameMetadata.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IAnimationDataProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ISpriterParser.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MathHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Parser\XmlSpriterParser.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Spriter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SpriterAnimator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SpriterConfig.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SpriterObjectPool.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SpriterParser.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SpriterProcessor.cs" />
+  </ItemGroup>
+</Project>
