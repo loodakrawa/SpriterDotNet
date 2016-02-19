@@ -26,6 +26,8 @@ namespace SpriterDotNetUnity
 
         public static event Action<SpriterEntity, GameObject> EntityImported = (e, p) => { };
 
+        public static IContentLoader ContentLoader = new DefaultContentLoader();
+
         private static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromPath)
         {
             foreach (string asset in importedAssets)
@@ -233,21 +235,12 @@ namespace SpriterDotNetUnity
                         FileId = file.Id
                     };
 
-                    if (file.Type == SpriterFileType.Sound) entry.Sound = LoadContent<AudioClip>(path);
-                    else entry.Sprite = LoadContent<Sprite>(path);
+                    if (file.Type == SpriterFileType.Sound) entry.Sound = ContentLoader.Load<AudioClip>(path);
+                    else entry.Sprite = ContentLoader.Load<Sprite>(path);
 
                     yield return entry;
                 }
             }
-        }
-
-        private static T LoadContent<T>(string path) where T : UnityEngine.Object
-        {
-            T asset;
-            asset = AssetDatabase.LoadAssetAtPath<T>(path);
-            if (asset == null) Debug.Log("Missing Asset: " + path);
-
-            return asset;
         }
 
         private static void CreateTags(Spriter spriter)
