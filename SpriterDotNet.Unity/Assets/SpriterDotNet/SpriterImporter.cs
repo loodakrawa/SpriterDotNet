@@ -26,6 +26,8 @@ namespace SpriterDotNetUnity
 
         public static event Action<SpriterEntity, GameObject> EntityImported = (e, p) => { };
 
+        public static IContentLoader ContentLoader = new DefaultContentLoader();
+
         private static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromPath)
         {
             foreach (string asset in importedAssets)
@@ -142,6 +144,8 @@ namespace SpriterDotNetUnity
 
             cd.Sprites = new GameObject[maxObjects];
             cd.SpritePivots = new GameObject[maxObjects];
+            cd.SpriteTransforms = new Transform[maxObjects];
+            cd.SpritePivotTransforms = new Transform[maxObjects];
 
             for (int i = 0; i < maxObjects; ++i)
             {
@@ -153,6 +157,8 @@ namespace SpriterDotNetUnity
 
                 cd.SpritePivots[i] = pivot;
                 cd.Sprites[i] = child;
+                cd.SpritePivotTransforms[i] = pivot.transform;
+                cd.SpriteTransforms[i] = child.transform;
 
                 child.transform.localPosition = Vector3.zero;
 
@@ -171,6 +177,8 @@ namespace SpriterDotNetUnity
 
             cd.BoxPivots = new GameObject[boxes.Count];
             cd.Boxes = new GameObject[boxes.Count];
+            cd.BoxTransforms = new Transform[boxes.Count];
+            cd.BoxPivotTransforms = new Transform[boxes.Count];
 
             for (int i = 0; i < boxes.Count; ++i)
             {
@@ -182,6 +190,8 @@ namespace SpriterDotNetUnity
 
                 cd.BoxPivots[i] = pivot;
                 cd.Boxes[i] = child;
+                cd.BoxPivotTransforms[i] = pivot.transform;
+                cd.BoxTransforms[i] = child.transform;
 
                 child.AddComponent<BoxCollider2D>();
             }
@@ -195,12 +205,14 @@ namespace SpriterDotNetUnity
             int count = GetPointsCount(entity);
 
             cd.Points = new GameObject[count];
+            cd.PointTransforms = new Transform[count];
 
             for (int i = 0; i < count; ++i)
             {
                 GameObject point = new GameObject("Point " + i);
                 point.SetParent(pointRoot);
                 cd.Points[i] = point;
+                cd.PointTransforms[i] = point.transform;
             }
         }
 
@@ -223,21 +235,12 @@ namespace SpriterDotNetUnity
                         FileId = file.Id
                     };
 
-                    if (file.Type == SpriterFileType.Sound) entry.Sound = LoadContent<AudioClip>(path);
-                    else entry.Sprite = LoadContent<Sprite>(path);
+                    if (file.Type == SpriterFileType.Sound) entry.Sound = ContentLoader.Load<AudioClip>(path);
+                    else entry.Sprite = ContentLoader.Load<Sprite>(path);
 
                     yield return entry;
                 }
             }
-        }
-
-        private static T LoadContent<T>(string path) where T : UnityEngine.Object
-        {
-            T asset;
-            asset = AssetDatabase.LoadAssetAtPath<T>(path);
-            if (asset == null) Debug.Log("Missing Asset: " + path);
-
-            return asset;
         }
 
         private static void CreateTags(Spriter spriter)

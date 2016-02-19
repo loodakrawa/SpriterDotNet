@@ -13,6 +13,8 @@ namespace SpriterDotNet.MonoGame
 {
     public class MonogameSpriterAnimator : SpriterAnimator<Texture2D, SoundEffect>
     {
+        public float Scale { get; set; }
+
         private Vector2 charLocation;
         private SpriteBatch spriteBatch;
         private Texture2D pointTexture;
@@ -22,6 +24,7 @@ namespace SpriterDotNet.MonoGame
         {
             this.charLocation = charLocation;
             this.spriteBatch = spriteBatch;
+            Scale = 1.0f;
 
             pointTexture = TextureUtil.CreateCircle(graphics, 5, Color.Cyan);
             if(entity.ObjectInfos != null)
@@ -37,8 +40,8 @@ namespace SpriterDotNet.MonoGame
         protected override void ApplySpriteTransform(Texture2D texture, SpriterObject info)
         {
             Vector2 origin = new Vector2(info.PivotX * texture.Width, (1 - info.PivotY) * texture.Height);
-            Vector2 location = charLocation + new Vector2(info.X, -info.Y);
-            Vector2 scale = new Vector2(Math.Abs(info.ScaleX), Math.Abs(info.ScaleY));
+            Vector2 location = charLocation + new Vector2(info.X, -info.Y) * Scale;
+            Vector2 scale = new Vector2(Math.Abs(info.ScaleX), Math.Abs(info.ScaleY)) * Scale;
             float angle = -(float)(Math.PI / 180.0f) * info.Angle;
             Color color = Color.White * info.Alpha;
             SpriteEffects effects = SpriteEffects.None;

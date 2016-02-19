@@ -73,12 +73,13 @@ namespace SpriterDotNet
 
         private static void InitVarDefs(SpriterAnimation animation)
         {
-            if (animation.Meta == null || animation.Meta.Varlines == null || animation.Meta.Varlines.Length == 0) return;
-
-            foreach (SpriterVarline varline in animation.Meta.Varlines)
+            if (animation.Meta != null && animation.Meta.Varlines != null && animation.Meta.Varlines.Length > 0)
             {
-                SpriterVarDef varDefs = animation.Entity.Variables[varline.Def];
-                Init(varDefs, varline);
+                foreach (SpriterVarline varline in animation.Meta.Varlines)
+                {
+                    SpriterVarDef varDefs = animation.Entity.Variables[varline.Def];
+                    Init(varDefs, varline);
+                }
             }
 
             foreach (SpriterTimeline timeline in animation.Timelines)

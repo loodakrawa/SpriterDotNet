@@ -33,14 +33,17 @@ public class Controller : MonoBehaviour
             animator.EventTriggered += e => Debug.Log("Event Triggered. Source: " + animator.CurrentAnimation.Name + ". Value: " + e);
         }
 
-        if (GetAxisDownPositive("Vertical")) ChangeAnimationSpeed(DeltaSpeed);
-        if (GetAxisDownNegative("Vertical")) ChangeAnimationSpeed(-DeltaSpeed);
+        if (GetAxisDownPositive("Vertical")) PushCharacterMap();
+        if (GetAxisDownNegative("Vertical")) animator.PopCharMap();
         if (Input.GetButtonDown("Jump")) ReverseAnimation();
         if (GetAxisDownPositive("Horizontal")) Transition(1);
         if (GetAxisDownNegative("Horizontal")) Transition(-1);
         if (Input.GetButtonDown("Fire1")) SwitchAnimation(1);
         if (Input.GetButtonDown("Fire2")) SwitchAnimation(-1);
-        if (Input.GetButtonDown("Cancel")) NextCharacterMap();
+        if (Input.GetButtonDown("Cancel")) PushCharacterMap();
+
+        float speed = Math.Sign(Input.GetAxis("Mouse ScrollWheel")) * DeltaSpeed;
+        ChangeAnimationSpeed(speed);
 
         animator.Speed = AnimatorSpeed;
     }
@@ -73,7 +76,7 @@ public class Controller : MonoBehaviour
         AnimatorSpeed *= -1;
     }
 
-    private void NextCharacterMap()
+    private void PushCharacterMap()
     {
         SpriterCharacterMap[] maps = animator.Entity.CharacterMaps;
         if (maps == null || maps.Length == 0) return;
@@ -86,7 +89,7 @@ public class Controller : MonoBehaviour
             else charMap = maps[index];
         }
 
-        animator.CharacterMap = charMap;
+        if (charMap != null) animator.PushCharMap(charMap);
     }
 
     private string GetVarValues()

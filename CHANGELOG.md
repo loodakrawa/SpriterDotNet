@@ -1,3 +1,26 @@
+##### 1.3.3
+* Add support for custom Unity content loaders
+
+##### 1.3.2
+* Fix AnimationFinished event triggering repeatedly for non looping animations
+* Fix Timelines.Meta.Varlines not getting initialised
+
+##### 1.3.1
+* Add support for stacking Character Maps
+* Fix an unnecessary memory allocation
+
+##### 1.3.0
+* Convert SpriterDotNet to a PCL
+
+##### 1.2.2
+* Cache Unity transforms
+* Add Metadata to SnapshotAnimationDataProvider
+
+##### 1.2.1
+* Fix bug where the subentity doesn't have any bones
+* Fix bug with object pool for arrays of size 0
+* Add Scale to MonogameSpriterAnimator
+
 ##### 1.2.0
 * Add support for animation data providers
 * Fix bug that caused sprite color to reset on every frame

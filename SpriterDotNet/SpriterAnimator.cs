@@ -40,7 +40,7 @@ namespace SpriterDotNet
         /// <summary>
         /// The current character map. If set to null, the default is used.
         /// </summary>
-        public SpriterCharacterMap CharacterMap { get; set; }
+        public SpriterCharacterMap CharacterMap { get { return charMaps.Count > 0 ? charMaps.Peek() : null; } }
 
         /// <summary>
         /// The name of the current animation.
@@ -89,10 +89,12 @@ namespace SpriterDotNet
         /// </summary>
         public IAnimationDataProvider DataProvider { get; set; }
 
-        private readonly IDictionary<string, SpriterAnimation> animations;
-        private readonly IDictionary<int, IDictionary<int, TSprite>> sprites = new Dictionary<int, IDictionary<int, TSprite>>();
-        private readonly IDictionary<TSprite, TSprite> swappedSprites = new Dictionary<TSprite, TSprite>();
-        private readonly IDictionary<int, IDictionary<int, TSound>> sounds = new Dictionary<int, IDictionary<int, TSound>>();
+        private readonly Dictionary<string, SpriterAnimation> animations;
+        private readonly Dictionary<int, Dictionary<int, TSprite>> sprites = new Dictionary<int, Dictionary<int, TSprite>>();
+        private readonly Dictionary<TSprite, TSprite> swappedSprites = new Dictionary<TSprite, TSprite>();
+        private readonly Dictionary<TSprite, KeyValuePair<int, int>> charMapValues = new Dictionary<TSprite, KeyValuePair<int, int>>();
+        private readonly Stack<SpriterCharacterMap> charMaps = new Stack<SpriterCharacterMap>();
+        private readonly Dictionary<int, Dictionary<int, TSound>> sounds = new Dictionary<int, Dictionary<int, TSound>>();
         private float totalTransitionTime;
         private float transitionTime;
         private float factor;
@@ -191,6 +193,7 @@ namespace SpriterDotNet
         {
             if (CurrentAnimation == null) Play(animations.Keys.First());
 
+            float initialTime = Time;
             float elapsed = deltaTime * Speed;
 
             if (NextAnimation != null && totalTransitionTime != 0.0f)
@@ -214,13 +217,13 @@ namespace SpriterDotNet
             {
                 if (CurrentAnimation.Looping) Time += Length;
                 else Time = 0.0f;
-                AnimationFinished(Name);
+                if(Time != initialTime) AnimationFinished(Name);
             }
             else if (Time >= Length)
             {
                 if (CurrentAnimation.Looping) Time -= Length;
                 else Time = Length;
-                AnimationFinished(Name);
+                if (Time != initialTime) AnimationFinished(Name);
             }
 
             Animate(elapsed);
@@ -237,10 +240,8 @@ namespace SpriterDotNet
             for (int i = 0; i < frameData.SpriteData.Count; ++i)
             {
                 SpriterObject info = frameData.SpriteData[i];
-                int folderId;
-                int fileId;
-                if (!GetSpriteIds(info, out folderId, out fileId)) continue;
-                TSprite obj = GetFromDict(folderId, fileId, sprites);
+                TSprite obj = GetSprite(info);
+                if (obj == null) continue;
                 obj = GetSwappedSprite(obj);
                 ApplySpriteTransform(obj, info);
             }
@@ -278,30 +279,20 @@ namespace SpriterDotNet
         /// <summary>
         /// Gets the folderId and fileId for the given SpriterObject based on the current character map or default
         /// </summary>
-        protected virtual bool GetSpriteIds(SpriterObject obj, out int folderId, out int fileId)
+        protected virtual TSprite GetSprite(SpriterObject obj)
         {
-            folderId = obj.FolderId;
-            fileId = obj.FileId;
+            TSprite sprite = GetFromDict(obj.FolderId, obj.FileId, sprites);
 
-            if (CharacterMap == null) return true;
+            if (!charMapValues.ContainsKey(sprite)) return sprite;
 
-            for (int i=0; i<CharacterMap.Maps.Length; ++i)
-            {
-                SpriterMapInstruction map = CharacterMap.Maps[i];
-                if (map.FolderId != folderId || map.FileId != fileId) continue;
-                if (map.TargetFolderId < 0 || map.TargetFileId < 0) return false;
-                folderId = map.TargetFolderId;
-                fileId = map.TargetFileId;
-                return true;
-            }
-
-            return false;
+            KeyValuePair<int, int> mapping = charMapValues[sprite];
+            return GetFromDict(mapping.Key, mapping.Value, sprites);
         }
 
         /// <summary>
         /// Remove a manually swapped sprite by name
         /// </summary>
-        public void UnswapSprite(TSprite original)
+        public virtual void UnswapSprite(TSprite original)
         {
             if (swappedSprites.ContainsKey(original)) swappedSprites.Remove(original);
         }
@@ -309,9 +300,40 @@ namespace SpriterDotNet
         /// <summary>
         /// Swap one sprite for another, pass the name of the spriter piece you'd like to target, and a Sprite instance to replace it with.
         /// </summary>
-        public void SwapSprite(TSprite original, TSprite replacement)
+        public virtual void SwapSprite(TSprite original, TSprite replacement)
         {
             swappedSprites[original] = replacement;
+        }
+
+        public virtual void PushCharMap(SpriterCharacterMap charMap)
+        {
+            ApplyCharMap(charMap);
+            charMaps.Push(charMap);
+        }
+
+        public virtual void PopCharMap()
+        {
+            if (charMaps.Count == 0) return;
+            charMaps.Pop();
+            ApplyCharMap(charMaps.Count > 0 ? charMaps.Peek() : null);
+        }
+
+        protected virtual void ApplyCharMap(SpriterCharacterMap charMap)
+        {
+            if(charMap == null)
+            {
+                charMapValues.Clear();
+                return;
+            }
+
+            for (int i = 0; i < charMap.Maps.Length; ++i)
+            {
+                SpriterMapInstruction map = charMap.Maps[i];
+                TSprite sprite = GetFromDict(map.FolderId, map.FileId, sprites);
+                if (sprite == null) continue;
+
+                charMapValues[sprite] = new KeyValuePair<int, int>(map.TargetFolderId, map.TargetFileId);
+            }
         }
 
         /// <summary>
@@ -359,9 +381,9 @@ namespace SpriterDotNet
             EventTriggered(eventName);
         }
 
-        private static void AddToDict<T>(int folderId, int fileId, T obj, IDictionary<int, IDictionary<int, T>> dict)
+        private static void AddToDict<T>(int folderId, int fileId, T obj, Dictionary<int, Dictionary<int, T>> dict)
         {
-            IDictionary<int, T> objectsByFiles;
+            Dictionary<int, T> objectsByFiles;
             dict.TryGetValue(folderId, out objectsByFiles);
 
             if (objectsByFiles == null)
@@ -373,9 +395,9 @@ namespace SpriterDotNet
             objectsByFiles[fileId] = obj;
         }
 
-        private static T GetFromDict<T>(int folderId, int fileId, IDictionary<int, IDictionary<int, T>> dict)
+        private static T GetFromDict<T>(int folderId, int fileId, Dictionary<int, Dictionary<int, T>> dict)
         {
-            IDictionary<int, T> objectsByFiles;
+            Dictionary<int, T> objectsByFiles;
             dict.TryGetValue(folderId, out objectsByFiles);
             if (objectsByFiles == null) return default(T);
 
