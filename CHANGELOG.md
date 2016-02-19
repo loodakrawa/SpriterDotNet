@@ -1,3 +1,6 @@
+##### 1.3.3
+* Add support for custom Unity content loaders
+
 ##### 1.3.2
 * Fix AnimationFinished event triggering repeatedly for non looping animations
 * Fix Timelines.Meta.Varlines not getting initialised
