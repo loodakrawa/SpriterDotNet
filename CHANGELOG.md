@@ -1,3 +1,6 @@
+##### 1.3.4
+* Fix curve types on bones and variables
+
 ##### 1.3.3
 * Add support for custom Unity content loaders
 

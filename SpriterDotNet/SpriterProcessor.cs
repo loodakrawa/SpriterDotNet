@@ -70,7 +70,7 @@ namespace SpriterDotNet
 
                 if (boneInfos != null && objectRefFirst.ParentId >= 0) ApplyParentTransform(info, boneInfos[objectRefFirst.ParentId]);
 
-                AddSpatialData(info, currentAnimation.Timelines[objectRefFirst.TimelineId], currentAnimation.Entity.Spriter, targetTime, frameData);
+                AddSpatialData(info, currentAnimation.Timelines[objectRefFirst.TimelineId], currentAnimation.Entity.Spriter, frameData);
 
                 SpriterObjectPool.ReturnObject(interpolatedFirst);
                 SpriterObjectPool.ReturnObject(interpolatedSecond);
@@ -108,7 +108,7 @@ namespace SpriterDotNet
 
             float adjustedTime = AdjustTime(keyA, keyB, animation.Length, targetTime);
 
-            SpriterSpatial[] boneInfos = GetBoneInfos(keyA, animation, targetTime, parentInfo);
+            SpriterSpatial[] boneInfos = GetBoneInfos(keyA, animation, adjustedTime, parentInfo);
 
             if (keyA.ObjectRefs == null)
             {
@@ -123,7 +123,7 @@ namespace SpriterDotNet
                 if (boneInfos != null && objectRef.ParentId >= 0) ApplyParentTransform(interpolated, boneInfos[objectRef.ParentId]);
                 else if(parentInfo != null) ApplyParentTransform(interpolated, parentInfo);
 
-                AddSpatialData(interpolated, animation.Timelines[objectRef.TimelineId], animation.Entity.Spriter, targetTime, frameData);
+                AddSpatialData(interpolated, animation.Timelines[objectRef.TimelineId], animation.Entity.Spriter, frameData);
             }
 
             SpriterObjectPool.ReturnObject(boneInfos);
@@ -234,7 +234,7 @@ namespace SpriterDotNet
             if (keyB == null) return keyA.VariableValue;
 
             float adjustedTime = keyA.Time == keyB.Time ? targetTime : AdjustTime(keyA, keyB, animation.Length, targetTime);
-            float factor = GetFactor(keyA, keyB, animation.Length, targetTime);
+            float factor = GetFactor(keyA, keyB, animation.Length, adjustedTime);
 
             return Interpolate(keyA.VariableValue, keyB.VariableValue, factor);
         }
@@ -285,7 +285,7 @@ namespace SpriterDotNet
         }
 
 
-        private static void AddSpatialData(SpriterObject info, SpriterTimeline timeline, Spriter spriter, float targetTime, FrameData frameData)
+        private static void AddSpatialData(SpriterObject info, SpriterTimeline timeline, Spriter spriter, FrameData frameData)
         {
             switch (timeline.ObjectType)
             {
