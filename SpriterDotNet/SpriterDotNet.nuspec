@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <authors>$author$</authors>
+    <title>$title$</title>
+    <owners>$author$</owners>
+    <licenseUrl>https://github.com/loodakrawa/SpriterDotNet/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/loodakrawa/SpriterDotNet</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>$description$</description>
+    <copyright>Copyright 2016</copyright>
+    <tags>spriter</tags>
+  </metadata>
+</package>

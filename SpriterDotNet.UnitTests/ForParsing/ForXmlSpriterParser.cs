@@ -27,10 +27,9 @@ namespace SpriterDotNet.UnitTests.ForParsing
         }
 
         [Test]
-        [ExpectedException(typeof(NullReferenceException))]
         public void CanParse_IfStringIsNull_ThrowsANullReferenceException()
         {
-            new XmlSpriterParser().CanParse(null);
+            Assert.Throws<NullReferenceException>(() => { new XmlSpriterParser().CanParse(null); });
         }
 
         [Test]
@@ -361,6 +360,7 @@ namespace SpriterDotNet.UnitTests.ForParsing
                 new SpriterTimeline()
                 {
                     Id=8,
+                    ObjectId=8,
                     Name = "p_leg_a",
                     Keys = new []{
                         new SpriterTimelineKey(),
@@ -371,6 +371,7 @@ namespace SpriterDotNet.UnitTests.ForParsing
                 new SpriterTimeline()
                 {
                     Id = 15,
+                    ObjectId=15,
                     Name = "pelvis",
                     Keys = new[]
                     {
