@@ -38,11 +38,6 @@ namespace SpriterDotNet
         public SpriterAnimation NextAnimation { get; private set; }
 
         /// <summary>
-        /// The current character map. If set to null, the default is used.
-        /// </summary>
-        public SpriterCharacterMap CharacterMap { get { return charMaps.Count > 0 ? charMaps.Peek() : null; } }
-
-        /// <summary>
         /// The name of the current animation.
         /// </summary>
         public string Name { get; private set; }
@@ -89,12 +84,11 @@ namespace SpriterDotNet
         /// </summary>
         public IAnimationDataProvider DataProvider { get; set; }
 
+        public IAssetProvider<TSprite> SpriteProvider { get; set; }
+        public IAssetProvider<TSound> SoundProvider { get; set; }
+
         private readonly Dictionary<string, SpriterAnimation> animations;
-        private readonly Dictionary<int, Dictionary<int, TSprite>> sprites = new Dictionary<int, Dictionary<int, TSprite>>();
-        private readonly Dictionary<TSprite, TSprite> swappedSprites = new Dictionary<TSprite, TSprite>();
-        private readonly Dictionary<TSprite, KeyValuePair<int, int>> charMapValues = new Dictionary<TSprite, KeyValuePair<int, int>>();
-        private readonly Stack<SpriterCharacterMap> charMaps = new Stack<SpriterCharacterMap>();
-        private readonly Dictionary<int, Dictionary<int, TSound>> sounds = new Dictionary<int, Dictionary<int, TSound>>();
+
         private float totalTransitionTime;
         private float transitionTime;
         private float factor;
@@ -119,21 +113,7 @@ namespace SpriterDotNet
             return animations.Keys;
         }
 
-        /// <summary>
-        /// Register the sprite for the given folderId and fileId.
-        /// </summary>
-        public void Register(int folderId, int fileId, TSprite obj)
-        {
-            AddToDict(folderId, fileId, obj, sprites);
-        }
-
-        /// <summary>
-        /// Register the sound for the given folderId and fileId.
-        /// </summary>
-        public void Register(int folderId, int fileId, TSound obj)
-        {
-            AddToDict(folderId, fileId, obj, sounds);
-        }
+       
 
         /// <summary>
         /// Plays the animation with the given name. Playback starts from the beginning.
@@ -240,10 +220,8 @@ namespace SpriterDotNet
             for (int i = 0; i < frameData.SpriteData.Count; ++i)
             {
                 SpriterObject info = frameData.SpriteData[i];
-                TSprite obj = GetSprite(info);
-                if (obj == null) continue;
-                obj = GetSwappedSprite(obj);
-                ApplySpriteTransform(obj, info);
+                TSprite sprite = SpriteProvider.Get(info.FolderId, info.FileId);
+                if(sprite != null) ApplySpriteTransform(sprite, info);
             }
 
             if (SpriterConfig.MetadataEnabled)
@@ -251,8 +229,8 @@ namespace SpriterDotNet
                 for (int i = 0; i < Metadata.Sounds.Count; ++i)
                 {
                     SpriterSound info = Metadata.Sounds[i];
-                    TSound sound = GetFromDict(info.FolderId, info.FileId, sounds);
-                    PlaySound(sound, info);
+                    TSound sound = SoundProvider.Get(info.FolderId, info.FileId);
+                    if(sound != null) PlaySound(sound, info);
                 }
 
                 var pointE = frameData.PointData.GetEnumerator();
@@ -276,74 +254,7 @@ namespace SpriterDotNet
             }
         }
 
-        /// <summary>
-        /// Gets the folderId and fileId for the given SpriterObject based on the current character map or default
-        /// </summary>
-        protected virtual TSprite GetSprite(SpriterObject obj)
-        {
-            TSprite sprite = GetFromDict(obj.FolderId, obj.FileId, sprites);
-
-            if (!charMapValues.ContainsKey(sprite)) return sprite;
-
-            KeyValuePair<int, int> mapping = charMapValues[sprite];
-            return GetFromDict(mapping.Key, mapping.Value, sprites);
-        }
-
-        /// <summary>
-        /// Remove a manually swapped sprite by name
-        /// </summary>
-        public virtual void UnswapSprite(TSprite original)
-        {
-            if (swappedSprites.ContainsKey(original)) swappedSprites.Remove(original);
-        }
-
-        /// <summary>
-        /// Swap one sprite for another, pass the name of the spriter piece you'd like to target, and a Sprite instance to replace it with.
-        /// </summary>
-        public virtual void SwapSprite(TSprite original, TSprite replacement)
-        {
-            swappedSprites[original] = replacement;
-        }
-
-        public virtual void PushCharMap(SpriterCharacterMap charMap)
-        {
-            ApplyCharMap(charMap);
-            charMaps.Push(charMap);
-        }
-
-        public virtual void PopCharMap()
-        {
-            if (charMaps.Count == 0) return;
-            charMaps.Pop();
-            ApplyCharMap(charMaps.Count > 0 ? charMaps.Peek() : null);
-        }
-
-        protected virtual void ApplyCharMap(SpriterCharacterMap charMap)
-        {
-            if(charMap == null)
-            {
-                charMapValues.Clear();
-                return;
-            }
-
-            for (int i = 0; i < charMap.Maps.Length; ++i)
-            {
-                SpriterMapInstruction map = charMap.Maps[i];
-                TSprite sprite = GetFromDict(map.FolderId, map.FileId, sprites);
-                if (sprite == null) continue;
-
-                charMapValues[sprite] = new KeyValuePair<int, int>(map.TargetFolderId, map.TargetFileId);
-            }
-        }
-
-        /// <summary>
-        /// Internal function to lookup swapped sprites.
-        /// </summary>
-        private TSprite GetSwappedSprite(TSprite original)
-        {
-            if (swappedSprites.ContainsKey(original)) return swappedSprites[original];
-            return original;
-        }
+       
 
         /// <summary>
         /// Applies the transform to the concrete sprite isntance.
@@ -381,30 +292,8 @@ namespace SpriterDotNet
             EventTriggered(eventName);
         }
 
-        private static void AddToDict<T>(int folderId, int fileId, T obj, Dictionary<int, Dictionary<int, T>> dict)
-        {
-            Dictionary<int, T> objectsByFiles;
-            dict.TryGetValue(folderId, out objectsByFiles);
+      
 
-            if (objectsByFiles == null)
-            {
-                objectsByFiles = new Dictionary<int, T>();
-                dict[folderId] = objectsByFiles;
-            }
-
-            objectsByFiles[fileId] = obj;
-        }
-
-        private static T GetFromDict<T>(int folderId, int fileId, Dictionary<int, Dictionary<int, T>> dict)
-        {
-            Dictionary<int, T> objectsByFiles;
-            dict.TryGetValue(folderId, out objectsByFiles);
-            if (objectsByFiles == null) return default(T);
-
-            T obj;
-            objectsByFiles.TryGetValue(fileId, out obj);
-
-            return obj;
-        }
+        
     }
 }

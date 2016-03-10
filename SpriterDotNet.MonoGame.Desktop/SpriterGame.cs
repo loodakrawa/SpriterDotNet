@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using SpriterDotNet.AssetProvider;
 using SpriterDotNet.Monogame;
 using System;
 using System.Collections.Generic;
@@ -134,7 +135,7 @@ namespace SpriterDotNet.MonoGame.Desktop
             if (IsPressed(Keys.X)) currentAnimator.Play(currentAnimator.Name);
             if (IsPressed(Keys.T)) currentAnimator.Transition(GetNextAnimation(), 1000.0f);
             if (IsPressed(Keys.C)) PushCharacterMap();
-            if (IsPressed(Keys.V)) currentAnimator.PopCharMap();
+            if (IsPressed(Keys.V)) currentAnimator.SpriteProvider.PopCharMap();
 
             oldState = Keyboard.GetState();
 
@@ -150,7 +151,7 @@ namespace SpriterDotNet.MonoGame.Desktop
         {
             SpriterCharacterMap[] maps = currentAnimator.Entity.CharacterMaps;
             if (maps == null || maps.Length == 0) return;
-            SpriterCharacterMap charMap = currentAnimator.CharacterMap;
+            SpriterCharacterMap charMap = currentAnimator.SpriteProvider.CharacterMap;
             if (charMap == null) charMap = maps[0];
             else
             {
@@ -159,7 +160,7 @@ namespace SpriterDotNet.MonoGame.Desktop
                 else charMap = maps[index];
             }
 
-            if(charMap != null) currentAnimator.PushCharMap(charMap);
+            if(charMap != null) currentAnimator.SpriteProvider.PushCharMap(charMap);
         }
 
         private string GetVarValues()
@@ -248,6 +249,9 @@ namespace SpriterDotNet.MonoGame.Desktop
 
         private void RegisterTextures(MonogameSpriterAnimator animator, Spriter spriter, string spriterName)
         {
+            animator.SpriteProvider = new DefaultAssetProvider<Texture2D>();
+            animator.SoundProvider = new DefaultAssetProvider<SoundEffect>();
+
             foreach (SpriterFolder folder in spriter.Folders)
             {
                 foreach (SpriterFile file in folder.Files)
@@ -257,12 +261,12 @@ namespace SpriterDotNet.MonoGame.Desktop
                     if (file.Type == SpriterFileType.Sound)
                     {
                         SoundEffect sound = LoadContent<SoundEffect>(path);
-                        animator.Register(folder.Id, file.Id, sound);
+                        animator.SoundProvider.Set(folder.Id, file.Id, sound);
                     }
                     else
                     {
                         Texture2D texture = LoadContent<Texture2D>(path);
-                        if (texture != null) animator.Register(folder.Id, file.Id, texture);
+                        if (texture != null) animator.SpriteProvider.Set(folder.Id, file.Id, texture);
                     }
 
                 }
