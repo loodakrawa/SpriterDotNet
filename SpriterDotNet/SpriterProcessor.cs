@@ -9,11 +9,11 @@ namespace SpriterDotNet
 {
     public static class SpriterProcessor
     {
-        public static void UpdateFrameData(FrameData frameData, SpriterAnimation first, SpriterAnimation second, float targetTime, float factor)
+        public static void UpdateFrameData(FrameData frameData, SpriterAnimation first, SpriterAnimation second, float targetTime, float deltaTime, float factor)
         {
             if (first == second)
             {
-                UpdateFrameData(frameData, first, targetTime);
+                UpdateFrameData(frameData, first, targetTime, deltaTime);
                 return;
             }
 
@@ -29,7 +29,7 @@ namespace SpriterDotNet
 
             if (!WillItBlend(firstKeyA, secondKeyA) || !WillItBlend(firstKeyB, secondKeyB))
             {
-                UpdateFrameData(frameData, first, targetTime);
+                UpdateFrameData(frameData, first, targetTime, deltaTime);
                 return;
             }
 
@@ -70,7 +70,7 @@ namespace SpriterDotNet
 
                 if (boneInfos != null && objectRefFirst.ParentId >= 0) ApplyParentTransform(info, boneInfos[objectRefFirst.ParentId]);
 
-                AddSpatialData(info, currentAnimation.Timelines[objectRefFirst.TimelineId], currentAnimation.Entity.Spriter, targetTime, frameData);
+                AddSpatialData(info, currentAnimation.Timelines[objectRefFirst.TimelineId], currentAnimation.Entity.Spriter, targetTime, deltaTime, frameData);
 
                 SpriterObjectPool.ReturnObject(interpolatedFirst);
                 SpriterObjectPool.ReturnObject(interpolatedSecond);
@@ -79,6 +79,8 @@ namespace SpriterDotNet
             SpriterObjectPool.ReturnObject(boneInfosA);
             SpriterObjectPool.ReturnObject(boneInfosB);
             SpriterObjectPool.ReturnObject(boneInfos);
+
+            if (SpriterConfig.MetadataEnabled) UpdateMetadata(frameData, currentAnimation, targetTime, deltaTime);
         }
 
         private static bool WillItBlend(SpriterMainlineKey firstKey, SpriterMainlineKey secondKey)
@@ -100,7 +102,7 @@ namespace SpriterDotNet
             return true;
         }
 
-        public static void UpdateFrameData(FrameData frameData, SpriterAnimation animation, float targetTime, SpriterSpatial parentInfo = null)
+        public static void UpdateFrameData(FrameData frameData, SpriterAnimation animation, float targetTime, float deltaTime, SpriterSpatial parentInfo = null)
         {
             SpriterMainlineKey keyA;
             SpriterMainlineKey keyB;
@@ -121,28 +123,24 @@ namespace SpriterDotNet
                 SpriterObjectRef objectRef = keyA.ObjectRefs[i];
                 SpriterObject interpolated = GetObjectInfo(objectRef, animation, adjustedTime);
                 if (boneInfos != null && objectRef.ParentId >= 0) ApplyParentTransform(interpolated, boneInfos[objectRef.ParentId]);
-                else if(parentInfo != null) ApplyParentTransform(interpolated, parentInfo);
+                else if (parentInfo != null) ApplyParentTransform(interpolated, parentInfo);
 
-                AddSpatialData(interpolated, animation.Timelines[objectRef.TimelineId], animation.Entity.Spriter, targetTime, frameData);
+                AddSpatialData(interpolated, animation.Timelines[objectRef.TimelineId], animation.Entity.Spriter, targetTime, deltaTime, frameData);
             }
 
             SpriterObjectPool.ReturnObject(boneInfos);
+
+            if (SpriterConfig.MetadataEnabled) UpdateMetadata(frameData, animation, targetTime, deltaTime);
         }
 
-        public static void GetFrameMetadata(FrameMetadata metadata, SpriterAnimation first, SpriterAnimation second, float targetTime, float deltaTime, float factor)
-        {
-            SpriterAnimation currentAnimation = factor < 0.5f ? first : second;
-            UpdateFrameMetadata(metadata, currentAnimation, targetTime, deltaTime);
-        }
-
-        public static void UpdateFrameMetadata(FrameMetadata metadata, SpriterAnimation animation, float targetTime, float deltaTime, SpriterSpatial parentInfo = null)
+        public static void UpdateMetadata(FrameData metadata, SpriterAnimation animation, float targetTime, float deltaTime, SpriterSpatial parentInfo = null)
         {
             if (SpriterConfig.VarsEnabled || SpriterConfig.TagsEnabled) AddVariableAndTagData(animation, targetTime, metadata);
             if (SpriterConfig.EventsEnabled) AddEventData(animation, targetTime, deltaTime, metadata);
             if (SpriterConfig.SoundsEnabled) AddSoundData(animation, targetTime, deltaTime, metadata);
         }
 
-        private static void AddVariableAndTagData(SpriterAnimation animation, float targetTime, FrameMetadata metadata)
+        private static void AddVariableAndTagData(SpriterAnimation animation, float targetTime, FrameData metadata)
         {
             if (animation.Meta == null) return;
 
@@ -239,7 +237,7 @@ namespace SpriterDotNet
             return Interpolate(keyA.VariableValue, keyB.VariableValue, factor);
         }
 
-        private static void AddEventData(SpriterAnimation animation, float targetTime, float deltaTime, FrameMetadata metadata)
+        private static void AddEventData(SpriterAnimation animation, float targetTime, float deltaTime, FrameData metadata)
         {
             if (animation.Eventlines == null) return;
 
@@ -255,7 +253,7 @@ namespace SpriterDotNet
             }
         }
 
-        private static void AddSoundData(SpriterAnimation animation, float targetTime, float deltaTime, FrameMetadata metadata)
+        private static void AddSoundData(SpriterAnimation animation, float targetTime, float deltaTime, FrameData metadata)
         {
             if (animation.Soundlines == null) return;
 
@@ -285,7 +283,7 @@ namespace SpriterDotNet
         }
 
 
-        private static void AddSpatialData(SpriterObject info, SpriterTimeline timeline, Spriter spriter, float targetTime, FrameData frameData)
+        private static void AddSpatialData(SpriterObject info, SpriterTimeline timeline, Spriter spriter, float targetTime, float deltaTime, FrameData frameData)
         {
             switch (timeline.ObjectType)
             {
@@ -295,7 +293,7 @@ namespace SpriterDotNet
                 case SpriterObjectType.Entity:
                     SpriterAnimation newAnim = spriter.Entities[info.EntityId].Animations[info.AnimationId];
                     float newTargetTime = info.T * newAnim.Length;
-                    UpdateFrameData(frameData, newAnim, newTargetTime, info);
+                    UpdateFrameData(frameData, newAnim, newTargetTime, deltaTime, info);
                     break;
                 case SpriterObjectType.Point:
                     info.PivotX = 0.0f;

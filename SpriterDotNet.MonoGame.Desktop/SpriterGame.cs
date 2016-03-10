@@ -84,7 +84,6 @@ namespace SpriterDotNet.MonoGame.Desktop
                     RegisterTextures(animator, spriter, spriterName);
                     animators.Add(animator);
                     animator.Position = centre;
-                    animator.Scale = new Vector2(-1, 1);
                 }
             }
 
@@ -125,8 +124,6 @@ namespace SpriterDotNet.MonoGame.Desktop
         {
             fps.OnUpdate(gameTime);
 
-            currentAnimator.Rotation -= 1;
-
             if (IsPressed(Keys.Enter)) SwitchEntity();
             if (IsPressed(Keys.Space)) currentAnimator.Play(GetNextAnimation());
             if (IsPressed(Keys.P)) ChangeAnimationSpeed(DeltaSpeed);
@@ -139,7 +136,7 @@ namespace SpriterDotNet.MonoGame.Desktop
 
             oldState = Keyboard.GetState();
 
-            foreach(var animator in animators) animator.Step(gameTime.ElapsedGameTime.Milliseconds);
+            currentAnimator.Step(gameTime.ElapsedGameTime.Milliseconds);
             
             string entity = currentAnimator.Entity.Name;
             status = String.Format("{0} : {1}", entity, currentAnimator.Name);
@@ -165,15 +162,13 @@ namespace SpriterDotNet.MonoGame.Desktop
 
         private string GetVarValues()
         {
-            FrameMetadata metadata = currentAnimator.Metadata;
-
             StringBuilder sb = new StringBuilder();
-            foreach (var entry in metadata.AnimationVars)
+            foreach (var entry in currentAnimator.FrameData.AnimationVars)
             {
                 object value = GetValue(entry.Value);
                 sb.Append(entry.Key).Append(" = ").AppendLine(value.ToString());
             }
-            foreach (var objectEntry in metadata.ObjectVars)
+            foreach (var objectEntry in currentAnimator.FrameData.ObjectVars)
             {
                 foreach (var varEntry in objectEntry.Value)
                 {
@@ -205,11 +200,9 @@ namespace SpriterDotNet.MonoGame.Desktop
 
         private string GetTagValues()
         {
-            FrameMetadata metadata = currentAnimator.Metadata;
-
             StringBuilder sb = new StringBuilder();
-            foreach (string tag in metadata.AnimationTags) sb.AppendLine(tag);
-            foreach (var objectEntry in metadata.ObjectTags)
+            foreach (string tag in currentAnimator.FrameData.AnimationTags) sb.AppendLine(tag);
+            foreach (var objectEntry in currentAnimator.FrameData.ObjectTags)
             {
                 foreach (string tag in objectEntry.Value) sb.Append(objectEntry.Key).Append(".").AppendLine(tag);
             }

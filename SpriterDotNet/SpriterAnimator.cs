@@ -75,17 +75,14 @@ namespace SpriterDotNet
         }
 
         /// <summary>
-        /// Contains all the frame metadata. Updated on every call to Step.
-        /// </summary>
-        public FrameMetadata Metadata { get; private set; }
-
-        /// <summary>
         /// The provider of the animation data.
         /// </summary>
         public IAnimationDataProvider DataProvider { get; set; }
 
         public IAssetProvider<TSprite> SpriteProvider { get; set; }
         public IAssetProvider<TSound> SoundProvider { get; set; }
+
+        public FrameData FrameData { get; set; }
 
         private readonly Dictionary<string, SpriterAnimation> animations;
 
@@ -101,7 +98,6 @@ namespace SpriterDotNet
             Entity = entity;
             animations = entity.Animations.ToDictionary(a => a.Name, a => a);
             Speed = 1.0f;
-            Metadata = new FrameMetadata();
             DataProvider = new DefaultAnimationDataProvider();
         }
 
@@ -207,49 +203,48 @@ namespace SpriterDotNet
             }
 
             Animate(elapsed);
-        }
 
+        }
         /// <summary>
         /// Gets the transform information for all object types and calls the relevant apply method for each one.
         /// </summary>
         protected virtual void Animate(float deltaTime)
         {
-            FrameData frameData = DataProvider.GetFrameData(Time, deltaTime, factor, CurrentAnimation, NextAnimation);
-            if (SpriterConfig.MetadataEnabled) Metadata = DataProvider.GetFrameMetadata(Time, deltaTime, factor, CurrentAnimation, NextAnimation);
+            FrameData = DataProvider.GetFrameData(Time, deltaTime, factor, CurrentAnimation, NextAnimation);
 
-            for (int i = 0; i < frameData.SpriteData.Count; ++i)
+            for (int i = 0; i < FrameData.SpriteData.Count; ++i)
             {
-                SpriterObject info = frameData.SpriteData[i];
+                SpriterObject info = FrameData.SpriteData[i];
                 TSprite sprite = SpriteProvider.Get(info.FolderId, info.FileId);
                 if(sprite != null) ApplySpriteTransform(sprite, info);
             }
 
             if (SpriterConfig.MetadataEnabled)
             {
-                for (int i = 0; i < Metadata.Sounds.Count; ++i)
+                for (int i = 0; i < FrameData.Sounds.Count; ++i)
                 {
-                    SpriterSound info = Metadata.Sounds[i];
+                    SpriterSound info = FrameData.Sounds[i];
                     TSound sound = SoundProvider.Get(info.FolderId, info.FileId);
                     if(sound != null) PlaySound(sound, info);
                 }
 
-                var pointE = frameData.PointData.GetEnumerator();
+                var pointE = FrameData.PointData.GetEnumerator();
                 while (pointE.MoveNext())
                 {
                     var e = pointE.Current;
                     ApplyPointTransform(e.Key, e.Value);
                 }
 
-                var boxE = frameData.BoxData.GetEnumerator();
+                var boxE = FrameData.BoxData.GetEnumerator();
                 while (boxE.MoveNext())
                 {
                     var e = boxE.Current;
                     ApplyBoxTransform(Entity.ObjectInfos[e.Key], e.Value);
                 }
 
-                for (int i = 0; i < Metadata.Events.Count; ++i)
+                for (int i = 0; i < FrameData.Events.Count; ++i)
                 {
-                    DispatchEvent(Metadata.Events[i]);
+                    DispatchEvent(FrameData.Events[i]);
                 }
             }
         }

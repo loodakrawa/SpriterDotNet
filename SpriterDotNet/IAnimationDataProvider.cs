@@ -8,6 +8,5 @@ namespace SpriterDotNet
     public interface IAnimationDataProvider
     {
         FrameData GetFrameData(float time, float deltaTime, float factor, SpriterAnimation first, SpriterAnimation second = null);
-        FrameMetadata GetFrameMetadata(float time, float deltaTime, float factor, SpriterAnimation first, SpriterAnimation second = null);
     }
 }
