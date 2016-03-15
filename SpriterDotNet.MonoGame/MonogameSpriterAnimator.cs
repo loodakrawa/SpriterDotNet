@@ -25,7 +25,7 @@ namespace SpriterDotNet.Monogame
         public float Rotation { get; set; }
         public Vector2 Position { get; set; }
         
-        public MonogameSpriterAnimator(SpriterEntity entity) : base(entity)
+        public MonogameSpriterAnimator(SpriterEntity entity, IProviderFactory<Texture2D, SoundEffect> providerFactory = null) : base(entity, providerFactory)
         {
             Scale = Vector2.One;
         }

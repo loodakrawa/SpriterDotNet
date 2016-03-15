@@ -3,7 +3,7 @@
 // This software may be modified and distributed under the terms
 // of the zlib license.  See the LICENSE file for details.
 
-namespace SpriterDotNet.AnimationDataProvider
+namespace SpriterDotNet.Providers
 {
     public class DefaultAnimationDataProvider : IAnimationDataProvider
     {

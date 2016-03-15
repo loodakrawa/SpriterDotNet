@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using SpriterDotNet.AssetProvider;
+using SpriterDotNet.Providers;
 using SpriterDotNet.Monogame;
 using System;
 using System.Collections.Generic;
@@ -30,7 +30,7 @@ namespace SpriterDotNet.MonoGame.Desktop
         };
 
         private static readonly int Width = 1280;
-        private static readonly int Height = 960;
+        private static readonly int Height = 800;
         private static readonly float MaxSpeed = 5.0f;
         private static readonly float DeltaSpeed = 0.2f;
         private static readonly string Instructions = "Enter = Next Scml\nSpace = Next Animation\nP = Anim Speed +\nO = Anim Speed -\n" + 
@@ -60,6 +60,9 @@ namespace SpriterDotNet.MonoGame.Desktop
         {
             base.Initialize();
             oldState = Keyboard.GetState();
+
+            var dm = graphics.GraphicsDevice.DisplayMode;
+            Window.Position = new Point((dm.Width - Width) / 2, (dm.Height - Height) / 2);
         }
 
         protected override void LoadContent()
@@ -70,6 +73,7 @@ namespace SpriterDotNet.MonoGame.Desktop
 
             spriteFont = Content.Load<SpriteFont>(FontName);
             Texture2D debugTexture = new Texture2D(GraphicsDevice, 1, 1);
+            DefaultProviderFactory<Texture2D, SoundEffect> factory = new DefaultProviderFactory<Texture2D, SoundEffect>();
 
             foreach (var pair in Scmls)
             {
@@ -78,10 +82,11 @@ namespace SpriterDotNet.MonoGame.Desktop
                 string data = File.ReadAllText(scmlPath);
                 Spriter spriter = SpriterParser.Parse(data);
 
+                RegisterTextures(factory, spriter, spriterName);
+                
                 foreach (SpriterEntity entity in spriter.Entities)
                 {
-                    var animator = new MonogameDebugSpriterAnimator(entity, GraphicsDevice);
-                    RegisterTextures(animator, spriter, spriterName);
+                    var animator = new MonogameDebugSpriterAnimator(entity, GraphicsDevice, factory);
                     animators.Add(animator);
                     animator.Position = centre;
                 }
@@ -240,11 +245,8 @@ namespace SpriterDotNet.MonoGame.Desktop
             currentAnimator.Speed = speed;
         }
 
-        private void RegisterTextures(MonogameSpriterAnimator animator, Spriter spriter, string spriterName)
+        private void RegisterTextures(DefaultProviderFactory<Texture2D, SoundEffect> factory, Spriter spriter, string spriterName)
         {
-            animator.SpriteProvider = new DefaultAssetProvider<Texture2D>();
-            animator.SoundProvider = new DefaultAssetProvider<SoundEffect>();
-
             foreach (SpriterFolder folder in spriter.Folders)
             {
                 foreach (SpriterFile file in folder.Files)
@@ -254,12 +256,12 @@ namespace SpriterDotNet.MonoGame.Desktop
                     if (file.Type == SpriterFileType.Sound)
                     {
                         SoundEffect sound = LoadContent<SoundEffect>(path);
-                        animator.SoundProvider.Set(folder.Id, file.Id, sound);
+                        factory.SetSound(spriter, folder, file, sound);
                     }
                     else
                     {
                         Texture2D texture = LoadContent<Texture2D>(path);
-                        if (texture != null) animator.SpriteProvider.Set(folder.Id, file.Id, texture);
+                        factory.SetSprite(spriter, folder, file, texture);
                     }
 
                 }

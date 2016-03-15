@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using SpriterDotNet.Monogame;
+using Microsoft.Xna.Framework.Audio;
 
 namespace SpriterDotNet.MonoGame.Desktop
 {
@@ -15,7 +16,7 @@ namespace SpriterDotNet.MonoGame.Desktop
         private IDictionary<string, Texture2D> boxTextures = new Dictionary<string, Texture2D>();
         private Texture2D pointTexture;
 
-        public MonogameDebugSpriterAnimator(SpriterEntity entity, GraphicsDevice graphicsDevice) : base(entity)
+        public MonogameDebugSpriterAnimator(SpriterEntity entity, GraphicsDevice graphicsDevice, IProviderFactory<Texture2D, SoundEffect> providerFactory = null) : base(entity, providerFactory)
         {
             pointTexture = TextureUtil.CreateCircle(graphicsDevice, 5, Color.Cyan);
 

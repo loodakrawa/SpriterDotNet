@@ -3,7 +3,7 @@
 // This software may be modified and distributed under the terms
 // of the zlib license.  See the LICENSE file for details.
 
-using SpriterDotNet.AnimationDataProvider;
+using SpriterDotNet.Providers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -79,9 +79,19 @@ namespace SpriterDotNet
         /// </summary>
         public IAnimationDataProvider DataProvider { get; set; }
 
+        /// <summary>
+        /// The provider of sprite assets.
+        /// </summary>
         public IAssetProvider<TSprite> SpriteProvider { get; set; }
+
+        /// <summary>
+        /// The provider of sound assets.
+        /// </summary>
         public IAssetProvider<TSound> SoundProvider { get; set; }
 
+        /// <summary>
+        /// The latest FrameData
+        /// </summary>
         public FrameData FrameData { get; set; }
 
         private readonly Dictionary<string, SpriterAnimation> animations;
@@ -90,15 +100,24 @@ namespace SpriterDotNet
         private float transitionTime;
         private float factor;
 
-        /// <summary>
-        /// Sole constructor. Creates a new instance which animates the given entity.
-        /// </summary>
-        protected SpriterAnimator(SpriterEntity entity)
+        protected SpriterAnimator(SpriterEntity entity, IProviderFactory<TSprite, TSound> providerFactory = null)
         {
             Entity = entity;
             animations = entity.Animations.ToDictionary(a => a.Name, a => a);
             Speed = 1.0f;
-            DataProvider = new DefaultAnimationDataProvider();
+
+            if(providerFactory != null)
+            {
+                DataProvider = providerFactory.GetDataProvider(entity);
+                SpriteProvider = providerFactory.GetSpriteProvider(entity);
+                SoundProvider = providerFactory.GetSoundProvider(entity);
+            }
+            else
+            {
+                DataProvider = new DefaultAnimationDataProvider();
+                SpriteProvider = new DefaultAssetProvider<TSprite>();
+                SoundProvider = new DefaultAssetProvider<TSound>();
+            }
         }
 
         /// <summary>
@@ -108,8 +127,6 @@ namespace SpriterDotNet
         {
             return animations.Keys;
         }
-
-       
 
         /// <summary>
         /// Plays the animation with the given name. Playback starts from the beginning.
@@ -193,7 +210,7 @@ namespace SpriterDotNet
             {
                 if (CurrentAnimation.Looping) Time += Length;
                 else Time = 0.0f;
-                if(Time != initialTime) AnimationFinished(Name);
+                if (Time != initialTime) AnimationFinished(Name);
             }
             else if (Time >= Length)
             {
@@ -216,7 +233,7 @@ namespace SpriterDotNet
             {
                 SpriterObject info = FrameData.SpriteData[i];
                 TSprite sprite = SpriteProvider.Get(info.FolderId, info.FileId);
-                if(sprite != null) ApplySpriteTransform(sprite, info);
+                if (sprite != null) ApplySpriteTransform(sprite, info);
             }
 
             if (SpriterConfig.MetadataEnabled)
@@ -225,7 +242,7 @@ namespace SpriterDotNet
                 {
                     SpriterSound info = FrameData.Sounds[i];
                     TSound sound = SoundProvider.Get(info.FolderId, info.FileId);
-                    if(sound != null) PlaySound(sound, info);
+                    if (sound != null) PlaySound(sound, info);
                 }
 
                 var pointE = FrameData.PointData.GetEnumerator();
@@ -249,7 +266,7 @@ namespace SpriterDotNet
             }
         }
 
-       
+
 
         /// <summary>
         /// Applies the transform to the concrete sprite isntance.
@@ -287,8 +304,8 @@ namespace SpriterDotNet
             EventTriggered(eventName);
         }
 
-      
 
-        
+
+
     }
 }

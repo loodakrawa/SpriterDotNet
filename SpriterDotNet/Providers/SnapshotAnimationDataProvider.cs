@@ -6,7 +6,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace SpriterDotNet.AnimationDataProvider
+namespace SpriterDotNet.Providers
 {
     public class SnapshotAnimationDataProvider : DefaultAnimationDataProvider
     {

@@ -4,6 +4,7 @@
 // of the zlib license.  See the LICENSE file for details.
 
 using System;
+using System.Collections.Generic;
 
 namespace SpriterDotNet
 {
@@ -120,6 +121,21 @@ namespace SpriterDotNet
             }
 
             return t2; // Failure.
+        }
+    }
+
+    internal static class DictHelper
+    {
+        public static TValue GetOrCreate<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key) where TValue : class, new()
+        {
+            TValue value;
+            dict.TryGetValue(key, out value);
+            if (value == null)
+            {
+                value = new TValue();
+                dict[key] = value;
+            }
+            return value;
         }
     }
 }

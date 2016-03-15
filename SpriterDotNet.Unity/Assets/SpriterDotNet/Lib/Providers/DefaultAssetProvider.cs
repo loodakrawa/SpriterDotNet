@@ -5,13 +5,13 @@
 
 using System.Collections.Generic;
 
-namespace SpriterDotNet.AssetProvider
+namespace SpriterDotNet.Providers
 {
     public class DefaultAssetProvider<T> : IAssetProvider<T>
     {
         public SpriterCharacterMap CharacterMap { get { return charMaps.Count > 0 ? charMaps.Peek() : null; } }
 
-        private readonly Dictionary<int, Dictionary<int, T>> assets;
+        public Dictionary<int, Dictionary<int, T>> AssetMappings { get; private set; }
         private readonly Dictionary<T, T> swappedAssets = new Dictionary<T, T>();
 
         private readonly Dictionary<T, KeyValuePair<int, int>> charMapValues = new Dictionary<T, KeyValuePair<int, int>>();
@@ -21,9 +21,9 @@ namespace SpriterDotNet.AssetProvider
         {
         }
 
-        public DefaultAssetProvider(Dictionary<int, Dictionary<int, T>> assets)
+        public DefaultAssetProvider(Dictionary<int, Dictionary<int, T>> assetMappings)
         {
-            this.assets = assets;
+            AssetMappings = assetMappings;
         }
 
         public T Get(int folderId, int fileId)
@@ -42,7 +42,7 @@ namespace SpriterDotNet.AssetProvider
 
         public void Set(int folderId, int fileId, T asset)
         {
-            Dictionary<int, T> objectsByFiles = assets.GetOrCreate(folderId);
+            Dictionary<int, T> objectsByFiles = AssetMappings.GetOrCreate(folderId);
             objectsByFiles[fileId] = asset;
         }
 
@@ -90,7 +90,7 @@ namespace SpriterDotNet.AssetProvider
         private T GetFromDict(int folderId, int fileId)
         {
             Dictionary<int, T> objectsByFiles;
-            assets.TryGetValue(folderId, out objectsByFiles);
+            AssetMappings.TryGetValue(folderId, out objectsByFiles);
             if (objectsByFiles == null) return default(T);
 
             T obj;
