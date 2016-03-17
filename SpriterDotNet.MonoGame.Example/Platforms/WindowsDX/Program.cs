@@ -5,19 +5,17 @@
 
 using System;
 
-namespace SpriterDotNet.MonoGame.Desktop
+namespace SpriterDotNet.MonoGame.Example.WindowsDX
 {
-#if WINDOWS || LINUX
     public static class Program
     {
         [STAThread]
         static void Main()
-      {
+        {
             using (SpriteGame game = new SpriteGame())
             {
                 game.Run();
             }
         }
     }
-#endif
 }

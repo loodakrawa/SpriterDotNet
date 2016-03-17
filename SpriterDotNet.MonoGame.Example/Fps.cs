@@ -5,7 +5,7 @@
 
 using Microsoft.Xna.Framework;
 
-namespace SpriterDotNet.MonoGame.Desktop
+namespace SpriterDotNet.MonoGame.Example
 {
     public class Fps
     {

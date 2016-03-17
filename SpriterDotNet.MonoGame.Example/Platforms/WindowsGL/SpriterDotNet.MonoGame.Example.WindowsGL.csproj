@@ -1,15 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{9EA4C831-7243-402E-A0AA-A502E6E1549E}</ProjectGuid>
+    <ProjectGuid>{1A98EB52-3FB5-4B0F-9745-E1E488A869E0}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SpriterDotNet.MonoGame.Desktop</RootNamespace>
-    <AssemblyName>SpriterDotNet.MonoGame.Desktop</AssemblyName>
+    <RootNamespace>SpriterDotNet.MonoGame.Example.WindowsGL</RootNamespace>
+    <AssemblyName>SpriterDotNet.MonoGame.Example.WindowsGL</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <MonoGamePlatform>Windows</MonoGamePlatform>
     <MonoGameContentBuilderExe>
@@ -38,48 +36,39 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Fps.cs" />
-    <Compile Include="MonogameDebugSpriterAnimator.cs" />
-    <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SpriterGame.cs" />
-    <Compile Include="TextureUtil.cs" />
-  </ItemGroup>
-  <ItemGroup>
     <Reference Include="MonoGame.Framework, Version=3.4.0.459, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MonoGame.Framework.WindowsDX.3.4.0.459\lib\net40\MonoGame.Framework.dll</HintPath>
+      <HintPath>..\..\..\packages\MonoGame.Framework.WindowsGL.3.4.0.459\lib\net40\MonoGame.Framework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="OpenTK, Version=1.1.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\MonoGame.Framework.WindowsGL.3.4.0.459\lib\net40\OpenTK.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <Content Include="Icon.ico" />
+	<None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <MonoGameContentReference Include="Content\Content.mgcb">
-      <SubType>Designer</SubType>
+    <MonoGameContentReference Include="..\..\Content\Content.mgcb">
+      <Link>Content\Content.mgcb</Link>
     </MonoGameContentReference>
+    <None Include="..\..\Content\**\*.scml">
+      <Link>Content\%(RecursiveDir)%(FileName)%(Extension)</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="Content\GreyGuyPlus\player_006.scml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Content\GreyGuy\player.scml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Content\TestSquares\squares.scml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <Import Project="..\SpriterDotNet\SpriterDotNet.projitems" Label="Shared" />
-  <Import Project="..\SpriterDotNet.Monogame\SpriterDotNet.Monogame.projitems" Label="Shared" />
+  <Import Project="..\..\..\SpriterDotNet\SpriterDotNet.projitems" Label="Shared" />
+  <Import Project="..\..\..\SpriterDotNet.MonoGame\SpriterDotNet.MonoGame.projitems" Label="Shared" />
+  <Import Project="..\..\SpriterDotNet.Monogame.Example.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>xcopy "$(SolutionDir)SpriterDotNet\*.cs" "$(SolutionDir)SpriterDotNet.Unity\Assets\SpriterDotNet\Lib\" /E/R/Y</PostBuildEvent>
-  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

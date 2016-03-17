@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 
-namespace SpriterDotNet.Monogame
+namespace SpriterDotNet.MonoGame
 {
     public class MonogameSpriterAnimator : SpriterAnimator<Texture2D, SoundEffect>
     {

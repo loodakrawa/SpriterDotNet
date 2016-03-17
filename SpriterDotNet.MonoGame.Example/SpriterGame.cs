@@ -8,25 +8,22 @@ using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using SpriterDotNet.Providers;
-using SpriterDotNet.Monogame;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace SpriterDotNet.MonoGame.Desktop
+namespace SpriterDotNet.MonoGame.Example
 {
     public class SpriteGame : Game
     {
         private static readonly string RootDirectory = "Content";
         private static readonly string FontName = "Status";
 
-        private static readonly IDictionary<string, string> Scmls = new Dictionary<string, string>
+        private static readonly IList<string> Scmls = new List<string>
         {
-            { "Content/GreyGuy/player.scml", "GreyGuy"},
-            { "Content/TestSquares/squares.scml", "TestSquares"},
-            { "Content/GreyGuyPlus/player_006.scml", "GreyGuyPlus"}
+             "GreyGuy/player.scml", "TestSquares/squares.scml", "GreyGuyPlus/player_006.scml"
         };
 
         private static readonly int Width = 1280;
@@ -75,14 +72,12 @@ namespace SpriterDotNet.MonoGame.Desktop
             Texture2D debugTexture = new Texture2D(GraphicsDevice, 1, 1);
             DefaultProviderFactory<Texture2D, SoundEffect> factory = new DefaultProviderFactory<Texture2D, SoundEffect>();
 
-            foreach (var pair in Scmls)
+            foreach (string scmlPath in Scmls)
             {
-                string scmlPath = pair.Key;
-                string spriterName = pair.Value;
-                string data = File.ReadAllText(scmlPath);
+                string data = File.ReadAllText(RootDirectory + "/" + scmlPath);
                 Spriter spriter = SpriterParser.Parse(data);
 
-                RegisterTextures(factory, spriter, spriterName);
+                RegisterTextures(factory, spriter, scmlPath);
                 
                 foreach (SpriterEntity entity in spriter.Entities)
                 {
@@ -245,13 +240,15 @@ namespace SpriterDotNet.MonoGame.Desktop
             currentAnimator.Speed = speed;
         }
 
-        private void RegisterTextures(DefaultProviderFactory<Texture2D, SoundEffect> factory, Spriter spriter, string spriterName)
+        private void RegisterTextures(DefaultProviderFactory<Texture2D, SoundEffect> factory, Spriter spriter, string scmlPath)
         {
+            string rootPath = scmlPath.Substring(0, scmlPath.IndexOf("/"));
+
             foreach (SpriterFolder folder in spriter.Folders)
             {
                 foreach (SpriterFile file in folder.Files)
                 {
-                    string path = FormatPath(folder, file, spriterName);
+                    string path = FormatPath(folder, file, rootPath);
 
                     if (file.Type == SpriterFileType.Sound)
                     {
@@ -283,11 +280,11 @@ namespace SpriterDotNet.MonoGame.Desktop
             return asset;
         }
 
-        private string FormatPath(SpriterFolder folder, SpriterFile file, string spriterName)
+        private string FormatPath(SpriterFolder folder, SpriterFile file, string rootPath)
         {
             string fileName = Path.GetFileNameWithoutExtension(file.Name);
-            if (String.IsNullOrEmpty(folder.Name)) return String.Format("{0}/{1}", spriterName, fileName);
-            return String.Format("{0}/{1}/{2}", spriterName, folder.Name, fileName);
+            if (String.IsNullOrEmpty(folder.Name)) return String.Format("{0}/{1}", rootPath, fileName);
+            return String.Format("{0}/{1}/{2}", rootPath, folder.Name, fileName);
         }
     }
 }

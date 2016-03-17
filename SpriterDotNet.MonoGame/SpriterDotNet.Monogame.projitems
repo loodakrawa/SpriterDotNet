@@ -6,7 +6,7 @@
     <SharedGUID>454e09ea-72b6-447c-83df-42295db3fec7</SharedGUID>
   </PropertyGroup>
   <PropertyGroup Label="Configuration">
-    <Import_RootNamespace>SpriterDotNet.Monogame</Import_RootNamespace>
+    <Import_RootNamespace>SpriterDotNet.MonoGame</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)MonogameSpriterAnimator.cs" />
