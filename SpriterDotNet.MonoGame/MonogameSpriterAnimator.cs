@@ -18,16 +18,22 @@ namespace SpriterDotNet.MonoGame
         protected readonly Stack<DrawInfo> DrawInfoPool = new Stack<DrawInfo>();
         protected readonly List<DrawInfo> DrawInfos = new List<DrawInfo>();
 
+        private const float DefaultLayerDelta = -0.000001f;
+
         private static readonly float ToRad = (float)(Math.PI / 180.0);
         private Matrix transform = Matrix.Identity;
 
         public Vector2 Scale { get; set; }
         public float Rotation { get; set; }
         public Vector2 Position { get; set; }
-        
+        public float LayerDepth { get; set; }
+        public float LayerDelta { get; set; }
+
         public MonogameSpriterAnimator(SpriterEntity entity, IProviderFactory<Texture2D, SoundEffect> providerFactory = null) : base(entity, providerFactory)
         {
             Scale = Vector2.One;
+            LayerDelta = DefaultLayerDelta;
+            LayerDepth = 0.5f;
         }
 
         public override void Step(float deltaTime)
@@ -103,7 +109,9 @@ namespace SpriterDotNet.MonoGame
             for (int i = 0; i < DrawInfos.Count; ++i)
             {
                 DrawInfo di = DrawInfos[i];
-                batch.Draw(di.Texture, di.Position, null, di.Color, di.Rotation, di.Origin, di.Scale, di.Effects, 1);
+                float depth = LayerDepth + LayerDelta * i;
+                depth = (depth < 0) ? 0 : (depth > 1) ? 1 : depth;
+                batch.Draw(di.Texture, di.Position, null, di.Color, di.Rotation, di.Origin, di.Scale, di.Effects, depth);
                 DrawInfoPool.Push(di);
             }
         }

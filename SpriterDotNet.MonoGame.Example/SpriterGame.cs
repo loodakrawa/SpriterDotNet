@@ -9,7 +9,7 @@ using SpriterDotNet.Monogame.Example;
 
 namespace SpriterDotNet.MonoGame.Example
 {
-    public class SpriteGame : Game
+    public class SpriterGame : Game
     {
         private static readonly string RootDirectory = "Content";
 
@@ -19,7 +19,7 @@ namespace SpriterDotNet.MonoGame.Example
 
         private readonly GameStateManager gameStateManager = new GameStateManager();
         
-        public SpriteGame()
+        public SpriterGame()
         {
             graphics = new GraphicsDeviceManager(this);
             graphics.PreferredBackBufferWidth = Width;
@@ -32,7 +32,10 @@ namespace SpriterDotNet.MonoGame.Example
             base.Initialize();
 
             var dm = graphics.GraphicsDevice.DisplayMode;
+
+            #if WINDOWS
             Window.Position = new Point((dm.Width - Width) / 2, (dm.Height - Height) / 2);
+            #endif
 
             SpriterGameState sgs = new SpriterGameState();
             FillGameState(sgs);
