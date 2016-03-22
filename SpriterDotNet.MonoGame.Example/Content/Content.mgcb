@@ -10,6 +10,7 @@
 
 #-------------------------------- References --------------------------------#
 
+/reference:..\..\SpriterDotNet.MonoGame.Importer\bin\Debug\SpriterDotNet.MonoGame.Importer.dll
 
 #---------------------------------- Content ---------------------------------#
 
@@ -1630,4 +1631,30 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:TextureFormat=Color
 /build:TestSquares/images_alternate2/small.png
+
+#begin spinner.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:TextureFormat=Color
+/build:spinner.png
+
+#begin GreyGuy/player.scml
+/importer:SpriterImporter
+/processor:PassThroughProcessor
+/build:GreyGuy/player.scml
+
+#begin GreyGuyPlus/player_006.scml
+/importer:SpriterImporter
+/processor:PassThroughProcessor
+/build:GreyGuyPlus/player_006.scml
+
+#begin TestSquares/squares.scml
+/importer:SpriterImporter
+/processor:PassThroughProcessor
+/build:TestSquares/squares.scml
 

@@ -10,8 +10,12 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Fps.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GameState.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GameStateManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)LoadingState.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MonogameDebugSpriterAnimator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SpriterGame.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SpriterGameState.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TextureUtil.cs" />
   </ItemGroup>
 </Project>
