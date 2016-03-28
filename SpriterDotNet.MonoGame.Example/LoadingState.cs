@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Threading.Tasks;
 
-namespace SpriterDotNet.Monogame.Example
+namespace SpriterDotNet.MonoGame.Example
 {
     public class LoadingState : GameState
     {

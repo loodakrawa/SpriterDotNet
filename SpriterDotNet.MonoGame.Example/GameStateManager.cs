@@ -6,7 +6,7 @@
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 
-namespace SpriterDotNet.Monogame.Example
+namespace SpriterDotNet.MonoGame.Example
 {
     public class GameStateManager
     {

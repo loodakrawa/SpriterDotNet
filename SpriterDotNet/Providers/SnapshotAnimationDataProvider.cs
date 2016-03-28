@@ -10,7 +10,7 @@ namespace SpriterDotNet.Providers
 {
     public class SnapshotAnimationDataProvider : DefaultAnimationDataProvider
     {
-        private static Dictionary<string, FrameData[]> Calculate(SpriterEntity entity, int interval)
+        public static Dictionary<string, FrameData[]> Calculate(SpriterEntity entity, int interval)
         {
             Dictionary<string, FrameData[]> results = new Dictionary<string, FrameData[]>();
 

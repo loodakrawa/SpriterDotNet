@@ -16,7 +16,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace SpriterDotNet.Monogame.Example
+namespace SpriterDotNet.MonoGame.Example
 {
     public class SpriterGameState : GameState
     {
@@ -32,8 +32,8 @@ namespace SpriterDotNet.Monogame.Example
         private static readonly string Instructions = "Enter = Next Scml\nSpace = Next Animation\nP = Anim Speed +\nO = Anim Speed -\n" +
             "R = Reverse Direction\nX = Reset Animation\nT = Transition to Next Animation\nC = Push Next CharMap\nV = Pop CharMap";
 
-        private IList<MonogameSpriterAnimator> animators = new List<MonogameSpriterAnimator>();
-        private MonogameSpriterAnimator currentAnimator;
+        private IList<MonoGameSpriterAnimator> animators = new List<MonoGameSpriterAnimator>();
+        private MonoGameSpriterAnimator currentAnimator;
         private SpriteBatch spriteBatch;
         private SpriteFont spriteFont;
         private KeyboardState oldState;
@@ -62,7 +62,7 @@ namespace SpriterDotNet.Monogame.Example
 
                 foreach (SpriterEntity entity in spriter.Entities)
                 {
-                    var animator = new MonogameDebugSpriterAnimator(entity, GraphicsDevice, factory);
+                    var animator = new MonoGameDebugSpriterAnimator(entity, GraphicsDevice, factory);
                     animators.Add(animator);
                     animator.Position = centre;
                 }

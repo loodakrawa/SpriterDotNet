@@ -11,7 +11,7 @@ using System.Collections.Generic;
 
 namespace SpriterDotNet.MonoGame
 {
-    public class MonogameSpriterAnimator : SpriterAnimator<Texture2D, SoundEffect>
+    public class MonoGameSpriterAnimator : SpriterAnimator<Texture2D, SoundEffect>
     {
         public readonly Dictionary<string, SpriterObject> PointInfo = new Dictionary<string, SpriterObject>();
 
@@ -29,7 +29,7 @@ namespace SpriterDotNet.MonoGame
         public float LayerDepth { get; set; }
         public float LayerDelta { get; set; }
 
-        public MonogameSpriterAnimator(SpriterEntity entity, IProviderFactory<Texture2D, SoundEffect> providerFactory = null) : base(entity, providerFactory)
+        public MonoGameSpriterAnimator(SpriterEntity entity, IProviderFactory<Texture2D, SoundEffect> providerFactory = null) : base(entity, providerFactory)
         {
             Scale = Vector2.One;
             LayerDelta = DefaultLayerDelta;
@@ -40,6 +40,9 @@ namespace SpriterDotNet.MonoGame
         {
             DrawInfos.Clear();
             PointInfo.Clear();
+
+            transform = GetMatrix(Scale, Rotation * ToRad, Position);
+
             base.Step(deltaTime);
         }
 

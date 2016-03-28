@@ -5,7 +5,7 @@
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
-using SpriterDotNet.Monogame.Example;
+using SpriterDotNet.MonoGame.Example;
 
 namespace SpriterDotNet.MonoGame.Example
 {

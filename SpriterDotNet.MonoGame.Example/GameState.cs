@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace SpriterDotNet.Monogame.Example
+namespace SpriterDotNet.MonoGame.Example
 {
     public abstract class GameState
     {

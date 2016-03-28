@@ -10,12 +10,12 @@ using Microsoft.Xna.Framework.Audio;
 
 namespace SpriterDotNet.MonoGame.Example
 {
-    public class MonogameDebugSpriterAnimator : MonogameSpriterAnimator
+    public class MonoGameDebugSpriterAnimator : MonoGameSpriterAnimator
     {
         private IDictionary<string, Texture2D> boxTextures = new Dictionary<string, Texture2D>();
         private Texture2D pointTexture;
 
-        public MonogameDebugSpriterAnimator(SpriterEntity entity, GraphicsDevice graphicsDevice, IProviderFactory<Texture2D, SoundEffect> providerFactory = null) : base(entity, providerFactory)
+        public MonoGameDebugSpriterAnimator(SpriterEntity entity, GraphicsDevice graphicsDevice, IProviderFactory<Texture2D, SoundEffect> providerFactory = null) : base(entity, providerFactory)
         {
             pointTexture = TextureUtil.CreateCircle(graphicsDevice, 5, Color.Cyan);
 

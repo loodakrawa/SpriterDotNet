@@ -6,14 +6,14 @@
     <SharedGUID>3ee9e551-b12d-4049-abde-862d2a2527b3</SharedGUID>
   </PropertyGroup>
   <PropertyGroup Label="Configuration">
-    <Import_RootNamespace>SpriterDotNet.Monogame.Example</Import_RootNamespace>
+    <Import_RootNamespace>SpriterDotNet.MonoGame.Example</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Fps.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GameState.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GameStateManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)LoadingState.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)MonogameDebugSpriterAnimator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MonoGameDebugSpriterAnimator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SpriterGame.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SpriterGameState.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TextureUtil.cs" />
