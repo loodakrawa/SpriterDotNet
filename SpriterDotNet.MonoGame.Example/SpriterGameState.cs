@@ -7,8 +7,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using SpriterDotNet.MonoGame;
-using SpriterDotNet.MonoGame.Example;
 using SpriterDotNet.Providers;
 using System;
 using System.Collections.Generic;
@@ -24,7 +22,7 @@ namespace SpriterDotNet.MonoGame.Example
 
         private static readonly IList<string> Scmls = new List<string>
         {
-             "GreyGuy/player", "TestSquares/squares", "GreyGuyPlus/player_006"
+             "TestSquares/squares", "GreyGuy/player","GreyGuyPlus/player_006"
         };
 
         private static readonly float MaxSpeed = 5.0f;

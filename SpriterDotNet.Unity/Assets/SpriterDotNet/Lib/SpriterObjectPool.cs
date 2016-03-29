@@ -9,6 +9,13 @@ namespace SpriterDotNet
         private static readonly Dictionary<Type, Stack<object>> ArrayPools = new Dictionary<Type, Stack<object>>();
         private static readonly Dictionary<Type, int> ArraySizes = new Dictionary<Type, int>();
 
+        public static void Clear()
+        {
+            Pools.Clear();
+            ArrayPools.Clear();
+            ArraySizes.Clear();
+        }
+
         public static T[] GetArray<T>(int capacity)
         {
             if (!SpriterConfig.PoolingEnabled) return new T[capacity];

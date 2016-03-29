@@ -283,6 +283,8 @@ namespace SpriterDotNetUnity
 
         private static int GetDrawablesCount(SpriterEntity entity)
         {
+			if(entity.Animations == null) return 0;
+			
             int drawablesCount = 0;
 
             foreach (SpriterAnimation animation in entity.Animations)
@@ -296,6 +298,8 @@ namespace SpriterDotNetUnity
 
         private static int GetDrawablesCount(SpriterAnimation animation)
         {
+			if(animation.MainlineKeys == null) return 0;
+			
             int drawablesCount = 0;
 
             foreach (SpriterMainlineKey key in animation.MainlineKeys)
@@ -309,6 +313,8 @@ namespace SpriterDotNetUnity
 
         private static int GetDrawablesCount(SpriterAnimation animation, SpriterMainlineKey key)
         {
+			if(key.ObjectRefs == null) return 0;
+			
             int drawablesCount = 0;
 
             foreach (SpriterObjectRef obj in key.ObjectRefs)
@@ -335,6 +341,8 @@ namespace SpriterDotNetUnity
 
         private static int GetPointsCount(SpriterEntity entity)
         {
+			if(entity.Animations == null) return 0;
+			
             int count = 0;
 
             foreach (SpriterAnimation animation in entity.Animations)

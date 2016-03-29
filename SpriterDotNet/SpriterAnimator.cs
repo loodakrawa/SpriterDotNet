@@ -220,8 +220,8 @@ namespace SpriterDotNet
             }
 
             Animate(elapsed);
-
         }
+
         /// <summary>
         /// Gets the transform information for all object types and calls the relevant apply method for each one.
         /// </summary>
@@ -266,8 +266,6 @@ namespace SpriterDotNet
             }
         }
 
-
-
         /// <summary>
         /// Applies the transform to the concrete sprite isntance.
         /// </summary>
@@ -303,9 +301,5 @@ namespace SpriterDotNet
         {
             EventTriggered(eventName);
         }
-
-
-
-
     }
 }
