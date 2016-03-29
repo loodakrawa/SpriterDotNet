@@ -3,6 +3,7 @@
 // This software may be modified and distributed under the terms
 // of the zlib license.  See the LICENSE file for details.
 
+using System;
 using System.Collections.Generic;
 
 namespace SpriterDotNet.Providers
@@ -38,6 +39,13 @@ namespace SpriterDotNet.Providers
             }
 
             return swappedAssets.ContainsKey(asset) ? swappedAssets[asset] : asset;
+        }
+
+        public KeyValuePair<int, int> GetMapping(int folderId, int fileId)
+        {
+            T asset = GetFromDict(folderId, fileId);
+            if (asset == null || !charMapValues.ContainsKey(asset)) return new KeyValuePair<int, int>(folderId, fileId);
+            return charMapValues[asset];
         }
 
         public void Set(int folderId, int fileId, T asset)

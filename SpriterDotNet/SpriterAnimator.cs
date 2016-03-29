@@ -233,7 +233,11 @@ namespace SpriterDotNet
             {
                 SpriterObject info = FrameData.SpriteData[i];
                 TSprite sprite = SpriteProvider.Get(info.FolderId, info.FileId);
-                if (sprite != null) ApplySpriteTransform(sprite, info);
+                if (sprite != null)
+                {
+                    UpdatePivots(info);
+                    ApplySpriteTransform(sprite, info);
+                }
             }
 
             if (SpriterConfig.MetadataEnabled)
@@ -264,6 +268,15 @@ namespace SpriterDotNet
                     DispatchEvent(FrameData.Events[i]);
                 }
             }
+        }
+
+        private void UpdatePivots(SpriterObject o)
+        {
+            if (!float.IsNaN(o.PivotX) && !float.IsNaN(o.PivotY)) return;
+            KeyValuePair<int, int> mapping = SpriteProvider.GetMapping(o.FolderId, o.FileId);
+            SpriterFile sf = Entity.Spriter.Folders[mapping.Key].Files[mapping.Value];
+            o.PivotX = sf.PivotX;
+            o.PivotY = sf.PivotY;
         }
 
         /// <summary>
