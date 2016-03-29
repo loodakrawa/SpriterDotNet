@@ -1,3 +1,11 @@
+##### 1.4.0
+* Add proper MonoGame plugin
+* MonoGame example on different platform
+* Fix UnityImporter bug with empty key tags
+* Add providers for Sprites and Sounds
+* Merge FrameData and FrameMetadata
+* Support for charmap images with different pivot points
+
 ##### 1.3.4
 * Fix curve types on bones and variables
 
