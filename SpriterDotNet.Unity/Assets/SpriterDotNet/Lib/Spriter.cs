@@ -3,12 +3,15 @@
 // This software may be modified and distributed under the terms
 // of the zlib license.  See the LICENSE file for details.
 
+#if !PCL
+using System;
+#endif
 
 using System.Xml.Serialization;
 
 namespace SpriterDotNet
 {
-    #if UNITY
+    #if !PCL
     [Serializable]
     #endif
     [XmlRoot("spriter_data")]
@@ -24,7 +27,7 @@ namespace SpriterDotNet
         public SpriterElement[] Tags;
     }
 
-	#if UNITY
+	#if !PCL
 	[Serializable]
 	#endif
     public class SpriterFolder : SpriterElement
@@ -33,7 +36,7 @@ namespace SpriterDotNet
         public SpriterFile[] Files;
     }
 
-	#if UNITY
+	#if !PCL
 	[Serializable]
 	#endif
     public class SpriterFile : SpriterElement
@@ -60,12 +63,12 @@ namespace SpriterDotNet
         }
     }
 
-	#if UNITY
+	#if !PCL
 	[Serializable]
 	#endif
     public class SpriterEntity : SpriterElement
     {
-	    #if UNITY
+	    #if !PCL
         [NonSerialized]
 	    #endif
         public Spriter Spriter;
@@ -83,7 +86,7 @@ namespace SpriterDotNet
         public SpriterVarDef[] Variables;
     }
 
-	#if UNITY
+	#if !PCL
 	[Serializable]
 	#endif
     public class SpriterObjectInfo : SpriterElement
@@ -107,12 +110,12 @@ namespace SpriterDotNet
         public SpriterVarDef[] Variables;
     }
 
-	#if UNITY
+	#if !PCL
 	[Serializable]
 	#endif
     public class SpriterAnimation : SpriterElement
     {
-	    #if UNITY
+	    #if !PCL
         [NonSerialized]
 	    #endif
         public SpriterEntity Entity;
@@ -144,7 +147,7 @@ namespace SpriterDotNet
         }
     }
 
-	#if UNITY
+	#if !PCL
 	[Serializable]
 	#endif
     public class SpriterMainlineKey : SpriterKey
@@ -156,7 +159,7 @@ namespace SpriterDotNet
         public SpriterObjectRef[] ObjectRefs;
     }
 
-	#if UNITY
+	#if !PCL
 	[Serializable]
 	#endif
     public class SpriterRef : SpriterElement
@@ -176,7 +179,7 @@ namespace SpriterDotNet
         }
     }
 
-	#if UNITY
+	#if !PCL
 	[Serializable]
 	#endif
     public class SpriterObjectRef : SpriterRef
@@ -185,7 +188,7 @@ namespace SpriterDotNet
         public int ZIndex;
     }
 
-	#if UNITY
+	#if !PCL
 	[Serializable]
 	#endif
     public class SpriterTimeline : SpriterElement
@@ -203,7 +206,7 @@ namespace SpriterDotNet
         public SpriterMeta Meta;
     }
 
-	#if UNITY
+	#if !PCL
 	[Serializable]
 	#endif
     public class SpriterTimelineKey : SpriterKey
@@ -223,7 +226,7 @@ namespace SpriterDotNet
         }
     }
 
-	#if UNITY
+	#if !PCL
 	[Serializable]
 	#endif
     public class SpriterSpatial
@@ -254,7 +257,7 @@ namespace SpriterDotNet
         }
     }
 
-	#if UNITY
+	#if !PCL
 	[Serializable]
 	#endif
     public class SpriterObject : SpriterSpatial
@@ -287,7 +290,7 @@ namespace SpriterDotNet
         }
     }
 
-	#if UNITY
+	#if !PCL
 	[Serializable]
 	#endif
     public class SpriterCharacterMap : SpriterElement
@@ -296,7 +299,7 @@ namespace SpriterDotNet
         public SpriterMapInstruction[] Maps;
     }
 
-	#if UNITY
+	#if !PCL
 	[Serializable]
 	#endif
     public class SpriterMapInstruction
@@ -320,7 +323,7 @@ namespace SpriterDotNet
         }
     }
 
-	#if UNITY
+	#if !PCL
 	[Serializable]
 	#endif
     public class SpriterMeta
@@ -332,7 +335,7 @@ namespace SpriterDotNet
         public SpriterTagline Tagline;
     }
 
-	#if UNITY
+	#if !PCL
 	[Serializable]
 	#endif
     public class SpriterVarDef : SpriterElement
@@ -343,14 +346,14 @@ namespace SpriterDotNet
         [XmlAttribute("default")]
         public string DefaultValue;
 
-	    #if UNITY
+	    #if !PCL
         [NonSerialized]
 	    #endif
         [XmlIgnore]
         public SpriterVarValue VariableValue;
     }
 
-	#if UNITY
+	#if !PCL
 	[Serializable]
 	#endif
     public class SpriterVarline : SpriterElement
@@ -362,7 +365,7 @@ namespace SpriterDotNet
         public SpriterVarlineKey[] Keys;
     }
 
-	#if UNITY
+	#if !PCL
 	[Serializable]
 	#endif
     public class SpriterVarlineKey : SpriterKey
@@ -370,7 +373,7 @@ namespace SpriterDotNet
         [XmlAttribute("val")]
         public string Value;
 
-	    #if UNITY
+	    #if !PCL
         [NonSerialized]
 	    #endif
         [XmlIgnore]
@@ -385,7 +388,7 @@ namespace SpriterDotNet
         public int IntValue;
     }
 
-	#if UNITY
+	#if !PCL
 	[Serializable]
 	#endif
     public class SpriterEventline : SpriterElement
@@ -394,7 +397,7 @@ namespace SpriterDotNet
         public SpriterKey[] Keys;
     }
 
-	#if UNITY
+	#if !PCL
 	[Serializable]
 	#endif
     public class SpriterTagline
@@ -403,7 +406,7 @@ namespace SpriterDotNet
         public SpriterTaglineKey[] Keys;
     }
 
-	#if UNITY
+	#if !PCL
 	[Serializable]
 	#endif
     public class SpriterTaglineKey : SpriterKey
@@ -412,7 +415,7 @@ namespace SpriterDotNet
         public SpriterTag[] Tags;
     }
 
-	#if UNITY
+	#if !PCL
 	[Serializable]
 	#endif
     public class SpriterTag : SpriterElement
@@ -421,7 +424,7 @@ namespace SpriterDotNet
         public int TagId;
     }
 
-	#if UNITY
+	#if !PCL
 	[Serializable]
 	#endif
     public class SpriterSoundline : SpriterElement
@@ -430,7 +433,7 @@ namespace SpriterDotNet
         public SpriterSoundlineKey[] Keys;
     }
 
-	#if UNITY
+	#if !PCL
 	[Serializable]
 	#endif
     public class SpriterSoundlineKey : SpriterKey
@@ -439,7 +442,7 @@ namespace SpriterDotNet
         public SpriterSound SoundObject;
     }
 
-	#if UNITY
+	#if !PCL
 	[Serializable]
 	#endif
     public class SpriterSound : SpriterElement
@@ -466,7 +469,7 @@ namespace SpriterDotNet
         }
     }
 
-	#if UNITY
+	#if !PCL
 	[Serializable]
 	#endif
     public class SpriterElement
@@ -478,7 +481,7 @@ namespace SpriterDotNet
         public string Name;
     }
 
-	#if UNITY
+	#if !PCL
 	[Serializable]
 	#endif
     public class SpriterKey : SpriterElement
@@ -507,7 +510,7 @@ namespace SpriterDotNet
         }
     }
 
-	#if UNITY
+	#if !PCL
 	[Serializable]
 	#endif
     public enum SpriterObjectType
@@ -534,7 +537,7 @@ namespace SpriterDotNet
         Variable
     }
 
-	#if UNITY
+	#if !PCL
 	[Serializable]
 	#endif
     public enum SpriterCurveType
@@ -561,7 +564,7 @@ namespace SpriterDotNet
         Bezier
     }
 
-	#if UNITY
+	#if !PCL
 	[Serializable]
 	#endif
     public enum SpriterFileType
@@ -572,7 +575,7 @@ namespace SpriterDotNet
         Sound
     }
 
-	#if UNITY
+	#if !PCL
 	[Serializable]
 	#endif
     public enum SpriterVarType

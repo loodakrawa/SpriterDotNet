@@ -22,7 +22,9 @@ namespace SpriterDotNet.MonoGame.Example
 
         private static readonly IList<string> Scmls = new List<string>
         {
-             "TestSquares/squares", "GreyGuy/player","GreyGuyPlus/player_006"
+            "GreyGuy/player",
+            "TestSquares/squares",
+            "GreyGuyPlus/player_006"
         };
 
         private static readonly float MaxSpeed = 5.0f;

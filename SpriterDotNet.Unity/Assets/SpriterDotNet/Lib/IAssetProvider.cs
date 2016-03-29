@@ -3,6 +3,8 @@
 // This software may be modified and distributed under the terms
 // of the zlib license.  See the LICENSE file for details.
 
+using System.Collections.Generic;
+
 namespace SpriterDotNet
 {
     public interface IAssetProvider<T>
@@ -16,6 +18,11 @@ namespace SpriterDotNet
         /// Gets the asset associated for the given folderId and fileId.
         /// </summary>
         T Get(int folderId, int fileId);
+
+        /// <summary>
+        /// Gets the mapped ids for the given folderId and fileId.
+        /// </summary>
+        KeyValuePair<int, int> GetMapping(int folderId, int fileId);
 
         // <summary>
         /// Associates the asset with the given folderId and fileId.

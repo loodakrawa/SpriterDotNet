@@ -277,7 +277,21 @@ namespace SpriterDotNetUnity
 
         private static bool HasSound(SpriterEntity entity)
         {
-            foreach (SpriterAnimation animation in entity.Animations) if (animation.Soundlines != null && animation.Soundlines.Length > 0) return true;
+            foreach (SpriterAnimation animation in entity.Animations)
+            {
+                if (animation.Soundlines != null && animation.Soundlines.Length > 0) return true;
+                if (animation.Timelines == null) continue;
+                foreach(SpriterTimeline timeline in animation.Timelines)
+                {
+                    if (timeline.ObjectType != SpriterObjectType.Entity || timeline.Keys == null) continue;
+                    foreach(SpriterTimelineKey key in timeline.Keys)
+                    {
+                        if (key.ObjectInfo == null) continue;
+                        bool hasSound = HasSound(entity.Spriter.Entities[key.ObjectInfo.EntityId]);
+                        if (hasSound) return true;
+                    }
+                }
+            }
             return false;
         }
 
