@@ -73,7 +73,7 @@ namespace SpriterDotNetUnity
 
             if (UseNativeTags)
             {
-                var tags = Animator.Metadata.AnimationTags;
+                var tags = Animator.FrameData.AnimationTags;
                 if (tags != null && tags.Count > 0) gameObject.tag = tags[0];
                 else gameObject.tag = defaultTag;
             }
@@ -83,8 +83,8 @@ namespace SpriterDotNetUnity
         {
             foreach (SdnFileEntry entry in SpriterData.FileEntries)
             {
-                if (entry.Sprite != null) Animator.Register(entry.FolderId, entry.FileId, entry.Sprite);
-                else Animator.Register(entry.FolderId, entry.FileId, entry.Sound);
+                if (entry.Sprite != null) Animator.SpriteProvider.Set(entry.FolderId, entry.FileId, entry.Sprite);
+                else Animator.SoundProvider.Set(entry.FolderId, entry.FileId, entry.Sound);
             }
         }
     }

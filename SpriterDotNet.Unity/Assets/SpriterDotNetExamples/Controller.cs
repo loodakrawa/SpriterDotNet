@@ -34,7 +34,7 @@ public class Controller : MonoBehaviour
         }
 
         if (GetAxisDownPositive("Vertical")) PushCharacterMap();
-        if (GetAxisDownNegative("Vertical")) animator.PopCharMap();
+        if (GetAxisDownNegative("Vertical")) animator.SpriteProvider.PopCharMap();
         if (Input.GetButtonDown("Jump")) ReverseAnimation();
         if (GetAxisDownPositive("Horizontal")) Transition(1);
         if (GetAxisDownNegative("Horizontal")) Transition(-1);
@@ -80,7 +80,7 @@ public class Controller : MonoBehaviour
     {
         SpriterCharacterMap[] maps = animator.Entity.CharacterMaps;
         if (maps == null || maps.Length == 0) return;
-        SpriterCharacterMap charMap = animator.CharacterMap;
+        SpriterCharacterMap charMap = animator.SpriteProvider.CharacterMap;
         if (charMap == null) charMap = maps[0];
         else
         {
@@ -89,21 +89,21 @@ public class Controller : MonoBehaviour
             else charMap = maps[index];
         }
 
-        if (charMap != null) animator.PushCharMap(charMap);
+        if (charMap != null) animator.SpriteProvider.PushCharMap(charMap);
     }
 
     private string GetVarValues()
     {
         StringBuilder sb = new StringBuilder();
 
-        FrameMetadata metadata = animator.Metadata;
+        FrameData frameData = animator.FrameData;
 
-        foreach (var entry in metadata.AnimationVars)
+        foreach (var entry in frameData.AnimationVars)
         {
             object value = GetValue(entry.Value);
             sb.Append(entry.Key).Append(" = ").AppendLine(value.ToString());
         }
-        foreach (var objectEntry in metadata.ObjectVars)
+        foreach (var objectEntry in frameData.ObjectVars)
         {
             foreach (var varEntry in objectEntry.Value)
             {
@@ -135,11 +135,11 @@ public class Controller : MonoBehaviour
 
     private string GetTagValues()
     {
-        FrameMetadata metadata = animator.Metadata;
+        FrameData fd = animator.FrameData;
 
         StringBuilder sb = new StringBuilder();
-        foreach (string tag in metadata.AnimationTags) sb.AppendLine(tag);
-        foreach (var objectEntry in metadata.ObjectTags)
+        foreach (string tag in fd.AnimationTags) sb.AppendLine(tag);
+        foreach (var objectEntry in fd.ObjectTags)
         {
             foreach (string tag in objectEntry.Value) sb.Append(objectEntry.Key).Append(".").AppendLine(tag);
         }

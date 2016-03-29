@@ -270,12 +270,28 @@ namespace SpriterDotNetUnity
 
         private static bool HasSound(SpriterEntity entity)
         {
-            foreach (SpriterAnimation animation in entity.Animations) if (animation.Soundlines != null && animation.Soundlines.Length > 0) return true;
+            foreach (SpriterAnimation animation in entity.Animations)
+            {
+                if (animation.Soundlines != null && animation.Soundlines.Length > 0) return true;
+                if (animation.Timelines == null) continue;
+                foreach(SpriterTimeline timeline in animation.Timelines)
+                {
+                    if (timeline.ObjectType != SpriterObjectType.Entity || timeline.Keys == null) continue;
+                    foreach(SpriterTimelineKey key in timeline.Keys)
+                    {
+                        if (key.ObjectInfo == null) continue;
+                        bool hasSound = HasSound(entity.Spriter.Entities[key.ObjectInfo.EntityId]);
+                        if (hasSound) return true;
+                    }
+                }
+            }
             return false;
         }
 
         private static int GetDrawablesCount(SpriterEntity entity)
         {
+			if(entity.Animations == null) return 0;
+			
             int drawablesCount = 0;
 
             foreach (SpriterAnimation animation in entity.Animations)
@@ -289,6 +305,8 @@ namespace SpriterDotNetUnity
 
         private static int GetDrawablesCount(SpriterAnimation animation)
         {
+			if(animation.MainlineKeys == null) return 0;
+			
             int drawablesCount = 0;
 
             foreach (SpriterMainlineKey key in animation.MainlineKeys)
@@ -302,6 +320,8 @@ namespace SpriterDotNetUnity
 
         private static int GetDrawablesCount(SpriterAnimation animation, SpriterMainlineKey key)
         {
+			if(key.ObjectRefs == null) return 0;
+			
             int drawablesCount = 0;
 
             foreach (SpriterObjectRef obj in key.ObjectRefs)
@@ -328,6 +348,8 @@ namespace SpriterDotNetUnity
 
         private static int GetPointsCount(SpriterEntity entity)
         {
+			if(entity.Animations == null) return 0;
+			
             int count = 0;
 
             foreach (SpriterAnimation animation in entity.Animations)
