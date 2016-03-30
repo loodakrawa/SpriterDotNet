@@ -37,8 +37,8 @@ namespace SpriterDotNet.MonoGame.Example
         private SpriteBatch spriteBatch;
         private SpriteFont spriteFont;
         private KeyboardState oldState;
-        private string status = String.Empty;
-        private string metadata = String.Empty;
+        private string status = string.Empty;
+        private string metadata = string.Empty;
         private Fps fps = new Fps();
 
         private Vector2 centre;
@@ -82,7 +82,7 @@ namespace SpriterDotNet.MonoGame.Example
 
             currentAnimator.Draw(spriteBatch);
 
-            DrawText(String.Format("FPS (Update) = {0}\nFPS (Draw) =    {1}", fps.UpdateFps, fps.DrawFps), new Vector2(Width - 200, 10), 0.6f);
+            DrawText(string.Format("FPS (Update) = {0}\nFPS (Draw) =    {1}", fps.UpdateFps, fps.DrawFps), new Vector2(Width - 200, 10), 0.6f);
             DrawText(Instructions, new Vector2(10, 10), 0.6f);
             DrawText(status, new Vector2(10, Height - 50));
             DrawText(metadata, new Vector2(Width - 300, Height * 0.5f), 0.6f);
@@ -108,7 +108,7 @@ namespace SpriterDotNet.MonoGame.Example
             currentAnimator.Step(gameTime.ElapsedGameTime.Milliseconds);
 
             string entity = currentAnimator.Entity.Name;
-            status = String.Format("{0} : {1}", entity, currentAnimator.Name);
+            status = string.Format("{0} : {1}", entity, currentAnimator.Name);
             metadata = "Variables:\n" + GetVarValues() + "\nTags:\n" + GetTagValues();
         }
 
@@ -256,8 +256,8 @@ namespace SpriterDotNet.MonoGame.Example
         private string FormatPath(SpriterFolder folder, SpriterFile file, string rootPath)
         {
             string fileName = Path.GetFileNameWithoutExtension(file.Name);
-            if (String.IsNullOrEmpty(folder.Name)) return String.Format("{0}/{1}", rootPath, fileName);
-            return String.Format("{0}/{1}/{2}", rootPath, folder.Name, fileName);
+            if (string.IsNullOrEmpty(folder.Name)) return string.Format("{0}/{1}", rootPath, fileName);
+            return string.Format("{0}/{1}/{2}", rootPath, folder.Name, fileName);
         }
 
         private void CurrentAnimator_EventTriggered(string obj)

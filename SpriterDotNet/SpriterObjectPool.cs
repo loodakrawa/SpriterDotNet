@@ -76,7 +76,7 @@ namespace SpriterDotNet
             }
         }
 
-        public static void ReturnStructDict<K, T>(Dictionary<K, T> obj) where T : struct
+        public static void ReturnObject<K, T>(Dictionary<K, T> obj)
         {
             if (!SpriterConfig.PoolingEnabled || obj == null) return;
             obj.Clear();

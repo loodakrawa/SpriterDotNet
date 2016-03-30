@@ -3,7 +3,6 @@
 // This software may be modified and distributed under the terms
 // of the zlib license.  See the LICENSE file for details.
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using SpriterDotNet.Parser;
@@ -22,7 +21,7 @@ namespace SpriterDotNet
         public static Spriter Parse(string data)
         {
             if (data != null) data = data.Trim();
-            if (String.IsNullOrEmpty(data)) return null;
+            if (string.IsNullOrEmpty(data)) return null;
 
             Spriter spriter = null;
             foreach (ISpriterParser parser in Parsers)
@@ -83,11 +82,11 @@ namespace SpriterDotNet
 
         private static SpriterVarValue GetVarValue(string value, SpriterVarType type)
         {
-            float floatValue = Single.MinValue;
-            int intValue = Int32.MinValue;
+            float floatValue = float.MinValue;
+            int intValue = int.MinValue;
 
-            if (type == SpriterVarType.Float) Single.TryParse(value, out floatValue);
-            else if (type == SpriterVarType.Int) Int32.TryParse(value, out intValue);
+            if (type == SpriterVarType.Float) float.TryParse(value, out floatValue);
+            else if (type == SpriterVarType.Int) int.TryParse(value, out intValue);
 
             return new SpriterVarValue
             {

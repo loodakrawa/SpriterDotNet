@@ -10,11 +10,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)FrameData.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\DictHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\MathHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\SpriterHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IAnimationDataProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IAssetProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IProviderFactory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ISpriterParser.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Helpers.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Parser\XmlSpriterParser.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Providers\DefaultAnimationDataProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Providers\DefaultAssetProvider.cs" />

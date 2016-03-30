@@ -4,12 +4,14 @@
 // of the zlib license.  See the LICENSE file for details.
 
 using System;
-using System.Collections.Generic;
 
-namespace SpriterDotNet
+namespace SpriterDotNet.Helpers
 {
     internal static class MathHelper
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public static float AngleLinear(float a, float b, int spin, float f)
         {
             if (spin == 0) return a;
@@ -26,17 +28,26 @@ namespace SpriterDotNet
             return Linear(a, b, factor);
         }
 
-        public static float ReverseLinear(float a, float b, float v)
+        /// <summary>
+        /// Gets the interpolation factor of the given value.
+        /// </summary>
+        public static float GetFactor(float a, float b, float v)
         {
             return (v - a) / (b - a);
         }
 
+        /// <summary>
+        /// Does a linear interpolation of the two values for the given factor.
+        /// </summary>
         public static float Linear(float a, float b, float f)
         {
             return a + (b - a) * f;
         }
 
-        public static float Curve(float f, params float[] c)
+        /// <summary>
+        /// Calculates the value of the 1-Dimensional Bezier curve defined with control points c for the given parameter f [0...1] using De Casteljau's algorithm.
+        /// </summary>
+        public static float Bezier(float f, params float[] c)
         {
             for (int i = c.Length - 1; i > 0; --i)
             {
@@ -49,7 +60,8 @@ namespace SpriterDotNet
             return c[0];
         }
 
-        public static float Bezier(float x1, float y1, float x2, float y2, float t)
+        #region Bezier
+        public static float Bezier2D(float x1, float y1, float x2, float y2, float t)
         {
             float duration = 1;
             float cx = 3.0f * x1;
@@ -62,27 +74,27 @@ namespace SpriterDotNet
             return Solve(ax, bx, cx, ay, by, cy, t, SolveEpsilon(duration));
         }
 
-        static float SampleCurve(float a, float b, float c, float t)
+        private static float SampleCurve(float a, float b, float c, float t)
         {
             return ((a * t + b) * t + c) * t;
         }
 
-        static float SampleCurveDerivativeX(float ax, float bx, float cx, float t)
+        private static float SampleCurveDerivativeX(float ax, float bx, float cx, float t)
         {
             return (3.0f * ax * t + 2.0f * bx) * t + cx;
         }
 
-        static float SolveEpsilon(float duration)
+        private static float SolveEpsilon(float duration)
         {
             return 1.0f / (200.0f * duration);
         }
 
-        static float Solve(float ax, float bx, float cx, float ay, float by, float cy, float x, float epsilon)
+        private static float Solve(float ax, float bx, float cx, float ay, float by, float cy, float x, float epsilon)
         {
-            return SampleCurve(ay, by, cy, solveCurveX(ax, bx, cx, x, epsilon));
+            return SampleCurve(ay, by, cy, SolveCurveX(ax, bx, cx, x, epsilon));
         }
 
-        static float solveCurveX(float ax, float bx, float cx, float x, float epsilon)
+        private static float SolveCurveX(float ax, float bx, float cx, float x, float epsilon)
         {
             float t0;
             float t1;
@@ -91,7 +103,6 @@ namespace SpriterDotNet
             float d2;
             int i;
 
-            // First try a few iterations of Newton's method -- normally very fast.
             for (t2 = x, i = 0; i < 8; i++)
             {
                 x2 = SampleCurve(ax, bx, cx, t2) - x;
@@ -103,7 +114,6 @@ namespace SpriterDotNet
                 t2 = t2 - x2 / d2;
             }
 
-            // Fall back to the bisection method for reliability.
             t0 = 0.0f;
             t1 = 1.0f;
             t2 = x;
@@ -120,22 +130,9 @@ namespace SpriterDotNet
                 t2 = (t1 - t0) * 0.5f + t0;
             }
 
-            return t2; // Failure.
+            return t2;
         }
-    }
 
-    internal static class DictHelper
-    {
-        public static TValue GetOrCreate<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key) where TValue : class, new()
-        {
-            TValue value;
-            dict.TryGetValue(key, out value);
-            if (value == null)
-            {
-                value = new TValue();
-                dict[key] = value;
-            }
-            return value;
-        }
+        #endregion
     }
 }

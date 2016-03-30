@@ -41,7 +41,7 @@ namespace SpriterDotNet
             SpriterObjectPool.ReturnChildren(BoxData);
 
             var varE = ObjectVars.GetEnumerator();
-            while (varE.MoveNext()) SpriterObjectPool.ReturnStructDict(varE.Current.Value);
+            while (varE.MoveNext()) SpriterObjectPool.ReturnObject(varE.Current.Value);
             ObjectVars.Clear();
 
             var tagE = ObjectTags.GetEnumerator();
