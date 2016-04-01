@@ -136,12 +136,12 @@ namespace SpriterDotNet
 
         public void UpdateMetadata(SpriterAnimation animation, float targetTime, float deltaTime, SpriterSpatial parentInfo = null)
         {
-            if (config.VarsEnabled || config.TagsEnabled) AddVariableAndTagData(animation, targetTime, frameData);
-            if (config.EventsEnabled) AddEventData(animation, targetTime, deltaTime, frameData);
-            if (config.SoundsEnabled) AddSoundData(animation, targetTime, deltaTime, frameData);
+            if (config.VarsEnabled || config.TagsEnabled) AddVariableAndTagData(animation, targetTime);
+            if (config.EventsEnabled) AddEventData(animation, targetTime, deltaTime);
+            if (config.SoundsEnabled) AddSoundData(animation, targetTime, deltaTime);
         }
 
-        private void AddVariableAndTagData(SpriterAnimation animation, float targetTime, FrameData metadata)
+        private void AddVariableAndTagData(SpriterAnimation animation, float targetTime)
         {
             if (animation.Meta == null) return;
 
@@ -151,7 +151,7 @@ namespace SpriterDotNet
                 {
                     SpriterVarline varline = animation.Meta.Varlines[i];
                     SpriterVarDef variable = animation.Entity.Variables[varline.Def];
-                    metadata.AnimationVars[variable.Name] = GetVariableValue(animation, variable, varline, targetTime);
+                    frameData.AnimationVars[variable.Name] = GetVariableValue(animation, variable, varline, targetTime);
                 }
             }
 
@@ -165,7 +165,7 @@ namespace SpriterDotNet
                     for (int i = 0; i < key.Tags.Length; ++i)
                     {
                         SpriterTag tag = key.Tags[i];
-                        metadata.AnimationTags.Add(tags[tag.TagId].Name);
+                        frameData.AnimationTags.Add(tags[tag.TagId].Name);
                     }
                 }
             }
@@ -184,7 +184,7 @@ namespace SpriterDotNet
                     {
                         SpriterVarline varline = timeline.Meta.Varlines[j];
                         SpriterVarDef variable = objInfo.Variables[varline.Def];
-                        metadata.AddObjectVar(objInfo.Name, variable.Name, GetVariableValue(animation, variable, varline, targetTime));
+                        frameData.AddObjectVar(objInfo.Name, variable.Name, GetVariableValue(animation, variable, varline, targetTime));
                     }
                 }
 
@@ -196,7 +196,7 @@ namespace SpriterDotNet
                         for (int j = 0; j < key.Tags.Length; ++j)
                         {
                             SpriterTag tag = key.Tags[j];
-                            metadata.AddObjectTag(objInfo.Name, tags[tag.TagId].Name);
+                            frameData.AddObjectTag(objInfo.Name, tags[tag.TagId].Name);
                         }
                     }
                 }
@@ -235,10 +235,12 @@ namespace SpriterDotNet
             float adjustedTime = keyA.Time == keyB.Time ? targetTime : SpriterHelper.AdjustTime(targetTime, keyA, keyB, animation.Length);
             float factor = SpriterHelper.GetFactor(keyA, keyB, animation.Length, adjustedTime);
 
-            return SpriterHelper.Interpolate(keyA.VariableValue, keyB.VariableValue, factor);
+            SpriterVarValue varVal = pool.GetObject<SpriterVarValue>();
+            varVal.Interpolate(keyA.VariableValue, keyB.VariableValue, factor);
+            return varVal;
         }
 
-        private void AddEventData(SpriterAnimation animation, float targetTime, float deltaTime, FrameData metadata)
+        private void AddEventData(SpriterAnimation animation, float targetTime, float deltaTime)
         {
             if (animation.Eventlines == null) return;
 
@@ -249,12 +251,12 @@ namespace SpriterDotNet
                 for (int j = 0; j < eventline.Keys.Length; ++j)
                 {
                     SpriterKey key = eventline.Keys[j];
-                    if (IsTriggered(key, targetTime, previousTime, animation.Length)) metadata.Events.Add(eventline.Name);
+                    if (IsTriggered(key, targetTime, previousTime, animation.Length)) frameData.Events.Add(eventline.Name);
                 }
             }
         }
 
-        private void AddSoundData(SpriterAnimation animation, float targetTime, float deltaTime, FrameData metadata)
+        private void AddSoundData(SpriterAnimation animation, float targetTime, float deltaTime)
         {
             if (animation.Soundlines == null) return;
 
@@ -266,7 +268,7 @@ namespace SpriterDotNet
                 {
                     SpriterSoundlineKey key = soundline.Keys[j];
                     SpriterSound sound = key.SoundObject;
-                    if (sound.Trigger && IsTriggered(key, targetTime, previousTime, animation.Length)) metadata.Sounds.Add(sound);
+                    if (sound.Trigger && IsTriggered(key, targetTime, previousTime, animation.Length)) frameData.Sounds.Add(sound);
                 }
             }
         }

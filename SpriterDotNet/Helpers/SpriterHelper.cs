@@ -114,18 +114,14 @@ namespace SpriterDotNet.Helpers
         }
 
         /// <summary>
-        /// 
+        /// Fills all the values of target varvalue by interpolating values from the two given varvalues with the given factor.
         /// </summary>
-        public static SpriterVarValue Interpolate(SpriterVarValue valA, SpriterVarValue valB, float factor)
+        public static void Interpolate(this SpriterVarValue target, SpriterVarValue valA, SpriterVarValue valB, float factor)
         {
-            SpriterVarValue ret = new SpriterVarValue();
-
-            ret.Type = valA.Type;
-            ret.StringValue = valA.StringValue;
-            ret.FloatValue = MathHelper.Linear(valA.FloatValue, valB.FloatValue, factor);
-            ret.IntValue = (int)MathHelper.Linear(valA.IntValue, valB.IntValue, factor);
-
-            return ret;
+            target.Type = valA.Type;
+            target.StringValue = valA.StringValue;
+            target.FloatValue = MathHelper.Linear(valA.FloatValue, valB.FloatValue, factor);
+            target.IntValue = (int)MathHelper.Linear(valA.IntValue, valB.IntValue, factor);
         }
 
         /// <summary>

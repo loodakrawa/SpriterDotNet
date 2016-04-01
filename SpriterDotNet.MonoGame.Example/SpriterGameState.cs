@@ -29,11 +29,11 @@ namespace SpriterDotNet.MonoGame.Example
 
         private static readonly SpriterConfig config = new SpriterConfig
         {
-            MetadataEnabled = false,
+            MetadataEnabled = true,
             EventsEnabled = true,
             PoolingEnabled = true,
             TagsEnabled = true,
-            VarsEnabled = false,
+            VarsEnabled = true,
             SoundsEnabled = false
         };
 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SpriterDotNet.Helpers;
+using System;
 using System.Collections.Generic;
 
 namespace SpriterDotNet
@@ -8,8 +9,7 @@ namespace SpriterDotNet
         private readonly SpriterConfig config;
 
         private readonly Dictionary<Type, Stack<object>> Pools = new Dictionary<Type, Stack<object>>();
-        private readonly Dictionary<Type, Stack<object>> ArrayPools = new Dictionary<Type, Stack<object>>();
-        private readonly Dictionary<Type, int> ArraySizes = new Dictionary<Type, int>();
+        private readonly Dictionary<Type, Dictionary<int, Stack<object>>> ArrayPools = new Dictionary<Type, Dictionary<int, Stack<object>>>();
 
         public SpriterObjectPool(SpriterConfig config)
         {
@@ -20,28 +20,16 @@ namespace SpriterDotNet
         {
             Pools.Clear();
             ArrayPools.Clear();
-            ArraySizes.Clear();
         }
 
         public T[] GetArray<T>(int capacity)
         {
             if (!config.PoolingEnabled) return new T[capacity];
 
-            Type type = typeof(T);
+            var poolsDict = ArrayPools.GetOrCreate(typeof(T));
+            var stack = poolsDict.GetOrCreate(capacity);
 
-            int size;
-            ArraySizes.TryGetValue(type, out size);
-
-            if (size == 0)
-            {
-                ArraySizes[type] = capacity;
-            }
-
-            var pool = GetPool(type, ArrayPools);
-
-            if (capacity > size) pool.Clear();
-
-            if (pool.Count > 0) return pool.Pop() as T[];
+            if (stack.Count > 0) return stack.Pop() as T[];
 
             return new T[capacity];
         }
@@ -50,7 +38,7 @@ namespace SpriterDotNet
         {
             if (config.PoolingEnabled)
             {
-                var pool = GetPool<T>(Pools);
+                var pool = Pools.GetOrCreate(typeof(T));
                 if (pool.Count > 0) return pool.Pop() as T;
             }
             return new T();
@@ -59,16 +47,13 @@ namespace SpriterDotNet
         public void ReturnObject<T>(T obj) where T : class
         {
             if (!config.PoolingEnabled || obj == null) return;
-            Type type = typeof(T);
-
-            var pool = GetPool(type, Pools);
+            var pool = Pools.GetOrCreate(typeof(T));
             pool.Push(obj);
         }
 
         public void ReturnObject<T>(T[] obj) where T : class
         {
-            if (obj == null) return;
-            Type type = typeof(T);
+            if (!config.PoolingEnabled || obj == null) return;
 
             for (int i = 0; i < obj.Length; ++i)
             {
@@ -76,11 +61,9 @@ namespace SpriterDotNet
                 obj[i] = null;
             }
 
-            if (config.PoolingEnabled)
-            {
-                var pool = GetPool(type, ArrayPools);
-                pool.Push(obj);
-            }
+            var poolsDict = ArrayPools.GetOrCreate(typeof(T));
+            var stack = poolsDict.GetOrCreate(obj.Length);
+            stack.Push(obj);
         }
 
         public void ReturnObject<K, T>(Dictionary<K, T> obj)
@@ -88,9 +71,7 @@ namespace SpriterDotNet
             if (!config.PoolingEnabled || obj == null) return;
             obj.Clear();
 
-            Type type = obj.GetType();
-
-            var pool = GetPool(type, Pools);
+            var pool = Pools.GetOrCreate(obj.GetType());
             pool.Push(obj);
         }
 
@@ -98,7 +79,7 @@ namespace SpriterDotNet
         {
             if (config.PoolingEnabled)
             {
-                for (int i=0; i<list.Count; ++i) ReturnObject<T>(list[i]);
+                for (int i = 0; i < list.Count; ++i) ReturnObject<T>(list[i]);
             }
             list.Clear();
         }
@@ -108,32 +89,13 @@ namespace SpriterDotNet
             if (config.PoolingEnabled)
             {
                 var enumerator = dict.GetEnumerator();
-                while(enumerator.MoveNext())
+                while (enumerator.MoveNext())
                 {
                     var e = enumerator.Current;
                     ReturnObject<T>(e.Value);
                 }
             }
             dict.Clear();
-        }
-
-        private Stack<object> GetPool<T>(Dictionary<Type, Stack<object>> pools)
-        {
-            return GetPool(typeof(T), pools);
-        }
-
-        private Stack<object> GetPool(Type type, Dictionary<Type, Stack<object>> pools)
-        {
-            Stack<object> pool;
-
-            pools.TryGetValue(type, out pool);
-            if (pool == null)
-            {
-                pool = new Stack<object>();
-                pools[type] = pool;
-            }
-
-            return pool;
         }
     }
 }
