@@ -10,27 +10,34 @@ namespace SpriterDotNet.Providers
 {
     public class DefaultProviderFactory<TSprite, TSound> : IProviderFactory<TSprite, TSound>
     {
-        private Dictionary<SpriterEntity, SnapshotAnimationDataProvider> animProviders = new Dictionary<SpriterEntity, SnapshotAnimationDataProvider>();
-        private Dictionary<Spriter, DefaultAssetProvider<TSprite>> spriteProviders = new Dictionary<Spriter, DefaultAssetProvider<TSprite>>();
-        private Dictionary<Spriter, DefaultAssetProvider<TSound>> soundProviders = new Dictionary<Spriter, DefaultAssetProvider<TSound>>();
+        private readonly Dictionary<SpriterEntity, SnapshotAnimationDataProvider> animProviders = new Dictionary<SpriterEntity, SnapshotAnimationDataProvider>();
+        private readonly Dictionary<Spriter, DefaultAssetProvider<TSprite>> spriteProviders = new Dictionary<Spriter, DefaultAssetProvider<TSprite>>();
+        private readonly Dictionary<Spriter, DefaultAssetProvider<TSound>> soundProviders = new Dictionary<Spriter, DefaultAssetProvider<TSound>>();
 
-        private bool cacheAnimations;
-        private int interval;
+        private readonly bool cacheAnimations;
+        private readonly int interval;
 
-        public DefaultProviderFactory(bool cacheAnimations = true, int interval = 20)
+        private readonly SpriterConfig config;
+        private readonly SpriterObjectPool pool;
+
+        public DefaultProviderFactory(SpriterConfig config, bool cacheAnimations = false, int interval = 20)
         {
+            this.config = config;
             this.cacheAnimations = cacheAnimations;
             this.interval = interval;
+            pool = new SpriterObjectPool(config);
         }
 
         public virtual IAnimationDataProvider GetDataProvider(SpriterEntity entity)
         {
-            if (!cacheAnimations) return new DefaultAnimationDataProvider();
+            if (!cacheAnimations) return new DefaultAnimationDataProvider(config, pool);
+
             SnapshotAnimationDataProvider provider;
             animProviders.TryGetValue(entity, out provider);
             if (provider == null)
             {
-                provider = new SnapshotAnimationDataProvider(entity, interval);
+                var data = SnapshotAnimationDataProvider.Calculate(entity, interval, config);
+                provider = new SnapshotAnimationDataProvider(config, pool, data);
                 animProviders[entity] = provider;
             }
             return provider;

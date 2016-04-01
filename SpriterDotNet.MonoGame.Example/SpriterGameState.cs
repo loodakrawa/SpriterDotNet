@@ -22,9 +22,19 @@ namespace SpriterDotNet.MonoGame.Example
 
         private static readonly IList<string> Scmls = new List<string>
         {
-            //"GreyGuy/player",
-            //"TestSquares/squares",
+            "GreyGuy/player",
+            "TestSquares/squares",
             "GreyGuyPlus/player_006"
+        };
+
+        private static readonly SpriterConfig config = new SpriterConfig
+        {
+            MetadataEnabled = false,
+            EventsEnabled = true,
+            PoolingEnabled = true,
+            TagsEnabled = true,
+            VarsEnabled = false,
+            SoundsEnabled = false
         };
 
         private static readonly float MaxSpeed = 5.0f;
@@ -52,7 +62,7 @@ namespace SpriterDotNet.MonoGame.Example
 
             spriteFont = Content.Load<SpriteFont>(FontName);
             Texture2D debugTexture = new Texture2D(GraphicsDevice, 1, 1);
-            DefaultProviderFactory<Texture2D, SoundEffect> factory = new DefaultProviderFactory<Texture2D, SoundEffect>();
+            DefaultProviderFactory<Texture2D, SoundEffect> factory = new DefaultProviderFactory<Texture2D, SoundEffect>(config);
 
             foreach (string scmlPath in Scmls)
             {

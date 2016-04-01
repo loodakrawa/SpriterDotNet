@@ -3,22 +3,29 @@ using System.Collections.Generic;
 
 namespace SpriterDotNet
 {
-    public static class SpriterObjectPool
+    public class SpriterObjectPool
     {
-        private static readonly Dictionary<Type, Stack<object>> Pools = new Dictionary<Type, Stack<object>>();
-        private static readonly Dictionary<Type, Stack<object>> ArrayPools = new Dictionary<Type, Stack<object>>();
-        private static readonly Dictionary<Type, int> ArraySizes = new Dictionary<Type, int>();
+        private readonly SpriterConfig config;
 
-        public static void Clear()
+        private readonly Dictionary<Type, Stack<object>> Pools = new Dictionary<Type, Stack<object>>();
+        private readonly Dictionary<Type, Stack<object>> ArrayPools = new Dictionary<Type, Stack<object>>();
+        private readonly Dictionary<Type, int> ArraySizes = new Dictionary<Type, int>();
+
+        public SpriterObjectPool(SpriterConfig config)
+        {
+            this.config = config;
+        }
+
+        public void Clear()
         {
             Pools.Clear();
             ArrayPools.Clear();
             ArraySizes.Clear();
         }
 
-        public static T[] GetArray<T>(int capacity)
+        public T[] GetArray<T>(int capacity)
         {
-            if (!SpriterConfig.PoolingEnabled) return new T[capacity];
+            if (!config.PoolingEnabled) return new T[capacity];
 
             Type type = typeof(T);
 
@@ -39,9 +46,9 @@ namespace SpriterDotNet
             return new T[capacity];
         }
 
-        public static T GetObject<T>() where T : class, new()
+        public T GetObject<T>() where T : class, new()
         {
-            if (SpriterConfig.PoolingEnabled)
+            if (config.PoolingEnabled)
             {
                 var pool = GetPool<T>(Pools);
                 if (pool.Count > 0) return pool.Pop() as T;
@@ -49,16 +56,16 @@ namespace SpriterDotNet
             return new T();
         }
 
-        public static void ReturnObject<T>(T obj) where T : class
+        public void ReturnObject<T>(T obj) where T : class
         {
-            if (!SpriterConfig.PoolingEnabled || obj == null) return;
+            if (!config.PoolingEnabled || obj == null) return;
             Type type = typeof(T);
 
             var pool = GetPool(type, Pools);
             pool.Push(obj);
         }
 
-        public static void ReturnObject<T>(T[] obj) where T : class
+        public void ReturnObject<T>(T[] obj) where T : class
         {
             if (obj == null) return;
             Type type = typeof(T);
@@ -69,16 +76,16 @@ namespace SpriterDotNet
                 obj[i] = null;
             }
 
-            if (SpriterConfig.PoolingEnabled)
+            if (config.PoolingEnabled)
             {
                 var pool = GetPool(type, ArrayPools);
                 pool.Push(obj);
             }
         }
 
-        public static void ReturnObject<K, T>(Dictionary<K, T> obj)
+        public void ReturnObject<K, T>(Dictionary<K, T> obj)
         {
-            if (!SpriterConfig.PoolingEnabled || obj == null) return;
+            if (!config.PoolingEnabled || obj == null) return;
             obj.Clear();
 
             Type type = obj.GetType();
@@ -87,18 +94,18 @@ namespace SpriterDotNet
             pool.Push(obj);
         }
 
-        public static void ReturnChildren<T>(List<T> list) where T : class
+        public void ReturnChildren<T>(List<T> list) where T : class
         {
-            if (SpriterConfig.PoolingEnabled)
+            if (config.PoolingEnabled)
             {
                 for (int i=0; i<list.Count; ++i) ReturnObject<T>(list[i]);
             }
             list.Clear();
         }
 
-        public static void ReturnChildren<K, T>(Dictionary<K, T> dict) where T : class
+        public void ReturnChildren<K, T>(Dictionary<K, T> dict) where T : class
         {
-            if (SpriterConfig.PoolingEnabled)
+            if (config.PoolingEnabled)
             {
                 var enumerator = dict.GetEnumerator();
                 while(enumerator.MoveNext())
@@ -110,12 +117,12 @@ namespace SpriterDotNet
             dict.Clear();
         }
 
-        private static Stack<object> GetPool<T>(Dictionary<Type, Stack<object>> pools)
+        private Stack<object> GetPool<T>(Dictionary<Type, Stack<object>> pools)
         {
             return GetPool(typeof(T), pools);
         }
 
-        private static Stack<object> GetPool(Type type, Dictionary<Type, Stack<object>> pools)
+        private Stack<object> GetPool(Type type, Dictionary<Type, Stack<object>> pools)
         {
             Stack<object> pool;
 

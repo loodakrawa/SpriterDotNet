@@ -1,24 +1,24 @@
 ﻿
 namespace SpriterDotNet
 {
-    public static class SpriterConfig
+    public class SpriterConfig
     {
         /// <summary>
         /// Enables ALL metadata calculations.
         /// </summary>
-        public static bool MetadataEnabled { get; set; }
+        public bool MetadataEnabled { get; set; }
 
-        public static bool VarsEnabled { get; set; }
-        public static bool TagsEnabled { get; set; } 
-        public static bool EventsEnabled { get; set; } 
-        public static bool SoundsEnabled { get; set; }
+        public bool VarsEnabled { get; set; }
+        public bool TagsEnabled { get; set; } 
+        public bool EventsEnabled { get; set; } 
+        public bool SoundsEnabled { get; set; }
 
         /// <summary>
         /// Enables object pooling
         /// </summary>
-        public static bool PoolingEnabled { get; set; }
+        public bool PoolingEnabled { get; set; }
 
-        static SpriterConfig() 
+        public SpriterConfig() 
         {
             MetadataEnabled = true;
             VarsEnabled = true;

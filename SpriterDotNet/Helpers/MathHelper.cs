@@ -10,7 +10,7 @@ namespace SpriterDotNet.Helpers
     internal static class MathHelper
     {
         /// <summary>
-        /// 
+        /// Does a linear angle interpolation taking into account the spin
         /// </summary>
         public static float AngleLinear(float a, float b, int spin, float f)
         {
@@ -20,6 +20,9 @@ namespace SpriterDotNet.Helpers
             return Linear(a, b, f);
         }
 
+        /// <summary>
+        /// Does a linear angle interpolation towards the closest direction
+        /// </summary>
         public static float CloserAngleLinear(float a, float b, float factor)
         {
             if (Math.Abs(b - a) < 180.0f) return Linear(a, b, factor);
@@ -29,7 +32,7 @@ namespace SpriterDotNet.Helpers
         }
 
         /// <summary>
-        /// Gets the interpolation factor of the given value.
+        /// Calculates the interpolation factor of the given value.
         /// </summary>
         public static float GetFactor(float a, float b, float v)
         {
@@ -47,20 +50,36 @@ namespace SpriterDotNet.Helpers
         /// <summary>
         /// Calculates the value of the 1-Dimensional Bezier curve defined with control points c for the given parameter f [0...1] using De Casteljau's algorithm.
         /// </summary>
-        public static float Bezier(float f, params float[] c)
+        public static float Bezier(float c0, float c1, float c2, float f)
         {
-            for (int i = c.Length - 1; i > 0; --i)
-            {
-                for (int j = 0; j < i; ++j)
-                {
-                    c[j] = Linear(c[j], c[j + 1], f);
-                }
-            }
-
-            return c[0];
+            return Linear(Linear(c0, c1, f), Linear(c1, c2, f), f);
         }
 
-        #region Bezier
+        /// <summary>
+        /// Calculates the value of the 1-Dimensional Bezier curve defined with control points c for the given parameter f [0...1] using De Casteljau's algorithm.
+        /// </summary>
+        public static float Bezier(float c0, float c1, float c2, float c3, float f)
+        {
+            return Linear(Bezier(c0, c1, c2, f), Bezier(c1, c2, c3, f), f);
+        }
+
+        /// <summary>
+        /// Calculates the value of the 1-Dimensional Bezier curve defined with control points c for the given parameter f [0...1] using De Casteljau's algorithm.
+        /// </summary>
+        public static float Bezier(float c0, float c1, float c2, float c3, float c4, float f)
+        {
+            return Linear(Bezier(c0, c1, c2, c3, f), Bezier(c1, c2, c3, c4, f), f);
+        }
+
+        /// <summary>
+        /// Calculates the value of the 1-Dimensional Bezier curve defined with control points c for the given parameter f [0...1] using De Casteljau's algorithm.
+        /// </summary>
+        public static float Bezier(float c0, float c1, float c2, float c3, float c4, float c5, float f)
+        {
+            return Linear(Bezier(c0, c1, c2, c3, c4, f), Bezier(c1, c2, c3, c4, c5, f), f);
+        }
+
+        #region BezierCodeFromSomewhere
         public static float Bezier2D(float x1, float y1, float x2, float y2, float t)
         {
             float duration = 1;

@@ -7,22 +7,23 @@ namespace SpriterDotNet.Providers
 {
     public class DefaultAnimationDataProvider : IAnimationDataProvider
     {
-        private readonly FrameData data = new FrameData();
+        private readonly SpriterProcessor processor;
+
+        public DefaultAnimationDataProvider()
+        {
+            SpriterConfig config = new SpriterConfig();
+            SpriterObjectPool pool = new SpriterObjectPool(config);
+            processor = new SpriterProcessor(config, pool);
+        }
+
+        public DefaultAnimationDataProvider(SpriterConfig config, SpriterObjectPool pool)
+        {
+            processor = new SpriterProcessor(config, pool);
+        }
 
         public virtual FrameData GetFrameData(float time, float deltaTime, float factor, SpriterAnimation first, SpriterAnimation second = null)
         {
-            data.Clear();
-
-            if (second == null)
-            {
-                SpriterProcessor.UpdateFrameData(data, first, time, deltaTime);
-            }
-            else
-            {
-                SpriterProcessor.UpdateFrameData(data, first, second, time, deltaTime, factor);
-            }
-
-            return data;
+            return second == null ? processor.GetFrameData(first, time, deltaTime) : processor.GetFrameData(first, second, time, deltaTime, factor);
         }
     }
 }

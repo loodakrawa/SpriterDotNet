@@ -173,16 +173,16 @@ namespace SpriterDotNet.Helpers
                 case SpriterCurveType.Linear:
                     break;
                 case SpriterCurveType.Quadratic:
-                    factor = MathHelper.Bezier(factor, 0.0f, key.C1, 1.0f);
+                    factor = MathHelper.Bezier(0.0f, key.C1, 1.0f, factor);
                     break;
                 case SpriterCurveType.Cubic:
-                    factor = MathHelper.Bezier(factor, 0.0f, key.C1, key.C2, 1.0f);
+                    factor = MathHelper.Bezier(0.0f, key.C1, key.C2, 1.0f, factor);
                     break;
                 case SpriterCurveType.Quartic:
-                    factor = MathHelper.Bezier(factor, 0.0f, key.C1, key.C2, key.C3, 1.0f);
+                    factor = MathHelper.Bezier(0.0f, key.C1, key.C2, key.C3, 1.0f, factor);
                     break;
                 case SpriterCurveType.Quintic:
-                    factor = MathHelper.Bezier(factor, 0.0f, key.C1, key.C2, key.C3, key.C4, 1.0f);
+                    factor = MathHelper.Bezier(0.0f, key.C1, key.C2, key.C3, key.C4, 1.0f, factor);
                     break;
                 case SpriterCurveType.Bezier:
                     factor = MathHelper.Bezier2D(key.C1, key.C2, key.C3, key.C4, factor);

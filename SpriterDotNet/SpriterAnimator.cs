@@ -240,33 +240,30 @@ namespace SpriterDotNet
                 }
             }
 
-            if (SpriterConfig.MetadataEnabled)
+            for (int i = 0; i < FrameData.Sounds.Count; ++i)
             {
-                for (int i = 0; i < FrameData.Sounds.Count; ++i)
-                {
-                    SpriterSound info = FrameData.Sounds[i];
-                    TSound sound = SoundProvider.Get(info.FolderId, info.FileId);
-                    if (sound != null) PlaySound(sound, info);
-                }
+                SpriterSound info = FrameData.Sounds[i];
+                TSound sound = SoundProvider.Get(info.FolderId, info.FileId);
+                if (sound != null) PlaySound(sound, info);
+            }
 
-                var pointE = FrameData.PointData.GetEnumerator();
-                while (pointE.MoveNext())
-                {
-                    var e = pointE.Current;
-                    ApplyPointTransform(e.Key, e.Value);
-                }
+            var pointE = FrameData.PointData.GetEnumerator();
+            while (pointE.MoveNext())
+            {
+                var e = pointE.Current;
+                ApplyPointTransform(e.Key, e.Value);
+            }
 
-                var boxE = FrameData.BoxData.GetEnumerator();
-                while (boxE.MoveNext())
-                {
-                    var e = boxE.Current;
-                    ApplyBoxTransform(Entity.ObjectInfos[e.Key], e.Value);
-                }
+            var boxE = FrameData.BoxData.GetEnumerator();
+            while (boxE.MoveNext())
+            {
+                var e = boxE.Current;
+                ApplyBoxTransform(Entity.ObjectInfos[e.Key], e.Value);
+            }
 
-                for (int i = 0; i < FrameData.Events.Count; ++i)
-                {
-                    DispatchEvent(FrameData.Events[i]);
-                }
+            for (int i = 0; i < FrameData.Events.Count; ++i)
+            {
+                DispatchEvent(FrameData.Events[i]);
             }
         }
 

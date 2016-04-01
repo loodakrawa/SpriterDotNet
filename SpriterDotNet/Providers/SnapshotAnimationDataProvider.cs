@@ -10,7 +10,7 @@ namespace SpriterDotNet.Providers
 {
     public class SnapshotAnimationDataProvider : DefaultAnimationDataProvider
     {
-        public static Dictionary<string, FrameData[]> Calculate(SpriterEntity entity, int interval)
+        public static Dictionary<string, FrameData[]> Calculate(SpriterEntity entity, int interval, SpriterConfig config)
         {
             Dictionary<string, FrameData[]> results = new Dictionary<string, FrameData[]>();
 
@@ -24,8 +24,8 @@ namespace SpriterDotNet.Providers
                     float time = i * interval;
                     if (time > anim.Length) time = anim.Length;
 
-                    FrameData data = new FrameData();
-                    SpriterProcessor.UpdateFrameData(data, anim, time, interval);
+                    SpriterObjectPool pool = new SpriterObjectPool(config);
+                    FrameData data = new SpriterProcessor(config, pool).GetFrameData(anim, time, interval);
                     animData[i] = data;
                 }
 
@@ -36,14 +36,9 @@ namespace SpriterDotNet.Providers
 
         private readonly Dictionary<string, FrameData[]> data;
 
-        public SnapshotAnimationDataProvider(Dictionary<string, FrameData[]> data)
+        public SnapshotAnimationDataProvider(SpriterConfig config, SpriterObjectPool pool, Dictionary<string, FrameData[]> data) : base(config, pool)
         {
             this.data = data;
-        }
-
-        public SnapshotAnimationDataProvider(SpriterEntity entity, int interval)
-        {
-            data = Calculate(entity, interval);
         }
 
         public override FrameData GetFrameData(float time, float deltaTime, float factor, SpriterAnimation first, SpriterAnimation second = null)
