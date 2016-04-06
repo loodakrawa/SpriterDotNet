@@ -13,20 +13,22 @@
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\DictHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\MathHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\SpriterHelper.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)IAnimationDataProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IFrameDataProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IAssetProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IProviderFactory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ISpriterParser.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ISpriterPreprocessor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Parser\XmlSpriterParser.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Providers\DefaultAnimationDataProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Preprocessors\SpriterInitPreprocessor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Providers\DefaultFrameDataProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Providers\DefaultAssetProvider.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Providers\SnapshotAnimationDataProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Providers\SnapshotFrameDataProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Providers\DefaultProviderFactory.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Spriter.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)SpriterAnimator.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)SpriterConfig.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)SpriterObjectPool.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)SpriterParser.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)SpriterProcessor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DataModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Animator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Config.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ObjectPool.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SpriterReader.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FrameDataCalculator.cs" />
   </ItemGroup>
 </Project>

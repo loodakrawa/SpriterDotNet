@@ -20,9 +20,9 @@ namespace SpriterDotNet
         public List<string> Events { get; private set; }
         public List<SpriterSound> Sounds { get; private set; }
 
-        private readonly SpriterObjectPool pool;
+        private readonly ObjectPool pool;
 
-        public FrameData(SpriterObjectPool pool)
+        public FrameData(ObjectPool pool)
         {
             this.pool = pool;
 

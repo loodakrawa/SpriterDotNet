@@ -27,7 +27,7 @@ namespace SpriterDotNet.MonoGame.Example
             "GreyGuyPlus/player_006"
         };
 
-        private static readonly SpriterConfig config = new SpriterConfig
+        private static readonly Config config = new Config
         {
             MetadataEnabled = true,
             EventsEnabled = true,
@@ -62,7 +62,7 @@ namespace SpriterDotNet.MonoGame.Example
 
             spriteFont = Content.Load<SpriteFont>(FontName);
             Texture2D debugTexture = new Texture2D(GraphicsDevice, 1, 1);
-            DefaultProviderFactory<Texture2D, SoundEffect> factory = new DefaultProviderFactory<Texture2D, SoundEffect>(config);
+            DefaultProviderFactory<Texture2D, SoundEffect> factory = new DefaultProviderFactory<Texture2D, SoundEffect>(config, true);
 
             foreach (string scmlPath in Scmls)
             {

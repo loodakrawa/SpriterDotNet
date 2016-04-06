@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace SpriterDotNet
 {
-    public abstract class SpriterAnimator<TSprite, TSound>
+    public abstract class Animator<TSprite, TSound>
     {
         /// <summary>
         /// Occurs when the animation finishes playing or loops.
@@ -25,22 +25,22 @@ namespace SpriterDotNet
         /// <summary>
         /// The animated Entity.
         /// </summary>
-        public SpriterEntity Entity { get; private set; }
+        public SpriterEntity Entity { get; protected set; }
 
         /// <summary>
         /// The current animation.
         /// </summary>
-        public SpriterAnimation CurrentAnimation { get; private set; }
+        public SpriterAnimation CurrentAnimation { get; protected set; }
 
         /// <summary>
         /// The animation transitioned to or blended with the current animation.
         /// </summary>
-        public SpriterAnimation NextAnimation { get; private set; }
+        public SpriterAnimation NextAnimation { get; protected set; }
 
         /// <summary>
         /// The name of the current animation.
         /// </summary>
-        public string Name { get; private set; }
+        public string Name { get; protected set; }
 
         /// <summary>
         /// Playback speed. Defaults to 1.0f. Negative values reverse the animation.<para />
@@ -53,7 +53,7 @@ namespace SpriterDotNet
         /// <summary>
         /// The legth of the current animation in milliseconds.
         /// </summary>
-        public float Length { get; private set; }
+        public float Length { get; protected set; }
 
         /// <summary>
         /// The current time in milliseconds.
@@ -63,7 +63,7 @@ namespace SpriterDotNet
         /// <summary>
         /// Allow external class to check if an animation exists for a given name.
         /// </summary>
-        public bool HasAnimation(string name) { return animations.ContainsKey(name); }
+        public bool HasAnimation(string name) { return Animations.ContainsKey(name); }
 
         /// <summary>
         /// The current progress. Ranges from 0.0f - 1.0f.
@@ -77,7 +77,7 @@ namespace SpriterDotNet
         /// <summary>
         /// The provider of the animation data.
         /// </summary>
-        public IAnimationDataProvider DataProvider { get; set; }
+        public IFrameDataProvider DataProvider { get; set; }
 
         /// <summary>
         /// The provider of sprite assets.
@@ -94,16 +94,16 @@ namespace SpriterDotNet
         /// </summary>
         public FrameData FrameData { get; set; }
 
-        private readonly Dictionary<string, SpriterAnimation> animations;
+        protected Dictionary<string, SpriterAnimation> Animations { get; set; }
 
         private float totalTransitionTime;
         private float transitionTime;
         private float factor;
 
-        protected SpriterAnimator(SpriterEntity entity, IProviderFactory<TSprite, TSound> providerFactory = null)
+        protected Animator(SpriterEntity entity, IProviderFactory<TSprite, TSound> providerFactory = null)
         {
             Entity = entity;
-            animations = entity.Animations.ToDictionary(a => a.Name, a => a);
+            Animations = entity.Animations.ToDictionary(a => a.Name, a => a);
             Speed = 1.0f;
 
             if(providerFactory != null)
@@ -114,7 +114,7 @@ namespace SpriterDotNet
             }
             else
             {
-                DataProvider = new DefaultAnimationDataProvider();
+                DataProvider = new DefaultFrameDataProvider();
                 SpriteProvider = new DefaultAssetProvider<TSprite>();
                 SoundProvider = new DefaultAssetProvider<TSound>();
             }
@@ -125,7 +125,7 @@ namespace SpriterDotNet
         /// </summary>
         public IEnumerable<string> GetAnimations()
         {
-            return animations.Keys;
+            return Animations.Keys;
         }
 
         /// <summary>
@@ -133,7 +133,7 @@ namespace SpriterDotNet
         /// </summary>
         public virtual void Play(string name)
         {
-            SpriterAnimation animation = animations[name];
+            SpriterAnimation animation = Animations[name];
             Play(animation);
         }
 
@@ -160,7 +160,7 @@ namespace SpriterDotNet
             this.totalTransitionTime = totalTransitionTime;
             transitionTime = 0.0f;
             factor = 0.0f;
-            NextAnimation = animations[name];
+            NextAnimation = Animations[name];
         }
 
         /// <summary>
@@ -174,7 +174,7 @@ namespace SpriterDotNet
         public virtual void Blend(string first, string second, float factor)
         {
             Play(first);
-            NextAnimation = animations[second];
+            NextAnimation = Animations[second];
             totalTransitionTime = 0;
             this.factor = factor;
         }
@@ -184,7 +184,7 @@ namespace SpriterDotNet
         /// </summary>
         public virtual void Step(float deltaTime)
         {
-            if (CurrentAnimation == null) Play(animations.Keys.First());
+            if (CurrentAnimation == null) Play(Animations.Keys.First());
 
             float initialTime = Time;
             float elapsed = deltaTime * Speed;
@@ -267,7 +267,7 @@ namespace SpriterDotNet
             }
         }
 
-        private void UpdatePivots(SpriterObject o)
+        protected virtual void UpdatePivots(SpriterObject o)
         {
             if (!float.IsNaN(o.PivotX) && !float.IsNaN(o.PivotY)) return;
             KeyValuePair<int, int> mapping = SpriteProvider.GetMapping(o.FolderId, o.FileId);

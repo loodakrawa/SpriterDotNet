@@ -11,7 +11,7 @@ using System.Collections.Generic;
 
 namespace SpriterDotNet.MonoGame
 {
-    public class MonoGameSpriterAnimator : SpriterAnimator<Texture2D, SoundEffect>
+    public class MonoGameSpriterAnimator : Animator<Texture2D, SoundEffect>
     {
         public readonly Dictionary<string, SpriterObject> PointInfo = new Dictionary<string, SpriterObject>();
 

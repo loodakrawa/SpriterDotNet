@@ -8,9 +8,9 @@ using System.Collections.Generic;
 
 namespace SpriterDotNet.Providers
 {
-    public class SnapshotAnimationDataProvider : DefaultAnimationDataProvider
+    public class SnapshotFrameDataProvider : DefaultFrameDataProvider
     {
-        public static Dictionary<string, FrameData[]> Calculate(SpriterEntity entity, int interval, SpriterConfig config)
+        public static Dictionary<string, FrameData[]> Calculate(SpriterEntity entity, int interval, Config config)
         {
             Dictionary<string, FrameData[]> results = new Dictionary<string, FrameData[]>();
 
@@ -24,8 +24,8 @@ namespace SpriterDotNet.Providers
                     float time = i * interval;
                     if (time > anim.Length) time = anim.Length;
 
-                    SpriterObjectPool pool = new SpriterObjectPool(config);
-                    FrameData data = new SpriterProcessor(config, pool).GetFrameData(anim, time, interval);
+                    ObjectPool pool = new ObjectPool(config);
+                    FrameData data = new FrameDataCalculator(config, pool).GetFrameData(anim, time, interval);
                     animData[i] = data;
                 }
 
@@ -34,18 +34,18 @@ namespace SpriterDotNet.Providers
             return results;
         }
 
-        private readonly Dictionary<string, FrameData[]> data;
+        protected Dictionary<string, FrameData[]> Data { get; set; }
 
-        public SnapshotAnimationDataProvider(SpriterConfig config, SpriterObjectPool pool, Dictionary<string, FrameData[]> data) : base(config, pool)
+        public SnapshotFrameDataProvider(Config config, ObjectPool pool, Dictionary<string, FrameData[]> data) : base(config, pool)
         {
-            this.data = data;
+            Data = data;
         }
 
         public override FrameData GetFrameData(float time, float deltaTime, float factor, SpriterAnimation first, SpriterAnimation second = null)
         {
-            if (data == null || second != null) return base.GetFrameData(time, deltaTime, factor, first, second);
+            if (Data == null || second != null) return base.GetFrameData(time, deltaTime, factor, first, second);
 
-            FrameData[] animData = data[first.Name];
+            FrameData[] animData = Data[first.Name];
             int index = (int)(time / first.Length * animData.Length);
             if (index == animData.Length) index = animData.Length - 1;
             return animData[index];

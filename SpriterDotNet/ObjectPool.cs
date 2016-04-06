@@ -1,19 +1,25 @@
-﻿using SpriterDotNet.Helpers;
+﻿// Copyright (c) 2015 The original author or authors
+//
+// This software may be modified and distributed under the terms
+// of the zlib license.  See the LICENSE file for details.
+
+using SpriterDotNet.Helpers;
 using System;
 using System.Collections.Generic;
 
 namespace SpriterDotNet
 {
-    public class SpriterObjectPool
+    public class ObjectPool
     {
-        private readonly SpriterConfig config;
+        protected Config Config { get; set; }
+        protected Dictionary<Type, Stack<object>> Pools { get; set; }
+        protected Dictionary<Type, Dictionary<int, Stack<object>>> ArrayPools { get; set; }
 
-        private readonly Dictionary<Type, Stack<object>> Pools = new Dictionary<Type, Stack<object>>();
-        private readonly Dictionary<Type, Dictionary<int, Stack<object>>> ArrayPools = new Dictionary<Type, Dictionary<int, Stack<object>>>();
-
-        public SpriterObjectPool(SpriterConfig config)
+        public ObjectPool(Config config)
         {
-            this.config = config;
+            Config = config;
+            Pools = new Dictionary<Type, Stack<object>>();
+            ArrayPools = new Dictionary<Type, Dictionary<int, Stack<object>>>();
         }
 
         public void Clear()
@@ -22,9 +28,9 @@ namespace SpriterDotNet
             ArrayPools.Clear();
         }
 
-        public T[] GetArray<T>(int capacity)
+        public virtual T[] GetArray<T>(int capacity)
         {
-            if (!config.PoolingEnabled) return new T[capacity];
+            if (!Config.PoolingEnabled) return new T[capacity];
 
             var poolsDict = ArrayPools.GetOrCreate(typeof(T));
             var stack = poolsDict.GetOrCreate(capacity);
@@ -34,9 +40,9 @@ namespace SpriterDotNet
             return new T[capacity];
         }
 
-        public T GetObject<T>() where T : class, new()
+        public virtual T GetObject<T>() where T : class, new()
         {
-            if (config.PoolingEnabled)
+            if (Config.PoolingEnabled)
             {
                 var pool = Pools.GetOrCreate(typeof(T));
                 if (pool.Count > 0) return pool.Pop() as T;
@@ -44,16 +50,16 @@ namespace SpriterDotNet
             return new T();
         }
 
-        public void ReturnObject<T>(T obj) where T : class
+        public virtual void ReturnObject<T>(T obj) where T : class
         {
-            if (!config.PoolingEnabled || obj == null) return;
+            if (!Config.PoolingEnabled || obj == null) return;
             var pool = Pools.GetOrCreate(typeof(T));
             pool.Push(obj);
         }
 
-        public void ReturnObject<T>(T[] obj) where T : class
+        public virtual void ReturnObject<T>(T[] obj) where T : class
         {
-            if (!config.PoolingEnabled || obj == null) return;
+            if (!Config.PoolingEnabled || obj == null) return;
 
             for (int i = 0; i < obj.Length; ++i)
             {
@@ -66,27 +72,27 @@ namespace SpriterDotNet
             stack.Push(obj);
         }
 
-        public void ReturnObject<K, T>(Dictionary<K, T> obj)
+        public virtual void ReturnObject<K, T>(Dictionary<K, T> obj)
         {
-            if (!config.PoolingEnabled || obj == null) return;
+            if (!Config.PoolingEnabled || obj == null) return;
             obj.Clear();
 
             var pool = Pools.GetOrCreate(obj.GetType());
             pool.Push(obj);
         }
 
-        public void ReturnChildren<T>(List<T> list) where T : class
+        public virtual void ReturnChildren<T>(List<T> list) where T : class
         {
-            if (config.PoolingEnabled)
+            if (Config.PoolingEnabled)
             {
                 for (int i = 0; i < list.Count; ++i) ReturnObject<T>(list[i]);
             }
             list.Clear();
         }
 
-        public void ReturnChildren<K, T>(Dictionary<K, T> dict) where T : class
+        public virtual void ReturnChildren<K, T>(Dictionary<K, T> dict) where T : class
         {
-            if (config.PoolingEnabled)
+            if (Config.PoolingEnabled)
             {
                 var enumerator = dict.GetEnumerator();
                 while (enumerator.MoveNext())

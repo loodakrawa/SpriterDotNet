@@ -10,60 +10,66 @@ namespace SpriterDotNet.Providers
 {
     public class DefaultProviderFactory<TSprite, TSound> : IProviderFactory<TSprite, TSound>
     {
-        private readonly Dictionary<SpriterEntity, SnapshotAnimationDataProvider> animProviders = new Dictionary<SpriterEntity, SnapshotAnimationDataProvider>();
-        private readonly Dictionary<Spriter, DefaultAssetProvider<TSprite>> spriteProviders = new Dictionary<Spriter, DefaultAssetProvider<TSprite>>();
-        private readonly Dictionary<Spriter, DefaultAssetProvider<TSound>> soundProviders = new Dictionary<Spriter, DefaultAssetProvider<TSound>>();
+        private const int DefaultInterval = 20;
 
-        private readonly bool cacheAnimations;
-        private readonly int interval;
+        protected Dictionary<SpriterEntity, SnapshotFrameDataProvider> AnimProviders { get; set; }
+        protected Dictionary<Spriter, DefaultAssetProvider<TSprite>> SpriteProviders { get; set; }
+        protected Dictionary<Spriter, DefaultAssetProvider<TSound>> SoundProviders { get; set; }
 
-        private readonly SpriterConfig config;
-        private readonly SpriterObjectPool pool;
+        protected bool CacheAnimations { get; set; }
+        protected int Interval { get; set; }
 
-        public DefaultProviderFactory(SpriterConfig config, bool cacheAnimations = false, int interval = 20)
+        protected Config Config { get; set; }
+        protected ObjectPool Pool { get; set; }
+
+        public DefaultProviderFactory(Config config, bool cacheAnimations = false, int interval = DefaultInterval)
         {
-            this.config = config;
-            this.cacheAnimations = cacheAnimations;
-            this.interval = interval;
-            pool = new SpriterObjectPool(config);
+            Config = config;
+            CacheAnimations = cacheAnimations;
+            Interval = interval;
+
+            Pool = new ObjectPool(config);
+            AnimProviders = new Dictionary<SpriterEntity, SnapshotFrameDataProvider>();
+            SpriteProviders = new Dictionary<Spriter, DefaultAssetProvider<TSprite>>();
+            SoundProviders = new Dictionary<Spriter, DefaultAssetProvider<TSound>>();
         }
 
-        public virtual IAnimationDataProvider GetDataProvider(SpriterEntity entity)
+        public virtual IFrameDataProvider GetDataProvider(SpriterEntity entity)
         {
-            if (!cacheAnimations) return new DefaultAnimationDataProvider(config, pool);
+            if (!CacheAnimations) return new DefaultFrameDataProvider(Config, Pool);
 
-            SnapshotAnimationDataProvider provider;
-            animProviders.TryGetValue(entity, out provider);
+            SnapshotFrameDataProvider provider;
+            AnimProviders.TryGetValue(entity, out provider);
             if (provider == null)
             {
-                var data = SnapshotAnimationDataProvider.Calculate(entity, interval, config);
-                provider = new SnapshotAnimationDataProvider(config, pool, data);
-                animProviders[entity] = provider;
+                var data = SnapshotFrameDataProvider.Calculate(entity, Interval, Config);
+                provider = new SnapshotFrameDataProvider(Config, Pool, data);
+                AnimProviders[entity] = provider;
             }
             return provider;
         }
 
         public virtual IAssetProvider<TSprite> GetSpriteProvider(SpriterEntity entity)
         {
-            DefaultAssetProvider<TSprite> provider = spriteProviders.GetOrCreate(entity.Spriter);
+            DefaultAssetProvider<TSprite> provider = SpriteProviders.GetOrCreate(entity.Spriter);
             return new DefaultAssetProvider<TSprite>(provider.AssetMappings);
         }
 
         public virtual IAssetProvider<TSound> GetSoundProvider(SpriterEntity entity)
         {
-            DefaultAssetProvider<TSound> provider = soundProviders.GetOrCreate(entity.Spriter);
+            DefaultAssetProvider<TSound> provider = SoundProviders.GetOrCreate(entity.Spriter);
             return new DefaultAssetProvider<TSound>(provider.AssetMappings);
         }
 
         public virtual void SetSprite(Spriter spriter, SpriterFolder folder, SpriterFile file, TSprite sprite)
         {
-            IAssetProvider<TSprite> provider = spriteProviders.GetOrCreate(spriter);
+            IAssetProvider<TSprite> provider = SpriteProviders.GetOrCreate(spriter);
             provider.Set(folder.Id, file.Id, sprite);
         }
 
         public virtual void SetSound(Spriter spriter, SpriterFolder folder, SpriterFile file, TSound sound)
         {
-            IAssetProvider<TSound> provider = soundProviders.GetOrCreate(spriter);
+            IAssetProvider<TSound> provider = SoundProviders.GetOrCreate(spriter);
             provider.Set(folder.Id, file.Id, sound);
         }
     }

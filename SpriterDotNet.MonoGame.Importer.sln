@@ -7,9 +7,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpriterDotNet.MonoGame.Impo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpriterDotNet.MonoGame", "SpriterDotNet.MonoGame\SpriterDotNet.MonoGame.csproj", "{10C1ED31-6945-4617-85AD-D2575550149D}"
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SpriterDotNet", "SpriterDotNet\SpriterDotNet.shproj", "{7142D477-6358-443E-85EF-27C94DE0C7F4}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		SpriterDotNet\SpriterDotNet.projitems*{10c1ed31-6945-4617-85ad-d2575550149d}*SharedItemsImports = 4
+		SpriterDotNet\SpriterDotNet.projitems*{7142d477-6358-443e-85ef-27c94de0c7f4}*SharedItemsImports = 13
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

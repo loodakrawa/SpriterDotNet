@@ -5,7 +5,7 @@
 
 namespace SpriterDotNet
 {
-    public interface IAnimationDataProvider
+    public interface IFrameDataProvider
     {
         FrameData GetFrameData(float time, float deltaTime, float factor, SpriterAnimation first, SpriterAnimation second = null);
     }

@@ -4,10 +4,12 @@ namespace SpriterDotNet.MonoGame.Content
 {
     public class SpriterTypeReader : ContentTypeReader<Spriter>
     {
+        public static SpriterReader Reader = SpriterReader.Default;
+
         protected override Spriter Read(ContentReader input, Spriter existingInstance)
         {
             string data = input.ReadString();
-            return SpriterParser.Parse(data);
+            return Reader.Read(data);
         }
     }
 }

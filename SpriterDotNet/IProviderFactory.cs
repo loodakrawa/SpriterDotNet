@@ -7,8 +7,8 @@ namespace SpriterDotNet
 {
     public interface IProviderFactory<TSprite, TSound>
     {
-        IAssetProvider<TSprite> GetSpriteProvider(SpriterEntity spriter);
-        IAssetProvider<TSound> GetSoundProvider(SpriterEntity spriter);
-        IAnimationDataProvider GetDataProvider(SpriterEntity spriter);
+        IAssetProvider<TSprite> GetSpriteProvider(SpriterEntity entity);
+        IAssetProvider<TSound> GetSoundProvider(SpriterEntity entity);
+        IFrameDataProvider GetDataProvider(SpriterEntity entity);
     }
 }

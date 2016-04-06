@@ -23,12 +23,12 @@ namespace SpriterDotNet.Helpers
         /// <summary>
         /// Does a linear angle interpolation towards the closest direction
         /// </summary>
-        public static float CloserAngleLinear(float a, float b, float factor)
+        public static float CloserAngleLinear(float a, float b, float f)
         {
-            if (Math.Abs(b - a) < 180.0f) return Linear(a, b, factor);
+            if (Math.Abs(b - a) < 180.0f) return Linear(a, b, f);
             if (a < b) a += 360.0f;
             else b += 360.0f;
-            return Linear(a, b, factor);
+            return Linear(a, b, f);
         }
 
         /// <summary>
