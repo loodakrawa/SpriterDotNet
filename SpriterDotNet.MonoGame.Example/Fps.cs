@@ -4,40 +4,34 @@
 // of the zlib license.  See the LICENSE file for details.
 
 using Microsoft.Xna.Framework;
+using System;
 
 namespace SpriterDotNet.MonoGame.Example
 {
     public class Fps
     {
-        public int UpdateFps { get; private set; }
-        public int DrawFps { get; private set; }
+        private static readonly TimeSpan Second = TimeSpan.FromSeconds(1);
 
-        private int elapsedSeconds;
-        private bool updateFps;
+        public int FrameRate { get; private set; }
+
+        private int frameCount;
+        private TimeSpan elapsedTime;
 
         public void OnUpdate(GameTime gameTime)
         {
-            int seconds = gameTime.TotalGameTime.Seconds;
-            if (seconds > elapsedSeconds)
+            elapsedTime += gameTime.ElapsedGameTime;
+
+            if (elapsedTime > Second)
             {
-                int elapsed = gameTime.ElapsedGameTime.Milliseconds;
-                if (elapsed == 0) ++elapsed;
-                UpdateFps = 1000 / elapsed;
-                elapsedSeconds = seconds;
-                updateFps = true;
+                elapsedTime -= Second;
+                FrameRate = frameCount;
+                frameCount = 0;
             }
         }
 
         public void OnDraw(GameTime gameTime)
         {
-            if (updateFps)
-            {
-                updateFps = true;
-                int elapsed = gameTime.ElapsedGameTime.Milliseconds;
-                if (elapsed == 0) ++elapsed;
-                DrawFps = 1000 / elapsed;
-                updateFps = false;
-            }
+            ++frameCount;
         }
     }
 }

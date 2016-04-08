@@ -92,7 +92,7 @@ namespace SpriterDotNet.MonoGame.Example
 
             currentAnimator.Draw(spriteBatch);
 
-            DrawText(string.Format("FPS (Update) = {0}\nFPS (Draw) =    {1}", fps.UpdateFps, fps.DrawFps), new Vector2(Width - 200, 10), 0.6f);
+            DrawText(string.Format("FPS = {0}", fps.FrameRate), new Vector2(Width - 100, 10), 0.6f);
             DrawText(Instructions, new Vector2(10, 10), 0.6f);
             DrawText(status, new Vector2(10, Height - 50));
             DrawText(metadata, new Vector2(Width - 300, Height * 0.5f), 0.6f);
