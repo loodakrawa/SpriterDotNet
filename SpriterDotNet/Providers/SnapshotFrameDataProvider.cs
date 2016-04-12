@@ -8,8 +8,14 @@ using System.Collections.Generic;
 
 namespace SpriterDotNet.Providers
 {
+    /// <summary>
+    /// Snapshot implementation of IFrameDataProvider. It returns pre-calculated frame data to avoid doing calculations every frame.
+    /// </summary>
     public class SnapshotFrameDataProvider : DefaultFrameDataProvider
     {
+        /// <summary>
+        /// Calculates the FrameData for the given entity with the given interval.
+        /// </summary>
         public static Dictionary<string, FrameData[]> Calculate(SpriterEntity entity, int interval, Config config)
         {
             Dictionary<string, FrameData[]> results = new Dictionary<string, FrameData[]>();
@@ -41,6 +47,9 @@ namespace SpriterDotNet.Providers
             Data = data;
         }
 
+        /// <summary>
+        /// Returns the pre-calculated FrameData or newly calculated in case of blending.
+        /// </summary>
         public override FrameData GetFrameData(float time, float deltaTime, float factor, SpriterAnimation first, SpriterAnimation second = null)
         {
             if (Data == null || second != null) return base.GetFrameData(time, deltaTime, factor, first, second);

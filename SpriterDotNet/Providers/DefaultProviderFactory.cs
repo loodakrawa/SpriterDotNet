@@ -8,6 +8,9 @@ using System.Collections.Generic;
 
 namespace SpriterDotNet.Providers
 {
+    /// <summary>
+    /// The default IProviderFactory. It implements the Flyweight pattern sharing as much state as possible between Animators.
+    /// </summary>
     public class DefaultProviderFactory<TSprite, TSound> : IProviderFactory<TSprite, TSound>
     {
         private const int DefaultInterval = 20;

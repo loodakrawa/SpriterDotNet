@@ -5,6 +5,9 @@
 
 namespace SpriterDotNet.Providers
 {
+    /// <summary>
+    /// Default IFrameDataProvider implementation. It simply calculates the frame data for every frame.
+    /// </summary>
     public class DefaultFrameDataProvider : IFrameDataProvider
     {
         protected FrameDataCalculator Calculator { get; set; }

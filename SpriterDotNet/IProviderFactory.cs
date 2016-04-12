@@ -5,6 +5,9 @@
 
 namespace SpriterDotNet
 {
+    /// <summary>
+    /// A factory for asset and frame data providers.
+    /// </summary>
     public interface IProviderFactory<TSprite, TSound>
     {
         IAssetProvider<TSprite> GetSpriteProvider(SpriterEntity entity);

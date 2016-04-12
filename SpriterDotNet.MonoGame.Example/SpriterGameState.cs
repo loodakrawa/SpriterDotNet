@@ -27,6 +27,20 @@ namespace SpriterDotNet.MonoGame.Example
             "GreyGuyPlus/player_006"
         };
 
+        private static readonly IList<string> Instructions = new List<string>
+        {
+            "Enter = Next Scml",
+            "Space = Next Animation",
+            "O/P = Change Anim Speed",
+            "R = Reverse Direction",
+            "X = Reset Animation",
+            "T = Transition to Next Animation",
+            "C/V = Push/Pop CharMap",
+            "W/A/S/D = Move",
+            "Q/E = Rotate",
+            "N/M = Scale"
+        };
+
         private static readonly Config config = new Config
         {
             MetadataEnabled = true,
@@ -39,14 +53,13 @@ namespace SpriterDotNet.MonoGame.Example
 
         private static readonly float MaxSpeed = 5.0f;
         private static readonly float DeltaSpeed = 0.2f;
-        private static readonly string Instructions = "Enter = Next Scml\nSpace = Next Animation\nP = Anim Speed +\nO = Anim Speed -\n" +
-            "R = Reverse Direction\nX = Reset Animation\nT = Transition to Next Animation\nC = Push Next CharMap\nV = Pop CharMap";
 
-        private IList<MonoGameSpriterAnimator> animators = new List<MonoGameSpriterAnimator>();
-        private MonoGameSpriterAnimator currentAnimator;
+        private IList<MonoGameAnimator> animators = new List<MonoGameAnimator>();
+        private MonoGameAnimator currentAnimator;
         private SpriteBatch spriteBatch;
         private SpriteFont spriteFont;
         private KeyboardState oldState;
+        private string rtfm = string.Join(Environment.NewLine, Instructions);
         private string status = string.Empty;
         private string metadata = string.Empty;
         private Fps fps = new Fps();
@@ -72,7 +85,7 @@ namespace SpriterDotNet.MonoGame.Example
 
                 foreach (SpriterEntity entity in spriter.Entities)
                 {
-                    var animator = new MonoGameDebugSpriterAnimator(entity, GraphicsDevice, factory);
+                    var animator = new MonoGameDebugAnimator(entity, GraphicsDevice, factory);
                     animators.Add(animator);
                     animator.Position = centre;
                 }
@@ -88,12 +101,12 @@ namespace SpriterDotNet.MonoGame.Example
 
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            spriteBatch.Begin();
+            spriteBatch.Begin(SpriteSortMode.BackToFront);
 
             currentAnimator.Draw(spriteBatch);
 
             DrawText(string.Format("FPS = {0}", fps.FrameRate), new Vector2(Width - 100, 10), 0.6f);
-            DrawText(Instructions, new Vector2(10, 10), 0.6f);
+            DrawText(rtfm, new Vector2(10, 10), 0.6f);
             DrawText(status, new Vector2(10, Height - 50));
             DrawText(metadata, new Vector2(Width - 300, Height * 0.5f), 0.6f);
             spriteBatch.End();
@@ -113,9 +126,18 @@ namespace SpriterDotNet.MonoGame.Example
             if (IsPressed(Keys.C)) PushCharacterMap();
             if (IsPressed(Keys.V)) currentAnimator.SpriteProvider.PopCharMap();
 
+            if (IsPressed(Keys.W)) currentAnimator.Position += new Vector2(0, -10);
+            if (IsPressed(Keys.S)) currentAnimator.Position += new Vector2(0, 10);
+            if (IsPressed(Keys.A)) currentAnimator.Position += new Vector2(-10, 0);
+            if (IsPressed(Keys.D)) currentAnimator.Position += new Vector2(10, 0);
+            if (IsPressed(Keys.Q)) currentAnimator.Rotation -= 15 * (float)Math.PI / 180;
+            if (IsPressed(Keys.E)) currentAnimator.Rotation += 15 * (float)Math.PI / 180;
+            if (IsPressed(Keys.N)) currentAnimator.Scale -= new Vector2(0.2f, 0.2f);
+            if (IsPressed(Keys.M)) currentAnimator.Scale += new Vector2(0.2f, 0.2f);
+
             oldState = Keyboard.GetState();
 
-            currentAnimator.Step(gameTime.ElapsedGameTime.Milliseconds);
+            currentAnimator.Update(gameTime.ElapsedGameTime.Milliseconds);
 
             string entity = currentAnimator.Entity.Name;
             status = string.Format("{0} : {1}", entity, currentAnimator.Name);

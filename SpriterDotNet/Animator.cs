@@ -182,7 +182,7 @@ namespace SpriterDotNet
         /// <summary>
         /// Advances the animation for the deltaTime increment.
         /// </summary>
-        public virtual void Step(float deltaTime)
+        public virtual void Update(float deltaTime)
         {
             if (CurrentAnimation == null) Play(Animations.Keys.First());
 

@@ -7,6 +7,9 @@ namespace SpriterDotNet
 {
     public interface ISpriterPreprocessor
     {
+        /// <summary>
+        /// Does some kind of preprocessing on the Spriter instance after parsing and before returning it to the user - e.g. initialisation logic.
+        /// </summary>
         void Preprocess(Spriter spriter);
     }
 }

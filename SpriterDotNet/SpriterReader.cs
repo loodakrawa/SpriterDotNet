@@ -10,9 +10,20 @@ using System;
 
 namespace SpriterDotNet
 {
+    /// <summary>
+    /// Class responsible for getting a Spriter instance from a string input. It is also responsible for any processing logic such as initialisation.
+    /// This class basically contains no parsing / processing logic by itself but has collections of parsers / preprocessors to delegate the work to.
+    /// 
+    /// For parsing, it iterates over all registered parses until a parser can parse the input string or until it reaches the end.
+    /// 
+    /// For preprocessing, it invokes all the preprocessors in order.
+    /// </summary>
     public class SpriterReader
     {
-        public static SpriterReader Default { get; set; }
+        /// <summary>
+        /// An instance of the default Spriter reader.
+        /// </summary>
+        public static SpriterReader Default { get; private set; }
 
         static SpriterReader()
         {
