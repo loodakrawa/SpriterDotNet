@@ -24,8 +24,27 @@ namespace SpriterDotNet.Preprocessors
                 {
                     animation.Entity = entity;
 
+                    InitInfos(animation);
                     InitVarDefs(animation);
                 }
+            }
+        }
+
+        private static void InitInfos(SpriterAnimation animation)
+        {
+            if (animation.Timelines == null) animation.Timelines = new SpriterTimeline[0];
+
+            var infos = from t in animation.Timelines
+                        from k in t.Keys
+                        let o = k.ObjectInfo
+                        where o != null && (float.IsNaN(o.PivotX) || float.IsNaN(o.PivotY))
+                        select o;
+
+            foreach (SpriterObject info in infos)
+            {
+                SpriterFile file = animation.Entity.Spriter.Folders[info.FolderId].Files[info.FileId];
+                info.PivotX = file.PivotX;
+                info.PivotY = file.PivotY;
             }
         }
 
