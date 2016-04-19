@@ -43,7 +43,7 @@ namespace SpriterDotNetUnity
         [HideInInspector]
         public bool UseNativeTags;
 
-        public UnitySpriterAnimator Animator { get; private set; }
+        public UnityAnimator Animator { get; private set; }
 
         private string defaultTag;
 
@@ -52,12 +52,12 @@ namespace SpriterDotNetUnity
             SpriterEntity entity = SpriterData.Spriter.Entities[EntityIndex];
             AudioSource audioSource = gameObject.GetComponent<AudioSource>();
 
-            Animator = new UnitySpriterAnimator(entity, ChildData, audioSource);
+            Animator = new UnityAnimator(entity, ChildData, audioSource);
             RegisterSpritesAndSounds();
 
             if (UseNativeTags) defaultTag = gameObject.tag;
 
-            Animator.Step(0);
+            Animator.Update(0);
         }
 
         public void Update()
@@ -69,7 +69,7 @@ namespace SpriterDotNetUnity
             if (Animator == null) return;
 
             Animator.SortingLayer = SortingLayer;
-            Animator.Step(Time.deltaTime * 1000.0f);
+            Animator.Update(Time.deltaTime * 1000.0f);
 
             if (UseNativeTags)
             {

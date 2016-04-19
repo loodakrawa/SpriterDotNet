@@ -25,7 +25,15 @@ namespace SpriterDotNet.Providers
         protected Config Config { get; set; }
         protected ObjectPool Pool { get; set; }
 
-        public DefaultProviderFactory(Config config, bool cacheAnimations = false, int interval = DefaultInterval)
+        public DefaultProviderFactory(Config config) : this(config, false, DefaultInterval)
+        {
+        }
+
+        public DefaultProviderFactory(Config config, bool cacheAnimations) : this(config, cacheAnimations, DefaultInterval)
+        {
+        }
+
+        public DefaultProviderFactory(Config config, bool cacheAnimations, int interval)
         {
             Config = config;
             CacheAnimations = cacheAnimations;

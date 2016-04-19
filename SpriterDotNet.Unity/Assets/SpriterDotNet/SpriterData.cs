@@ -4,6 +4,7 @@
 // of the zlib license.  See the LICENSE file for details.
 
 using SpriterDotNet;
+using SpriterDotNet.Preprocessors;
 using System;
 using UnityEngine;
 
@@ -17,7 +18,7 @@ namespace SpriterDotNetUnity
 
         public void OnEnable()
         {
-            if(Spriter != null) SpriterParser.Init(Spriter);
+            if(Spriter != null) new SpriterInitPreprocessor().Preprocess(Spriter);
         }
     }
 

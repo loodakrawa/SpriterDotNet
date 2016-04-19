@@ -13,7 +13,7 @@ namespace SpriterDotNet.Parser
     {
         private static readonly string XmlStart = "<";
 
-        public Spriter Parse(string data)
+        public virtual Spriter Parse(string data)
         {
             data = FixBadNanValue(data);
             XmlSerializer serializer = new XmlSerializer(typeof(Spriter));
@@ -24,7 +24,7 @@ namespace SpriterDotNet.Parser
             }
         }
 
-        public bool CanParse(string data)
+        public virtual bool CanParse(string data)
         {
             return data.StartsWith(XmlStart);
         }

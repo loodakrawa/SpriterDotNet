@@ -8,9 +8,15 @@ using System.Collections.Generic;
 
 namespace SpriterDotNet.Providers
 {
-    public class SnapshotAnimationDataProvider : DefaultAnimationDataProvider
+    /// <summary>
+    /// Snapshot implementation of IFrameDataProvider. It returns pre-calculated frame data to avoid doing calculations every frame.
+    /// </summary>
+    public class SnapshotFrameDataProvider : DefaultFrameDataProvider
     {
-        public static Dictionary<string, FrameData[]> Calculate(SpriterEntity entity, int interval)
+        /// <summary>
+        /// Calculates the FrameData for the given entity with the given interval.
+        /// </summary>
+        public static Dictionary<string, FrameData[]> Calculate(SpriterEntity entity, int interval, Config config)
         {
             Dictionary<string, FrameData[]> results = new Dictionary<string, FrameData[]>();
 
@@ -24,8 +30,8 @@ namespace SpriterDotNet.Providers
                     float time = i * interval;
                     if (time > anim.Length) time = anim.Length;
 
-                    FrameData data = new FrameData();
-                    SpriterProcessor.UpdateFrameData(data, anim, time, interval);
+                    ObjectPool pool = new ObjectPool(config);
+                    FrameData data = new FrameDataCalculator(config, pool).GetFrameData(anim, time, interval);
                     animData[i] = data;
                 }
 
@@ -34,23 +40,21 @@ namespace SpriterDotNet.Providers
             return results;
         }
 
-        private readonly Dictionary<string, FrameData[]> data;
+        protected Dictionary<string, FrameData[]> Data { get; set; }
 
-        public SnapshotAnimationDataProvider(Dictionary<string, FrameData[]> data)
+        public SnapshotFrameDataProvider(Config config, ObjectPool pool, Dictionary<string, FrameData[]> data) : base(config, pool)
         {
-            this.data = data;
+            Data = data;
         }
 
-        public SnapshotAnimationDataProvider(SpriterEntity entity, int interval)
-        {
-            data = Calculate(entity, interval);
-        }
-
+        /// <summary>
+        /// Returns the pre-calculated FrameData or newly calculated in case of blending.
+        /// </summary>
         public override FrameData GetFrameData(float time, float deltaTime, float factor, SpriterAnimation first, SpriterAnimation second = null)
         {
-            if (data == null || second != null) return base.GetFrameData(time, deltaTime, factor, first, second);
+            if (Data == null || second != null) return base.GetFrameData(time, deltaTime, factor, first, second);
 
-            FrameData[] animData = data[first.Name];
+            FrameData[] animData = Data[first.Name];
             int index = (int)(time / first.Length * animData.Length);
             if (index == animData.Length) index = animData.Length - 1;
             return animData[index];

@@ -3,41 +3,18 @@
 // This software may be modified and distributed under the terms
 // of the zlib license.  See the LICENSE file for details.
 
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using SpriterDotNet.Parser;
 
-namespace SpriterDotNet
+namespace SpriterDotNet.Preprocessors
 {
-    public static class SpriterParser
+    public class SpriterInitPreprocessor : ISpriterPreprocessor
     {
-        public static readonly ICollection<ISpriterParser> Parsers = new List<ISpriterParser>();
-
-        static SpriterParser()
+        public void Preprocess(Spriter spriter)
         {
-            Parsers.Add(new XmlSpriterParser());
+            Init(spriter);
         }
 
-        public static Spriter Parse(string data)
-        {
-            if (data != null) data = data.Trim();
-            if (String.IsNullOrEmpty(data)) return null;
-
-            Spriter spriter = null;
-            foreach (ISpriterParser parser in Parsers)
-            {
-                if (!parser.CanParse(data)) continue;
-                spriter = parser.Parse(data);
-                break;
-            }
-
-            if (spriter != null) Init(spriter);
-
-            return spriter;
-        }
-
-        public static void Init(Spriter spriter)
+        protected virtual void Init(Spriter spriter)
         {
             foreach (SpriterEntity entity in spriter.Entities)
             {
@@ -47,12 +24,31 @@ namespace SpriterDotNet
                 {
                     animation.Entity = entity;
 
+                    InitInfos(animation);
                     InitVarDefs(animation);
                 }
             }
         }
 
-        private static void InitVarDefs(SpriterAnimation animation)
+        private static void InitInfos(SpriterAnimation animation)
+        {
+            if (animation.Timelines == null) animation.Timelines = new SpriterTimeline[0];
+
+            var infos = from t in animation.Timelines
+                        from k in t.Keys
+                        let o = k.ObjectInfo
+                        where o != null && (float.IsNaN(o.PivotX) || float.IsNaN(o.PivotY))
+                        select o;
+
+            foreach (SpriterObject info in infos)
+            {
+                SpriterFile file = animation.Entity.Spriter.Folders[info.FolderId].Files[info.FileId];
+                info.PivotX = file.PivotX;
+                info.PivotY = file.PivotY;
+            }
+        }
+
+        protected virtual void InitVarDefs(SpriterAnimation animation)
         {
             if (animation.Meta != null && animation.Meta.Varlines != null && animation.Meta.Varlines.Length > 0)
             {
@@ -75,19 +71,19 @@ namespace SpriterDotNet
             }
         }
 
-        private static void Init(SpriterVarDef varDef, SpriterVarline varline)
+        protected virtual void Init(SpriterVarDef varDef, SpriterVarline varline)
         {
             varDef.VariableValue = GetVarValue(varDef.DefaultValue, varDef.Type);
             foreach (SpriterVarlineKey key in varline.Keys) key.VariableValue = GetVarValue(key.Value, varDef.Type);
         }
 
-        private static SpriterVarValue GetVarValue(string value, SpriterVarType type)
+        protected virtual SpriterVarValue GetVarValue(string value, SpriterVarType type)
         {
-            float floatValue = Single.MinValue;
-            int intValue = Int32.MinValue;
+            float floatValue = float.MinValue;
+            int intValue = int.MinValue;
 
-            if (type == SpriterVarType.Float) Single.TryParse(value, out floatValue);
-            else if (type == SpriterVarType.Int) Int32.TryParse(value, out intValue);
+            if (type == SpriterVarType.Float) float.TryParse(value, out floatValue);
+            else if (type == SpriterVarType.Int) int.TryParse(value, out intValue);
 
             return new SpriterVarValue
             {
@@ -97,6 +93,5 @@ namespace SpriterDotNet
                 IntValue = intValue
             };
         }
-
     }
 }

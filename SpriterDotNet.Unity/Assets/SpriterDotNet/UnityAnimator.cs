@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace SpriterDotNetUnity
 {
-    public class UnitySpriterAnimator : SpriterAnimator<Sprite, AudioClip>
+    public class UnityAnimator : Animator<Sprite, AudioClip>
     {
         public string SortingLayer { get; set; }
 
@@ -23,7 +23,7 @@ namespace SpriterDotNetUnity
         private int boxIndex;
         private int pointIndex;
 
-        public UnitySpriterAnimator(SpriterEntity entity, ChildData childData, AudioSource audioSource) : base(entity)
+        public UnityAnimator(SpriterEntity entity, ChildData childData, AudioSource audioSource) : base(entity)
         {
             this.childData = childData;
             this.audioSource = audioSource;

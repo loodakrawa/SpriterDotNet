@@ -380,7 +380,7 @@ namespace SpriterDotNet
         public SpriterVarValue VariableValue;
     }
 
-    public struct SpriterVarValue
+    public class SpriterVarValue
     {
         public SpriterVarType Type;
         public string StringValue;
