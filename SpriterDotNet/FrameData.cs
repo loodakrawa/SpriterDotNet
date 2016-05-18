@@ -20,8 +20,12 @@ namespace SpriterDotNet
         public List<string> Events { get; private set; }
         public List<SpriterSound> Sounds { get; private set; }
 
-        public FrameData()
+        private readonly ObjectPool pool;
+
+        public FrameData(ObjectPool pool)
         {
+            this.pool = pool;
+
             SpriteData = new List<SpriterObject>();
             PointData = new Dictionary<string, SpriterObject>();
             BoxData = new Dictionary<int, SpriterObject>();
@@ -36,12 +40,16 @@ namespace SpriterDotNet
 
         public void Clear()
         {
-            SpriterObjectPool.ReturnChildren(SpriteData);
-            SpriterObjectPool.ReturnChildren(PointData);
-            SpriterObjectPool.ReturnChildren(BoxData);
+            pool.ReturnChildren(SpriteData);
+            pool.ReturnChildren(PointData);
+            pool.ReturnChildren(BoxData);
 
             var varE = ObjectVars.GetEnumerator();
-            while (varE.MoveNext()) SpriterObjectPool.ReturnStructDict(varE.Current.Value);
+            while (varE.MoveNext())
+            {
+                pool.ReturnChildren(varE.Current.Value);
+                pool.ReturnObject(varE.Current.Value);
+            }
             ObjectVars.Clear();
 
             var tagE = ObjectTags.GetEnumerator();
@@ -49,7 +57,7 @@ namespace SpriterDotNet
             {
                 var list = tagE.Current.Value;
                 list.Clear();
-                SpriterObjectPool.ReturnObject(list);
+                pool.ReturnObject(list);
             }
             ObjectTags.Clear();
 
@@ -64,7 +72,7 @@ namespace SpriterDotNet
             Dictionary<string, SpriterVarValue> values;
             if (!ObjectVars.TryGetValue(objectName, out values))
             {
-                values = SpriterObjectPool.GetObject<Dictionary<string, SpriterVarValue>>();
+                values = pool.GetObject<Dictionary<string, SpriterVarValue>>();
                 ObjectVars[objectName] = values;
             }
             values[varName] = value;
@@ -75,7 +83,7 @@ namespace SpriterDotNet
             List<string> tags;
             if (!ObjectTags.TryGetValue(objectName, out tags))
             {
-                tags = SpriterObjectPool.GetObject<List<string>>();
+                tags = pool.GetObject<List<string>>();
                 ObjectTags[objectName] = tags;
             }
             tags.Add(tag);

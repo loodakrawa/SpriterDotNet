@@ -7,7 +7,14 @@ namespace SpriterDotNet
 {
     public interface ISpriterParser
     {
-        Spriter Parse(string data);
+        /// <summary>
+        /// Indicates whether the parser knows how to parse the input string.
+        /// </summary>
         bool CanParse(string data);
+
+        /// <summary>
+        /// Parses the input string and returns a Spriter instance.
+        /// </summary>
+        Spriter Parse(string data);
     }
 }

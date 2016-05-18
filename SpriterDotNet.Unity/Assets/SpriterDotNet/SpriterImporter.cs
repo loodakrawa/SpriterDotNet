@@ -45,7 +45,7 @@ namespace SpriterDotNetUnity
         private static void CreateSpriter(string path)
         {
             string data = File.ReadAllText(path);
-            Spriter spriter = SpriterParser.Parse(data);
+            Spriter spriter = SpriterReader.Default.Read(data);
             string rootFolder = Path.GetDirectoryName(path);
 
             string name = Path.GetFileNameWithoutExtension(path);

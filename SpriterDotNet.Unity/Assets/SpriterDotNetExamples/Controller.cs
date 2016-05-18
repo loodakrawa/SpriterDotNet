@@ -23,7 +23,7 @@ public class Controller : MonoBehaviour
     [HideInInspector]
     public float AnimatorSpeed = 1.0f;
 
-    private UnitySpriterAnimator animator;
+    private UnityAnimator animator;
 
     void Update()
     {
@@ -157,7 +157,7 @@ public class Controller : MonoBehaviour
         return Input.GetButtonDown(axisName) && Input.GetAxis(axisName) < 0;
     }
 
-    private static string GetAnimation(UnitySpriterAnimator animator, int offset)
+    private static string GetAnimation(UnityAnimator animator, int offset)
     {
         List<string> animations = animator.GetAnimations().ToList();
         int index = animations.IndexOf(animator.CurrentAnimation.Name);
