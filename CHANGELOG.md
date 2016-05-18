@@ -1,3 +1,11 @@
+##### 1.5.0
+* Massive refactor
+* Added more comments
+* Fix array pooling
+* Fix MonoGame frame counter
+* Fix subentity bug
+* Revert support charmap images with different pivot points since it caused bugs
+
 ##### 1.4.0
 * Add proper MonoGame plugin
 * MonoGame example on different platform
