@@ -32,6 +32,9 @@ namespace SpriterDotNetUnity
         public string SortingLayer;
 
         [HideInInspector]
+        public int SortingOrder;
+
+        [HideInInspector]
         public ChildData ChildData;
 
         [HideInInspector]
@@ -69,6 +72,7 @@ namespace SpriterDotNetUnity
             if (Animator == null) return;
 
             Animator.SortingLayer = SortingLayer;
+            Animator.SortingOrder = SortingOrder;
             Animator.Update(Time.deltaTime * 1000.0f);
 
             if (UseNativeTags)

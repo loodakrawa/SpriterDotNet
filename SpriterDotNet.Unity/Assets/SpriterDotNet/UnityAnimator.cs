@@ -12,6 +12,7 @@ namespace SpriterDotNetUnity
     public class UnityAnimator : Animator<Sprite, AudioClip>
     {
         public string SortingLayer { get; set; }
+        public int SortingOrder { get; set; }
 
         private const float DefaultPPU = 100.0f;
         private const float DefaultPivot = 0.5f;
@@ -92,7 +93,7 @@ namespace SpriterDotNetUnity
             childTransform.localScale = new Vector3(info.ScaleX, info.ScaleY, 1);
 
             renderer.sortingLayerName = SortingLayer;
-            renderer.sortingOrder = index;
+            renderer.sortingOrder = SortingOrder * renderers.Length + index;
 
             ++index;
         }
