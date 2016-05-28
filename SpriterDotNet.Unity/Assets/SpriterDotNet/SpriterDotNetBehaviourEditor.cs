@@ -33,6 +33,7 @@ namespace SpriterDotNetUnity
             if (currentIndex < 0) currentIndex = 0;
             int choiceIndex = EditorGUILayout.Popup("Sorting Layer", currentIndex, layers);
             sdnb.SortingLayer = layers[choiceIndex];
+            sdnb.SortingOrder = EditorGUILayout.IntField("Sorting Order", sdnb.SortingOrder);
             EditorUtility.SetDirty(target);
         }
     }
