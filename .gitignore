@@ -9,7 +9,10 @@ build/
 [Bb]in/
 [Oo]bj/
 packages/
-OpenCover/
+
+# MonoDevelop
+*.userprefs
+*.usertasks
 
 # Unity
 Library/
