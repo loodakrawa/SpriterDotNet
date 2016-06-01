@@ -18,7 +18,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)IProviderFactory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ISpriterParser.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ISpriterPreprocessor.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Parser\XmlSpriterParser.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Preprocessors\SpriterInitPreprocessor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Providers\DefaultFrameDataProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Providers\DefaultAssetProvider.cs" />
@@ -30,5 +29,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)ObjectPool.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SpriterReader.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FrameDataCalculator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Parsers\XmlSpriterParser.cs" />
   </ItemGroup>
 </Project>
