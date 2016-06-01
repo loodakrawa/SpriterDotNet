@@ -92,7 +92,7 @@ namespace SpriterDotNet
         /// <summary>
         /// The latest FrameData
         /// </summary>
-        public FrameData FrameData { get; set; }
+        public FrameData FrameData { get; protected set; }
 
         protected Dictionary<string, SpriterAnimation> Animations { get; set; }
 
