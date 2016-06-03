@@ -37,7 +37,7 @@ Refer to the specific documentation for each plugin.
 
 ## Details and Customisation
 SpriterDotNet's default configuration should be good enough for most users but it is designed in a way that allows customising almost everything.
-
+"field" : "body",
 ### [FrameData](SpriterDotNet/FrameData.cs)
 FrameData contains all the information about the state of the animation (or blend of multiple animations) at a certain point in time.
 
@@ -78,6 +78,8 @@ This class contains the majority of Properties and Methods necessary to control 
 * Transition - Transitions to given animation doing a progressive blend in the given time
 * Blend - Blends two animations with the given weight factor
 
+**Animation blending is possible only between animations with identical hierarchies. Blending incompatible animations will cause strange behaviour. SpriterDotNet only performs a simple check to determine compatibility in order to avoid crashing but that might not be enough in some cases.**
+
 ### Parsing and Initialisation
 All the parsing and processing is done through a [SpriterReader](SpriterDotNet/SpriterReader.cs) instance. This class has a collection of [ISpriterParsers](SpriterDotNet/ISpriterParser.cs) and [ISpriterPreprocessors](SpriterDotNet/ISpriterPreprocessor.cs). Thre Read method calls all the registered parsers in sequence until the first parsing success. Then it iterates over all preprocessors invoking them on the spriter instance. SpriterDotNet comes with these default implementations:
 * [XmlSpriterParser](SpriterDotNet/Parsers/XmlSpriterParser.cs) - the parser for the .scml file format
@@ -91,8 +93,6 @@ All the parsing and processing is done through a [SpriterReader](SpriterDotNet/S
 * Tags - Exposed in Animator.FrameData.AnimationTags and Animator.FrameData.ObjectTags
 * Character Maps - Manipulated through Animator.SpriteProvider and Animator.SoundProvider
 * Animation Blending - Animator.Transition or Animator.Blend
-
-**Animation blending is possible only between animations with identical hierarchies. Blending incompatible animations will cause strange behaviour. SpriterDotNet only performs a simple check to determine compatibility in order to avoid crashing but that might not be enough in some cases.**
 
 ## Feedback
 For questions, feedback, complaints, etc, use the related topic on [Spriter Forum](http://brashmonkey.com/forum/index.php?/topic/4166-spriterdotnet-an-implementation-for-all-c-frameworks/)
