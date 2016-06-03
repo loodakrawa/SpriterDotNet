@@ -18,7 +18,7 @@ The most easy way of using SpriterDotNet.Unity with your own animations is the f
 **Note that the example Controller supports ony one prefab per scene. If you add multiples, it's only going to affect one of them.**
 
 ## Usage
-The usual way of using SpriterDotNet.Unity is to get a reference to a [UnityAnimator](Assets/SpriterDotNet/UnityAnimator.cs) from a SpriterDotNetBehaviour and controlling the animation as described in the [Animator documentation](../SpriterDotNet#spriteranimator).
+The usual way of using SpriterDotNet.Unity is to get a reference to a [UnityAnimator](Assets/SpriterDotNet/UnityAnimator.cs) from a SpriterDotNetBehaviour and controlling the animation as described in the [Animator documentation](../#spriteranimator).
 
 ###### Getting a reference tp UnityAnimator
 In a script attached to the same GameObject which also contains SpriterDotNetBehaviour:
