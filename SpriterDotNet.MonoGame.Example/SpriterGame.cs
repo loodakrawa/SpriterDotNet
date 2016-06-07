@@ -33,7 +33,7 @@ namespace SpriterDotNet.MonoGame.Example
 
             var dm = graphics.GraphicsDevice.DisplayMode;
 
-            #if WINDOWS
+            #if DESKTOP
             Window.Position = new Point((dm.Width - Width) / 2, (dm.Height - Height) / 2);
             #endif
 
