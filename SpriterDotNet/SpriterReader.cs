@@ -4,7 +4,7 @@
 // of the zlib license.  See the LICENSE file for details.
 
 using System.Collections.Generic;
-using SpriterDotNet.Parser;
+using SpriterDotNet.Parsers;
 using SpriterDotNet.Preprocessors;
 using System;
 
