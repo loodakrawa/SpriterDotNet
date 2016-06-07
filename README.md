@@ -37,7 +37,7 @@ Refer to the specific documentation for each plugin.
 
 ## Details and Customisation
 SpriterDotNet's default configuration should be good enough for most users but it is designed in a way that allows customising almost everything.
-"field" : "body",
+
 ### [FrameData](SpriterDotNet/FrameData.cs)
 FrameData contains all the information about the state of the animation (or blend of multiple animations) at a certain point in time.
 
