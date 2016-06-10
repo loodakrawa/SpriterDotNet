@@ -68,6 +68,8 @@ namespace SpriterDotNet.MonoGame.Example
 
         protected override void Load()
         {
+			SpriterAtlas atlas = Content.Load<SpriterAtlas>("AtlasExample/atlas");
+
             centre = new Vector2(Width / 2.0f, Height / 2.0f);
             oldState = Keyboard.GetState();
 
