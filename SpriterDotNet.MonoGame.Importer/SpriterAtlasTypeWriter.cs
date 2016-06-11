@@ -14,7 +14,7 @@ namespace SpriterDotNet.MonoGame.Importer
     {
         public override string GetRuntimeReader(TargetPlatform targetPlatform)
         {
-            return typeof(SpriterTypeReader).AssemblyQualifiedName;
+            return typeof(SpriterAtlasTypeReader).AssemblyQualifiedName;
         }
 
         protected override void Write(ContentWriter output, SpriterAtlasWrapper value)
