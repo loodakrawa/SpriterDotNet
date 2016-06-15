@@ -5,10 +5,10 @@ This contains only MonoGame specific things. Refer to the [main doc](../README.m
 To install SpriterDotNet.MonoGame either install the [NuGet Package](https://www.nuget.org/packages/SpriterDotNet.MonoGame/) or clone the repo and add SpriterDotNet.MonoGame as a project reference.
 
 ## Usage
-Refer to the [generic usage](../README.md#using-spriterdotnet-with-any-engine).
+* Follow the steps 2 to 8 from [generic usage](../README.md#using-spriterdotnet-with-any-engine)
+* For step 6. instantiate [MonoGameAnimator](MonoGameAnimator.cs)
+* As an additional step, call MonoGameAnimator.Draw every frame
 
-1. This step is not required since the animator has [already been implemented](MonoGameAnimator.cs) in this plugin.
-9. Call the MonoGameAnimator.Draw every frame
 
 ## [MonoGameAnimator](MonoGameAnimator.cs)
 The MonoGame specific implementation of [Animator](../SpriterDotNet/Animator.cs) with Texture2D and SoundEffect as the generic types. It operates in two phases. During Update, it calculates the transforms for every Texture2D and stores them into a buffer  which gets rendered during Draw.
