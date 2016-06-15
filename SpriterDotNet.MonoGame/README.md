@@ -1,0 +1,21 @@
+# SpriterDotNet.MonoGame
+This contains only MonoGame specific things
+
+## Installation
+To install SpriterDotNet.MonoGame either install the [NuGet Package](https://www.nuget.org/packages/SpriterDotNet.MonoGame/) or clone the repo and add SpriterDotNet.MonoGame as a project reference.
+
+## Usage
+Refer to the [generic usage](../README.md#using-spriterdotnet-with-any-engine). 
+1. This step is not required since the animator has [already been implemented](MonoGameAnimator.cs) in this plugin.
+...
+9. Call the MonoGameAnimator.Draw every frame
+
+## [MonoGameAnimator](MonoGameAnimator.cs)
+The MonoGame specific implementation of [Animator](../SpriterDotNet/Animator.cs) with Texture2D and SoundEffect as the generic types. It operates in two phases. During Update, it calculates the transforms for every Texture2D and stores them into a buffer  which gets rendered during Draw.
+
+###### MonoGame specific properties
+* Scale - the scale of the whole animator
+* Rotation - rotation (in radians)
+* Position - position on the screen (in pixels)
+* Depth - the rendering depth ([0...1])
+* DeltaDepth - the depth difference between individual sprites of the animation
