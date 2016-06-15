@@ -7,7 +7,7 @@ Being a pure C# implementation, SpriterDotNet doesn't depend on any external lib
 
 ## Completed Plugins
 * [Unity](SpriterDotNet.Unity)
-* [Monogame](SpriterDotNet.MonoGame)
+* [MonoGame](SpriterDotNet.MonoGame)
 
 ## Supported Features
 * Basic animations
@@ -72,8 +72,8 @@ This class contains the majority of Properties and Methods necessary to control 
 
 ###### Properties
 * Speed - Playback speed. Negative speeds reverse the animation
-* Time - The current time in animation in milliseconds
-* Progress - The progress of animation. Ranges from 0.0f to 1.0f
+* Time - The current time in animation (in milliseconds)
+* Progress - The progress of animation ([0...1])
 * FrameData - The latest FrameData
 * SpriteProvider - IAssetProvider for sprites
 * SoundProvider - IAssetProvider for sounds

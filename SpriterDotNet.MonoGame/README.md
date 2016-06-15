@@ -1,13 +1,13 @@
 # SpriterDotNet.MonoGame
-This contains only MonoGame specific things
+This contains only MonoGame specific things. Refer to the [main doc](../README.md) for everything else.
 
 ## Installation
 To install SpriterDotNet.MonoGame either install the [NuGet Package](https://www.nuget.org/packages/SpriterDotNet.MonoGame/) or clone the repo and add SpriterDotNet.MonoGame as a project reference.
 
 ## Usage
-Refer to the [generic usage](../README.md#using-spriterdotnet-with-any-engine). 
+Refer to the [generic usage](../README.md#using-spriterdotnet-with-any-engine).
+
 1. This step is not required since the animator has [already been implemented](MonoGameAnimator.cs) in this plugin.
-...
 9. Call the MonoGameAnimator.Draw every frame
 
 ## [MonoGameAnimator](MonoGameAnimator.cs)
