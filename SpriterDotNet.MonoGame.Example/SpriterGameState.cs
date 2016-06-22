@@ -22,6 +22,7 @@ namespace SpriterDotNet.MonoGame.Example
 
         private static readonly IList<string> Scmls = new List<string>
         {
+			"AtlasExample/0",
             "GreyGuy/player",
             "TestSquares/squares",
             "GreyGuyPlus/player_006"
@@ -68,24 +69,21 @@ namespace SpriterDotNet.MonoGame.Example
 
         protected override void Load()
         {
-			SpriterAtlas atlas = Content.Load<SpriterAtlas>("AtlasExample/atlas");
-
             centre = new Vector2(Width / 2.0f, Height / 2.0f);
             oldState = Keyboard.GetState();
 
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             spriteFont = Content.Load<SpriteFont>(FontName);
-            Texture2D debugTexture = new Texture2D(GraphicsDevice, 1, 1);
-            DefaultProviderFactory<Texture2D, SoundEffect> factory = new DefaultProviderFactory<Texture2D, SoundEffect>(config, true);
+			DefaultProviderFactory<Sprite, SoundEffect> factory = new DefaultProviderFactory<Sprite, SoundEffect>(config, true);
 
             foreach (string scmlPath in Scmls)
             {
-                Spriter spriter = Content.Load<Spriter>(scmlPath);
+				SpriterContentLoader loader = new SpriterContentLoader(Content, scmlPath);
+				loader.Fill(factory);
+                
 
-                RegisterTextures(factory, spriter, scmlPath);
-
-                foreach (SpriterEntity entity in spriter.Entities)
+				foreach (SpriterEntity entity in loader.Spriter.Entities)
                 {
                     var animator = new MonoGameDebugAnimator(entity, GraphicsDevice, factory);
                     animators.Add(animator);
@@ -245,53 +243,6 @@ namespace SpriterDotNet.MonoGame.Example
             var speed = currentAnimator.Speed + delta;
             speed = Math.Abs(speed) < MaxSpeed ? speed : MaxSpeed * Math.Sign(speed);
             currentAnimator.Speed = speed;
-        }
-
-        private void RegisterTextures(DefaultProviderFactory<Texture2D, SoundEffect> factory, Spriter spriter, string scmlPath)
-        {
-            string rootPath = scmlPath.Substring(0, scmlPath.IndexOf("/"));
-
-            foreach (SpriterFolder folder in spriter.Folders)
-            {
-                foreach (SpriterFile file in folder.Files)
-                {
-                    string path = FormatPath(folder, file, rootPath);
-
-                    if (file.Type == SpriterFileType.Sound)
-                    {
-                        SoundEffect sound = LoadContent<SoundEffect>(path);
-                        factory.SetSound(spriter, folder, file, sound);
-                    }
-                    else
-                    {
-                        Texture2D texture = LoadContent<Texture2D>(path);
-                        factory.SetSprite(spriter, folder, file, texture);
-                    }
-
-                }
-            }
-        }
-
-        private T LoadContent<T>(string path)
-        {
-            T asset = default(T);
-            try
-            {
-                asset = Content.Load<T>(path);
-            }
-            catch
-            {
-                System.Diagnostics.Debug.WriteLine("Missing Asset: " + path);
-            }
-
-            return asset;
-        }
-
-        private string FormatPath(SpriterFolder folder, SpriterFile file, string rootPath)
-        {
-            string fileName = Path.GetFileNameWithoutExtension(file.Name);
-            if (string.IsNullOrEmpty(folder.Name)) return string.Format("{0}/{1}", rootPath, fileName);
-            return string.Format("{0}/{1}/{2}", rootPath, folder.Name, fileName);
         }
 
         private void CurrentAnimator_EventTriggered(string obj)

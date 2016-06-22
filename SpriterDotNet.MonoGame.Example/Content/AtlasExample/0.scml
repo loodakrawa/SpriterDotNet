@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <spriter_data scml_version="1.0" generator="BrashMonkey Spriter" generator_version="r6">
     <atlas>
-        <i name="0.json"/>
+        <i name="atlas.json"/>
     </atlas>
     <folder id="0" name="hands" atlas="0">
         <file id="0" name="hands/p_punch_blur.png" width="191" height="56" pivot_x="0" pivot_y="1"/>

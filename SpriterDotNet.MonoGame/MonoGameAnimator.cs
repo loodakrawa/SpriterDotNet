@@ -14,7 +14,7 @@ namespace SpriterDotNet.MonoGame
     /// MonoGame Animator implementation. It has separate Draw and Update steps. 
     /// During the Update step all spatial infos are calculated (translated from Spriter values) and the Draw step only draws the calculated values.
     /// </summary>
-    public class MonoGameAnimator : Animator<Texture2D, SoundEffect>
+	public class MonoGameAnimator : Animator<Sprite, SoundEffect>
     {
         /// <summary>
         /// Scale factor of the animator. Negative values flip the image.
@@ -48,7 +48,7 @@ namespace SpriterDotNet.MonoGame
         private static readonly float DefaultDepth = 0.5f;
         private static readonly float DefaultDeltaDepth = -0.000001f;
 
-        public MonoGameAnimator(SpriterEntity entity, IProviderFactory<Texture2D, SoundEffect> providerFactory = null) : base(entity, providerFactory)
+		public MonoGameAnimator(SpriterEntity entity, IProviderFactory<Sprite, SoundEffect> providerFactory = null) : base(entity, providerFactory)
         {
             DrawInfoPool = new Stack<DrawInfo>();
             DrawInfos = new List<DrawInfo>();
@@ -66,7 +66,8 @@ namespace SpriterDotNet.MonoGame
             for (int i = 0; i < DrawInfos.Count; ++i)
             {
                 DrawInfo di = DrawInfos[i];
-                batch.Draw(di.Texture, di.Position, null, di.Color, di.Rotation, di.Origin, di.Scale, di.Effects, di.Depth);
+				Sprite sprite = di.Sprite;
+				batch.Draw(sprite.Texture, di.Position, sprite.SourceRectangle, di.Color, di.Rotation, di.Origin, di.Scale, di.Effects, di.Depth);
                 DrawInfoPool.Push(di);
             }
         }
@@ -80,9 +81,9 @@ namespace SpriterDotNet.MonoGame
             base.Update(deltaTime);
         }
 
-        protected override void ApplySpriteTransform(Texture2D texture, SpriterObject info)
+		protected override void ApplySpriteTransform(Sprite sprite, SpriterObject info)
         {
-            Vector2 origin = new Vector2(info.PivotX * texture.Width, (1 - info.PivotY) * texture.Height);
+            Vector2 origin = new Vector2(info.PivotX * sprite.Width, (1 - info.PivotY) * sprite.Height);
             Vector2 position = new Vector2(info.X, -info.Y);
             Vector2 scale = new Vector2(info.ScaleX, info.ScaleY);
             float rotation = -info.Angle * MathHelper.DegToRad;
@@ -92,13 +93,13 @@ namespace SpriterDotNet.MonoGame
             if ((scale.X * Scale.X) < 0)
             {
                 effects |= SpriteEffects.FlipHorizontally;
-                origin = new Vector2(texture.Width - origin.X, origin.Y);
+                origin = new Vector2(sprite.Width - origin.X, origin.Y);
             }
 
             if ((scale.Y * Scale.Y) < 0)
             {
                 effects |= SpriteEffects.FlipVertically;
-                origin = new Vector2(origin.X, texture.Height - origin.Y);
+                origin = new Vector2(origin.X, sprite.Height - origin.Y);
             }
 
             if (Scale.X < 0)
@@ -121,9 +122,9 @@ namespace SpriterDotNet.MonoGame
 
             DrawInfo di = DrawInfoPool.Count > 0 ? DrawInfoPool.Pop() : new DrawInfo();
 
-            di.Texture = texture;
+			di.Sprite = sprite;
             di.Position = position;
-            di.Origin = origin;
+			di.Origin = origin - sprite.OriginDelta;
             di.Scale = scale;
             di.Rotation = rotation;
             di.Color = color;
@@ -143,7 +144,7 @@ namespace SpriterDotNet.MonoGame
         /// </summary>
         protected class DrawInfo
         {
-            public Texture2D Texture { get; set; }
+            public Sprite Sprite { get; set; }
             public Vector2 Position { get; set; }
             public Vector2 Origin { get; set; }
             public Vector2 Scale { get; set; }

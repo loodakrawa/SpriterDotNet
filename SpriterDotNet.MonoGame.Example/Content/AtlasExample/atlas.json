@@ -1364,7 +1364,7 @@
 	"meta": {
 		"app": "Spriter",
 		"format": "RGBA8888",
-		"image": "0.png",
+		"image": "image.png",
 		"scale": 1,
 		"size": {
 			"h": 628,
