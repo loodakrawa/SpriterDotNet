@@ -83,7 +83,7 @@ namespace SpriterDotNet.MonoGame
 
 		protected override void ApplySpriteTransform(Sprite sprite, SpriterObject info)
         {
-            Vector2 origin = new Vector2(info.PivotX * sprite.Width, (1 - info.PivotY) * sprite.Height);
+			Vector2 origin = new Vector2(info.PivotX * sprite.Width, (1 - info.PivotY) * sprite.Height);
             Vector2 position = new Vector2(info.X, -info.Y);
             Vector2 scale = new Vector2(info.ScaleX, info.ScaleY);
             float rotation = -info.Angle * MathHelper.DegToRad;
@@ -124,9 +124,9 @@ namespace SpriterDotNet.MonoGame
 
 			di.Sprite = sprite;
             di.Position = position;
-			di.Origin = origin - sprite.OriginDelta;
+			di.Origin = origin + sprite.OriginDelta;
             di.Scale = scale;
-            di.Rotation = rotation;
+			di.Rotation = rotation - sprite.Rotation;
             di.Color = color;
             di.Effects = effects;
             di.Depth = depth;

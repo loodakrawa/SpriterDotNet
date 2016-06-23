@@ -11,6 +11,7 @@ namespace SpriterDotNet.MonoGame
 		public int Height { get; set; }
 		public Rectangle? SourceRectangle { get; set; }
 		public Vector2 OriginDelta { get; set; }
+		public float Rotation { get; set; }
 	}
 }
 

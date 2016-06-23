@@ -79,9 +79,9 @@ namespace SpriterDotNet.MonoGame
 					Texture = texture,
 					Width = source.W,
 					Height = source.H,
-					SourceRectangle = new Rectangle(frame.X, frame.Y, frame.W, frame.H),
-					//OriginDelta = new Vector2(spriteSource.X, spriteSource.Y)
-					OriginDelta = new Vector2(source.W - frame.W, source.H - frame.H) / 2
+					SourceRectangle = !info.Rotated ? new Rectangle(frame.X, frame.Y, frame.W, frame.H) : new Rectangle(frame.X, frame.Y, frame.H, frame.W),
+					OriginDelta = -new Vector2(spriteSource.X, spriteSource.Y),
+					Rotation = info.Rotated ? 90 * MathHelper.DegToRad : 0
 				};
 				factory.SetSprite(Spriter, folder, file, sprite);
 			}
