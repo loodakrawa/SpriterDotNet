@@ -24,8 +24,8 @@ namespace SpriterDotNet.MonoGame.Example
         {
 			"AtlasExample/0",
             "GreyGuy/player",
-            "TestSquares/squares",
-            "GreyGuyPlus/player_006"
+            //"TestSquares/squares",
+            //"GreyGuyPlus/player_006"
         };
 
         private static readonly IList<string> Instructions = new List<string>
@@ -137,7 +137,8 @@ namespace SpriterDotNet.MonoGame.Example
 
             oldState = Keyboard.GetState();
 
-            currentAnimator.Update(gameTime.ElapsedGameTime.Milliseconds);
+            //currentAnimator.Update(gameTime.ElapsedGameTime.Milliseconds);
+            currentAnimator.Update(0);
 
             string entity = currentAnimator.Entity.Name;
             status = string.Format("{0} : {1}", entity, currentAnimator.Name);
