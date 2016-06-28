@@ -7,7 +7,7 @@ Being a pure C# implementation, SpriterDotNet doesn't depend on any external lib
 
 ## Completed Plugins
 * [Unity](SpriterDotNet.Unity)
-* [Monogame](SpriterDotNet.MonoGame)
+* [MonoGame](SpriterDotNet.MonoGame)
 
 ## Supported Features
 * Basic animations
@@ -26,14 +26,19 @@ Being a pure C# implementation, SpriterDotNet doesn't depend on any external lib
 ## Using SpriterDotNet
 Refer to the specific documentation for each plugin.
 
-## Using SpriterDotNet with another engine
+## Using SpriterDotNet with any engine
+There are a lot of different ways of using this plugin but this is probably the most efficient for the majority of scenarios:
+
 1. Extend [Animator<TSprite, TSound>](SpriterDotNet/Animator.cs) with generic parameters being the concrete types for the framework you're using and override ApplyTransform and PlaySound methods
 2. Obtain a string with the SCML data
 3. Get a Spriter instance by calling [SpriterReader.Default.Read](SpriterDotNet/SpriterReader.cs) on the string from the previous step
-4. Instantiate your Animator class with the desired Entity
-5. Register concrete objects which correspond to FolderId/FileId
-6. Call Step in every frame
-7. Control the animation with properties
+4. Instantiate a [DefaultProviderFactory<Texture2D, SoundEffect>](SpriterDotNet/Providers/DefaultProviderFactory.cs)
+5. Load the required TSprites and TSounds based on the FolderId/FileId from the Spriter instance and register them with the DefaultProviderFactory
+6. Instantiate your Animator with the desired SpriterEntity and the DefaultProviderFactory instance
+7. Call Animator.Step every frame
+8. Control the animation with [Animator properties](#animator)
+
+For already implemented plugins refer to their own documentation pages.
 
 ## Details and Customisation
 SpriterDotNet's default configuration should be good enough for most users but it is designed in a way that allows customising almost everything.
@@ -55,7 +60,7 @@ The ProviderFactory is responsible for constructing/pooling/reusing provider ins
 
 ###### [Asset Provider](SpriterDotNet/IAssetProvider.cs)
 AssetProviders are responsible for providing Sprites and Sounds and for taking care of all the relevant manipulations (like applying character maps).
-They are exposed as properties in the Animator and can be swaped with customised implementations.
+They are exposed as properties in the Animator and can be swapped with customised implementations.
 
 ###### [Frame Data Provider](SpriterDotNet/IFrameDataProvider.cs)
 The Frame Data Provider is responsible for providing FrameData for the given point in time. SpriterDotNet comes with these implementations:
@@ -66,9 +71,9 @@ The Frame Data Provider is responsible for providing FrameData for the given poi
 This class contains the majority of Properties and Methods necessary to control the animation.
 
 ###### Properties
-* Speed - Playback speed. Negative speeds reverse the aniISpriterParsermation
-* Time - The current time in animation in milliseconds
-* Progress - The progress of animation. Ranges from 0.0f to 1.0f
+* Speed - Playback speed. Negative speeds reverse the animation
+* Time - The current time in animation (in milliseconds)
+* Progress - The progress of animation ([0...1])
 * FrameData - The latest FrameData
 * SpriteProvider - IAssetProvider for sprites
 * SoundProvider - IAssetProvider for sounds
@@ -81,7 +86,7 @@ This class contains the majority of Properties and Methods necessary to control 
 **Animation blending is possible only between animations with identical hierarchies. Blending incompatible animations will cause strange behaviour. SpriterDotNet only performs a simple check to determine compatibility in order to avoid crashing but that might not be enough in some cases.**
 
 ### Parsing and Initialisation
-All the parsing and processing is done through a [SpriterReader](SpriterDotNet/SpriterReader.cs) instance. This class has a collection of [ISpriterParsers](SpriterDotNet/ISpriterParser.cs) and [ISpriterPreprocessors](SpriterDotNet/ISpriterPreprocessor.cs). Thre Read method calls all the registered parsers in sequence until the first parsing success. Then it iterates over all preprocessors invoking them on the spriter instance. SpriterDotNet comes with these default implementations:
+All the parsing and processing is done through a [SpriterReader](SpriterDotNet/SpriterReader.cs) instance. This class has a collection of [ISpriterParsers](SpriterDotNet/ISpriterParser.cs) and [ISpriterPreprocessors](SpriterDotNet/ISpriterPreprocessor.cs). The Read method calls all the registered parsers in sequence until the first parsing success. Then it iterates over all preprocessors invoking them on the spriter instance. SpriterDotNet comes with these default implementations:
 * [XmlSpriterParser](SpriterDotNet/Parsers/XmlSpriterParser.cs) - the parser for the .scml file format
 * [SpriterInitPreprocessor](SpriterDotNet/Preprocessors/SpriterInitPreprocessor.cs) - the preprocessor for initialising the default values for the Spriter data hierarchy
 

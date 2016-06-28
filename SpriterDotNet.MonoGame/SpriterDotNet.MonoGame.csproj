@@ -39,6 +39,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Content\SpriterTypeReader.cs" />
     <Compile Include="Content\SpriterAtlasTypeReader.cs" />
+    <Compile Include="SpriterContentLoader.cs" />
+    <Compile Include="Sprite.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework, Version=3.1.2.0, Culture=neutral, PublicKeyToken=null">
