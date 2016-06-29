@@ -74,16 +74,24 @@ namespace SpriterDotNet.MonoGame
 				Size source = info.SourceSize;
 				Size spriteSource = info.SpriteSourceSize;
 
-				Sprite sprite = new Sprite
+				Sprite sprite = new Sprite 
 				{
 					Texture = texture,
-					Width = !info.Rotated ? source.W : source.H,
-					Height = !info.Rotated ? source.H : source.W,
-					SourceRectangle = !info.Rotated ? new Rectangle(frame.X, frame.Y, frame.W, frame.H) : new Rectangle(frame.X, frame.Y, frame.H, frame.W),
-					OriginDelta = !info.Rotated ? -new Vector2(spriteSource.X, spriteSource.Y) : -new Vector2(spriteSource.Y, spriteSource.X),
-					Rotation = info.Rotated ? -90 * MathHelper.DegToRad : 0
+					Width = source.W,
+					Height = source.H
 				};
-                //sprite.Width += 6;
+
+				if(info.Rotated)
+				{
+					sprite.SourceRectangle = new Rectangle(frame.X, frame.Y, frame.H, frame.W);
+					sprite.OriginDelta = -new Vector2(source.H - spriteSource.Y - frame.H, spriteSource.X);
+					sprite.Rotation = -90 * MathHelper.DegToRad;
+				}
+				else
+				{
+					sprite.SourceRectangle = new Rectangle(frame.X, frame.Y, frame.W, frame.H);
+					sprite.OriginDelta = -new Vector2(spriteSource.X, spriteSource.Y);
+				}
 
 				factory.SetSprite(Spriter, folder, file, sprite);
 			}

@@ -84,7 +84,7 @@ namespace SpriterDotNet.MonoGame
 		protected override void ApplySpriteTransform(Sprite sprite, SpriterObject info)
         {
             Vector2 origin;
-            if(sprite.Rotation != 0) origin = new Vector2((1 - info.PivotY) * sprite.Width, info.PivotX * sprite.Height);
+			if(sprite.Rotation != 0) origin = new Vector2(info.PivotY * sprite.Height, info.PivotX * sprite.Width);
             else origin = new Vector2(info.PivotX * sprite.Width, (1 - info.PivotY) * sprite.Height);
             Vector2 position = new Vector2(info.X, -info.Y);
             Vector2 scale = new Vector2(info.ScaleX, info.ScaleY);

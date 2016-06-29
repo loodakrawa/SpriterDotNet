@@ -137,8 +137,7 @@ namespace SpriterDotNet.MonoGame.Example
 
             oldState = Keyboard.GetState();
 
-            //currentAnimator.Update(gameTime.ElapsedGameTime.Milliseconds);
-            currentAnimator.Update(0);
+            currentAnimator.Update(gameTime.ElapsedGameTime.Milliseconds);
 
             string entity = currentAnimator.Entity.Name;
             status = string.Format("{0} : {1}", entity, currentAnimator.Name);
