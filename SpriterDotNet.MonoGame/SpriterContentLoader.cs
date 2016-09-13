@@ -70,8 +70,14 @@ namespace SpriterDotNet.MonoGame
 			foreach (SpriterFile file in folder.Files)
 			{
 				ImageInfo info = imageInfos[file.Name];
+
+				// "x", "y" = location in spritesheet, "w", "h" = trimmed unrotated image size
 				Size frame = info.Frame;
+
+				// "w", "h" = original image size﻿
 				Size source = info.SourceSize;
+
+				// "x", "y" = trimmed offset - pixels trimmed from the top and left
 				Size spriteSource = info.SpriteSourceSize;
 
 				Sprite sprite = new Sprite 
@@ -81,16 +87,19 @@ namespace SpriterDotNet.MonoGame
 					Height = source.H
 				};
 
+				sprite.TrimLeft = spriteSource.X;
+				sprite.TrimRight = source.W - frame.W - spriteSource.X;
+				sprite.TrimTop = spriteSource.Y;
+				sprite.TrimBottom = source.H - frame.H - spriteSource.Y;
+
 				if(info.Rotated)
 				{
 					sprite.SourceRectangle = new Rectangle(frame.X, frame.Y, frame.H, frame.W);
-					sprite.OriginDelta = -new Vector2(source.H - spriteSource.Y - frame.H, spriteSource.X);
-					sprite.Rotation = -90 * MathHelper.DegToRad;
+					sprite.Rotated = true;
 				}
 				else
 				{
 					sprite.SourceRectangle = new Rectangle(frame.X, frame.Y, frame.W, frame.H);
-					sprite.OriginDelta = -new Vector2(spriteSource.X, spriteSource.Y);
 				}
 
 				factory.SetSprite(Spriter, folder, file, sprite);

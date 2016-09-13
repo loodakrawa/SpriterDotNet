@@ -134,6 +134,8 @@ namespace SpriterDotNet.MonoGame.Example
             if (IsPressed(Keys.E)) currentAnimator.Rotation += 15 * (float)Math.PI / 180;
             if (IsPressed(Keys.N)) currentAnimator.Scale -= new Vector2(0.2f, 0.2f);
             if (IsPressed(Keys.M)) currentAnimator.Scale += new Vector2(0.2f, 0.2f);
+			if (IsPressed(Keys.F)) currentAnimator.Scale *= new Vector2(-1, 1);
+			if (IsPressed(Keys.G)) currentAnimator.Scale *= new Vector2(1, -1);
 
             oldState = Keyboard.GetState();
 
