@@ -10,7 +10,6 @@ using Microsoft.Xna.Framework.Input;
 using SpriterDotNet.Providers;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -22,10 +21,10 @@ namespace SpriterDotNet.MonoGame.Example
 
         private static readonly IList<string> Scmls = new List<string>
         {
-			"AtlasExample/0",
+            "AtlasExample/0",
             "GreyGuy/player",
-            //"TestSquares/squares",
-            //"GreyGuyPlus/player_006"
+            "TestSquares/squares",
+            "GreyGuyPlus/player_006"
         };
 
         private static readonly IList<string> Instructions = new List<string>
@@ -39,7 +38,8 @@ namespace SpriterDotNet.MonoGame.Example
             "C/V = Push/Pop CharMap",
             "W/A/S/D = Move",
             "Q/E = Rotate",
-            "N/M = Scale"
+            "N/M = Scale",
+            "F/G = Flip"
         };
 
         private static readonly Config config = new Config
@@ -75,15 +75,15 @@ namespace SpriterDotNet.MonoGame.Example
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             spriteFont = Content.Load<SpriteFont>(FontName);
-			DefaultProviderFactory<Sprite, SoundEffect> factory = new DefaultProviderFactory<Sprite, SoundEffect>(config, true);
+            DefaultProviderFactory<Sprite, SoundEffect> factory = new DefaultProviderFactory<Sprite, SoundEffect>(config, true);
 
             foreach (string scmlPath in Scmls)
             {
-				SpriterContentLoader loader = new SpriterContentLoader(Content, scmlPath);
-				loader.Fill(factory);
-                
+                SpriterContentLoader loader = new SpriterContentLoader(Content, scmlPath);
+                loader.Fill(factory);
 
-				foreach (SpriterEntity entity in loader.Spriter.Entities)
+
+                foreach (SpriterEntity entity in loader.Spriter.Entities)
                 {
                     var animator = new MonoGameDebugAnimator(entity, GraphicsDevice, factory);
                     animators.Add(animator);
@@ -134,8 +134,8 @@ namespace SpriterDotNet.MonoGame.Example
             if (IsPressed(Keys.E)) currentAnimator.Rotation += 15 * (float)Math.PI / 180;
             if (IsPressed(Keys.N)) currentAnimator.Scale -= new Vector2(0.2f, 0.2f);
             if (IsPressed(Keys.M)) currentAnimator.Scale += new Vector2(0.2f, 0.2f);
-			if (IsPressed(Keys.F)) currentAnimator.Scale *= new Vector2(-1, 1);
-			if (IsPressed(Keys.G)) currentAnimator.Scale *= new Vector2(1, -1);
+            if (IsPressed(Keys.F)) currentAnimator.Scale *= new Vector2(-1, 1);
+            if (IsPressed(Keys.G)) currentAnimator.Scale *= new Vector2(1, -1);
 
             oldState = Keyboard.GetState();
 

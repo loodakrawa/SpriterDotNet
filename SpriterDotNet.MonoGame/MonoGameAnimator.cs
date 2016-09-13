@@ -45,11 +45,11 @@ namespace SpriterDotNet.MonoGame
         protected List<DrawInfo> DrawInfos { get; set; }
         protected Matrix Transform { get; set; }
 
-		private static readonly float SpriteAtlasRotation = -90 * MathHelper.DegToRad;
+        private static readonly float SpriteAtlasRotation = -90 * MathHelper.DegToRad;
         private static readonly float DefaultDepth = 0.5f;
         private static readonly float DefaultDeltaDepth = -0.000001f;
 
-		public MonoGameAnimator(SpriterEntity entity, IProviderFactory<Sprite, SoundEffect> providerFactory = null) : base(entity, providerFactory)
+        public MonoGameAnimator(SpriterEntity entity, IProviderFactory<Sprite, SoundEffect> providerFactory = null) : base(entity, providerFactory)
         {
             DrawInfoPool = new Stack<DrawInfo>();
             DrawInfos = new List<DrawInfo>();
@@ -67,8 +67,8 @@ namespace SpriterDotNet.MonoGame
             for (int i = 0; i < DrawInfos.Count; ++i)
             {
                 DrawInfo di = DrawInfos[i];
-				Sprite sprite = di.Sprite;
-				batch.Draw(sprite.Texture, di.Position, sprite.SourceRectangle, di.Color, di.Rotation, di.Origin, di.Scale, di.Effects, di.Depth);
+                Sprite sprite = di.Sprite;
+                batch.Draw(sprite.Texture, di.Position, sprite.SourceRectangle, di.Color, di.Rotation, di.Origin, di.Scale, di.Effects, di.Depth);
                 DrawInfoPool.Push(di);
             }
         }
@@ -82,56 +82,56 @@ namespace SpriterDotNet.MonoGame
             base.Update(deltaTime);
         }
 
-		protected override void ApplySpriteTransform(Sprite sprite, SpriterObject info)
+        protected override void ApplySpriteTransform(Sprite sprite, SpriterObject info)
         {
-			bool rotated = sprite.Rotated;
+            bool rotated = sprite.Rotated;
             Vector2 position = new Vector2(info.X, -info.Y);
             Vector2 scale = new Vector2(info.ScaleX, info.ScaleY);
             float rotation = -info.Angle * MathHelper.DegToRad;
 
-			bool flipX = (scale.X * Scale.X) < 0;
-			bool flipY = (scale.Y * Scale.Y) < 0;
+            bool flipX = (scale.X * Scale.X) < 0;
+            bool flipY = (scale.Y * Scale.Y) < 0;
 
-			SpriteEffects effects = SpriteEffects.None;
-			if(flipX) effects |= !rotated ? SpriteEffects.FlipHorizontally : SpriteEffects.FlipVertically;
-			if(flipY) effects |= !rotated ? SpriteEffects.FlipVertically : SpriteEffects.FlipHorizontally;
+            SpriteEffects effects = SpriteEffects.None;
+            if (flipX) effects |= !rotated ? SpriteEffects.FlipHorizontally : SpriteEffects.FlipVertically;
+            if (flipY) effects |= !rotated ? SpriteEffects.FlipVertically : SpriteEffects.FlipHorizontally;
 
-			float originX;
-			float originY;
+            float originX;
+            float originY;
 
-			if (Scale.X < 0)
-			{
-				position = new Vector2(-position.X, position.Y);
-				rotation = -rotation;
-			}
+            if (Scale.X < 0)
+            {
+                position = new Vector2(-position.X, position.Y);
+                rotation = -rotation;
+            }
 
-			if (Scale.Y < 0)
-			{
-				position = new Vector2(position.X, -position.Y);
-				rotation = -rotation;
-			}
+            if (Scale.Y < 0)
+            {
+                position = new Vector2(position.X, -position.Y);
+                rotation = -rotation;
+            }
 
-			if(!rotated)
-			{
-				if(!flipX) originX = info.PivotX * sprite.Width - sprite.TrimLeft;
-				else originX = (1 - info.PivotX) * sprite.Width - sprite.TrimRight;
+            if (!rotated)
+            {
+                if (!flipX) originX = info.PivotX * sprite.Width - sprite.TrimLeft;
+                else originX = (1 - info.PivotX) * sprite.Width - sprite.TrimRight;
 
-				if(!flipY) originY = (1 - info.PivotY) * sprite.Height - sprite.TrimTop;
-				else originY = info.PivotY * sprite.Height - sprite.TrimBottom;
-			}
-			else
-			{
-				if(!flipX)
-				{
-					originX = info.PivotY * sprite.Height - sprite.TrimBottom;
-					originY = info.PivotX * sprite.Width - sprite.TrimLeft;
-				}
-				else
-				{
-					originX = (1 - info.PivotY) * sprite.Height - sprite.TrimTop;
-					originY = (1 - info.PivotX) * sprite.Width - sprite.TrimRight;
-				}
-			}
+                if (!flipY) originY = (1 - info.PivotY) * sprite.Height - sprite.TrimTop;
+                else originY = info.PivotY * sprite.Height - sprite.TrimBottom;
+            }
+            else
+            {
+                if (!flipX)
+                {
+                    originX = info.PivotY * sprite.Height - sprite.TrimBottom;
+                    originY = info.PivotX * sprite.Width - sprite.TrimLeft;
+                }
+                else
+                {
+                    originX = (1 - info.PivotY) * sprite.Height - sprite.TrimTop;
+                    originY = (1 - info.PivotX) * sprite.Width - sprite.TrimRight;
+                }
+            }
 
             Matrix globalTransform = MathHelper.GetMatrix(scale, rotation, position) * Transform;
             globalTransform.DecomposeMatrix(out scale, out rotation, out position);
@@ -141,12 +141,12 @@ namespace SpriterDotNet.MonoGame
 
             DrawInfo di = DrawInfoPool.Count > 0 ? DrawInfoPool.Pop() : new DrawInfo();
 
-			di.Sprite = sprite;
+            di.Sprite = sprite;
             di.Position = position;
-			di.Origin = new Vector2(originX, originY);
+            di.Origin = new Vector2(originX, originY);
             di.Scale = scale;
-			di.Rotation = rotation + (sprite.Rotated ? SpriteAtlasRotation : 0);
-			di.Color = Color.White * info.Alpha;
+            di.Rotation = rotation + (sprite.Rotated ? SpriteAtlasRotation : 0);
+            di.Color = Color.White * info.Alpha;
             di.Effects = effects;
             di.Depth = depth;
 

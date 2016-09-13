@@ -9,144 +9,144 @@ using Microsoft.Xna.Framework;
 
 namespace SpriterDotNet.MonoGame
 {
-	public class SpriterContentLoader
-	{
-		private readonly ContentManager content;
-		private readonly string scmlPath;
-		private readonly string rootPath;
-		public Spriter Spriter { get; private set; }
-		private Dictionary<int, SpriterAtlas> atlases;
-		private Dictionary<SpriterAtlas, Dictionary<string, ImageInfo>> infos;
+    public class SpriterContentLoader
+    {
+        private readonly ContentManager content;
+        private readonly string scmlPath;
+        private readonly string rootPath;
+        public Spriter Spriter { get; private set; }
+        private Dictionary<int, SpriterAtlas> atlases;
+        private Dictionary<SpriterAtlas, Dictionary<string, ImageInfo>> infos;
 
-		public SpriterContentLoader (ContentManager content, string scmlPath)
-		{
-			this.content = content;
-			this.scmlPath = scmlPath;
-			rootPath = scmlPath.Substring(0, scmlPath.IndexOf("/"));
-			Load();
-		}
+        public SpriterContentLoader(ContentManager content, string scmlPath)
+        {
+            this.content = content;
+            this.scmlPath = scmlPath;
+            rootPath = scmlPath.Substring(0, scmlPath.IndexOf("/"));
+            Load();
+        }
 
-		public void Fill(DefaultProviderFactory<Sprite, SoundEffect> factory)
-		{
-			foreach (SpriterFolder folder in Spriter.Folders)
-			{
-				if(folder.AtlasId > -1) AddAtlasFolder(folder, factory);
-				else AddRegularFolder(folder, factory);
-			}
-		}
+        public void Fill(DefaultProviderFactory<Sprite, SoundEffect> factory)
+        {
+            foreach (SpriterFolder folder in Spriter.Folders)
+            {
+                if (folder.AtlasId > -1) AddAtlasFolder(folder, factory);
+                else AddRegularFolder(folder, factory);
+            }
+        }
 
-		private void AddRegularFolder(SpriterFolder folder, DefaultProviderFactory<Sprite, SoundEffect> factory)
-		{
-			foreach (SpriterFile file in folder.Files)
-			{
-				string path = FormatPath(file.Name, folder.Name);
+        private void AddRegularFolder(SpriterFolder folder, DefaultProviderFactory<Sprite, SoundEffect> factory)
+        {
+            foreach (SpriterFile file in folder.Files)
+            {
+                string path = FormatPath(file.Name, folder.Name);
 
-				if (file.Type == SpriterFileType.Sound)
-				{
-					SoundEffect sound = LoadContent<SoundEffect>(path);
-					factory.SetSound(Spriter, folder, file, sound);
-				}
-				else
-				{
-					Texture2D texture = LoadContent<Texture2D>(path);
-					Sprite sprite = new Sprite
-					{
-						Texture = texture,
-						Width = texture.Width,
-						Height = texture.Height,
-					};
-					factory.SetSprite(Spriter, folder, file, sprite);
-				}
+                if (file.Type == SpriterFileType.Sound)
+                {
+                    SoundEffect sound = LoadContent<SoundEffect>(path);
+                    factory.SetSound(Spriter, folder, file, sound);
+                }
+                else
+                {
+                    Texture2D texture = LoadContent<Texture2D>(path);
+                    Sprite sprite = new Sprite
+                    {
+                        Texture = texture,
+                        Width = texture.Width,
+                        Height = texture.Height,
+                    };
+                    factory.SetSprite(Spriter, folder, file, sprite);
+                }
 
-			}
-		}
+            }
+        }
 
-		private void AddAtlasFolder(SpriterFolder folder, DefaultProviderFactory<Sprite, SoundEffect> factory)
-		{
-			SpriterAtlas atlas = atlases[folder.AtlasId];
-			Texture2D texture = content.Load<Texture2D>(FormatPath(atlas.Meta.Image));
-			Dictionary<string, ImageInfo> imageInfos = infos[atlas];
+        private void AddAtlasFolder(SpriterFolder folder, DefaultProviderFactory<Sprite, SoundEffect> factory)
+        {
+            SpriterAtlas atlas = atlases[folder.AtlasId];
+            Texture2D texture = content.Load<Texture2D>(FormatPath(atlas.Meta.Image));
+            Dictionary<string, ImageInfo> imageInfos = infos[atlas];
 
-			foreach (SpriterFile file in folder.Files)
-			{
-				ImageInfo info = imageInfos[file.Name];
+            foreach (SpriterFile file in folder.Files)
+            {
+                ImageInfo info = imageInfos[file.Name];
 
-				// "x", "y" = location in spritesheet, "w", "h" = trimmed unrotated image size
-				Size frame = info.Frame;
+                // "x", "y" = location in spritesheet, "w", "h" = trimmed unrotated image size
+                Size frame = info.Frame;
 
-				// "w", "h" = original image size﻿
-				Size source = info.SourceSize;
+                // "w", "h" = original image size﻿
+                Size source = info.SourceSize;
 
-				// "x", "y" = trimmed offset - pixels trimmed from the top and left
-				Size spriteSource = info.SpriteSourceSize;
+                // "x", "y" = trimmed offset - pixels trimmed from the top and left
+                Size spriteSource = info.SpriteSourceSize;
 
-				Sprite sprite = new Sprite 
-				{
-					Texture = texture,
-					Width = source.W,
-					Height = source.H
-				};
+                Sprite sprite = new Sprite
+                {
+                    Texture = texture,
+                    Width = source.W,
+                    Height = source.H
+                };
 
-				sprite.TrimLeft = spriteSource.X;
-				sprite.TrimRight = source.W - frame.W - spriteSource.X;
-				sprite.TrimTop = spriteSource.Y;
-				sprite.TrimBottom = source.H - frame.H - spriteSource.Y;
+                sprite.TrimLeft = spriteSource.X;
+                sprite.TrimRight = source.W - frame.W - spriteSource.X;
+                sprite.TrimTop = spriteSource.Y;
+                sprite.TrimBottom = source.H - frame.H - spriteSource.Y;
 
-				if(info.Rotated)
-				{
-					sprite.SourceRectangle = new Rectangle(frame.X, frame.Y, frame.H, frame.W);
-					sprite.Rotated = true;
-				}
-				else
-				{
-					sprite.SourceRectangle = new Rectangle(frame.X, frame.Y, frame.W, frame.H);
-				}
+                if (info.Rotated)
+                {
+                    sprite.SourceRectangle = new Rectangle(frame.X, frame.Y, frame.H, frame.W);
+                    sprite.Rotated = true;
+                }
+                else
+                {
+                    sprite.SourceRectangle = new Rectangle(frame.X, frame.Y, frame.W, frame.H);
+                }
 
-				factory.SetSprite(Spriter, folder, file, sprite);
-			}
-		}
+                factory.SetSprite(Spriter, folder, file, sprite);
+            }
+        }
 
-		private void Load()
-		{
-			Spriter = LoadContent<Spriter>(scmlPath);
-			if(Spriter.Atlases == null || Spriter.Atlases.Length == 0) return;
-			atlases = new Dictionary<int, SpriterAtlas>();
-			infos = new Dictionary<SpriterAtlas, Dictionary<string, ImageInfo>>();
+        private void Load()
+        {
+            Spriter = LoadContent<Spriter>(scmlPath);
+            if (Spriter.Atlases == null || Spriter.Atlases.Length == 0) return;
+            atlases = new Dictionary<int, SpriterAtlas>();
+            infos = new Dictionary<SpriterAtlas, Dictionary<string, ImageInfo>>();
 
-			foreach(var atlasRef in Spriter.Atlases)
-			{
-				String path = FormatPath(atlasRef.Name);
-				SpriterAtlas atlas = content.Load<SpriterAtlas>(path);
-				atlases[atlasRef.Id] = atlas;
+            foreach (var atlasRef in Spriter.Atlases)
+            {
+                String path = FormatPath(atlasRef.Name);
+                SpriterAtlas atlas = content.Load<SpriterAtlas>(path);
+                atlases[atlasRef.Id] = atlas;
 
-				Dictionary<string, ImageInfo> imageInfos = new Dictionary<string, ImageInfo>();
-				infos[atlas] = imageInfos;
+                Dictionary<string, ImageInfo> imageInfos = new Dictionary<string, ImageInfo>();
+                infos[atlas] = imageInfos;
 
-				foreach(ImageInfo info in atlas.ImageInfos) imageInfos[info.Name] = info;
-			}
-		}
+                foreach (ImageInfo info in atlas.ImageInfos) imageInfos[info.Name] = info;
+            }
+        }
 
-		private string FormatPath(string fileName, string folderName = null)
-		{
-			fileName = Path.GetFileNameWithoutExtension(fileName);
-			if (string.IsNullOrEmpty(folderName)) return string.Format("{0}/{1}", rootPath, fileName);
-			return string.Format("{0}/{1}/{2}", rootPath, folderName, fileName);
-		}
+        private string FormatPath(string fileName, string folderName = null)
+        {
+            fileName = Path.GetFileNameWithoutExtension(fileName);
+            if (string.IsNullOrEmpty(folderName)) return string.Format("{0}/{1}", rootPath, fileName);
+            return string.Format("{0}/{1}/{2}", rootPath, folderName, fileName);
+        }
 
-		private T LoadContent<T>(string path)
-		{
-			T asset = default(T);
-			try
-			{
-				asset = content.Load<T>(path);
-			}
-			catch
-			{
-				System.Diagnostics.Debug.WriteLine("Missing Asset: " + path);
-			}
+        private T LoadContent<T>(string path)
+        {
+            T asset = default(T);
+            try
+            {
+                asset = content.Load<T>(path);
+            }
+            catch
+            {
+                System.Diagnostics.Debug.WriteLine("Missing Asset: " + path);
+            }
 
-			return asset;
-		}
-	}
+            return asset;
+        }
+    }
 }
 
