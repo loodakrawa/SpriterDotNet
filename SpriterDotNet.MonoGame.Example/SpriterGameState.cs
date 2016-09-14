@@ -63,7 +63,7 @@ namespace SpriterDotNet.MonoGame.Example
         private string rtfm = string.Join(Environment.NewLine, Instructions);
         private string status = string.Empty;
         private string metadata = string.Empty;
-        private Fps fps = new Fps();
+        private Stats stats = new Stats();
 
         private Vector2 centre;
 
@@ -97,7 +97,7 @@ namespace SpriterDotNet.MonoGame.Example
 
         public override void Draw(GameTime gameTime)
         {
-            fps.OnDraw(gameTime);
+            stats.OnDraw(gameTime);
 
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
@@ -105,7 +105,7 @@ namespace SpriterDotNet.MonoGame.Example
 
             currentAnimator.Draw(spriteBatch);
 
-            DrawText(string.Format("FPS = {0}", fps.FrameRate), new Vector2(Width - 100, 10), 0.6f);
+			DrawText(string.Format("FPS = {0}\nMem = {1:n0}", stats.FrameRate, stats.Memory), new Vector2(Width - 200, 10), 0.6f);
             DrawText(rtfm, new Vector2(10, 10), 0.6f);
             DrawText(status, new Vector2(10, Height - 50));
             DrawText(metadata, new Vector2(Width - 300, Height * 0.5f), 0.6f);
@@ -114,7 +114,8 @@ namespace SpriterDotNet.MonoGame.Example
 
         public override void Update(GameTime gameTime)
         {
-            fps.OnUpdate(gameTime);
+            stats.OnUpdate(gameTime);
+			Vector2 scale = currentAnimator.Scale;
 
             if (IsPressed(Keys.Enter)) SwitchEntity();
             if (IsPressed(Keys.Space)) currentAnimator.Play(GetNextAnimation());
@@ -132,8 +133,8 @@ namespace SpriterDotNet.MonoGame.Example
             if (IsPressed(Keys.D)) currentAnimator.Position += new Vector2(10, 0);
             if (IsPressed(Keys.Q)) currentAnimator.Rotation -= 15 * (float)Math.PI / 180;
             if (IsPressed(Keys.E)) currentAnimator.Rotation += 15 * (float)Math.PI / 180;
-            if (IsPressed(Keys.N)) currentAnimator.Scale -= new Vector2(0.2f, 0.2f);
-            if (IsPressed(Keys.M)) currentAnimator.Scale += new Vector2(0.2f, 0.2f);
+			if (IsPressed(Keys.N)) currentAnimator.Scale -= new Vector2(Math.Sign(scale.X) * 0.2f, Math.Sign(scale.Y) * 0.2f);
+			if (IsPressed(Keys.M)) currentAnimator.Scale += new Vector2(Math.Sign(scale.X) * 0.2f, Math.Sign(scale.Y) * 0.2f);
             if (IsPressed(Keys.F)) currentAnimator.Scale *= new Vector2(-1, 1);
             if (IsPressed(Keys.G)) currentAnimator.Scale *= new Vector2(1, -1);
 

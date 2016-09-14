@@ -8,11 +8,12 @@ using System;
 
 namespace SpriterDotNet.MonoGame.Example
 {
-    public class Fps
+    public class Stats
     {
         private static readonly TimeSpan Second = TimeSpan.FromSeconds(1);
 
         public int FrameRate { get; private set; }
+		public long Memory { get; private set; }
 
         private int frameCount;
         private TimeSpan elapsedTime;
@@ -25,6 +26,7 @@ namespace SpriterDotNet.MonoGame.Example
             {
                 elapsedTime -= Second;
                 FrameRate = frameCount;
+				Memory = GC.GetTotalMemory(false);
                 frameCount = 0;
             }
         }
