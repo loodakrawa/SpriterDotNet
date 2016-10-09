@@ -22,7 +22,7 @@ namespace SpriterDotNet.MonoGame
         {
             this.content = content;
             this.scmlPath = scmlPath;
-            rootPath = scmlPath.Substring(0, scmlPath.IndexOf("/"));
+            rootPath = scmlPath.Substring(0, scmlPath.LastIndexOf("/"));
             Load();
         }
 

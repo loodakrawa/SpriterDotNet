@@ -97,7 +97,10 @@ namespace SpriterDotNet.MonoGame.Example
 
         public override void Draw(GameTime gameTime)
         {
-            stats.OnDraw(gameTime);
+            string statStr = string.Format("FPS = {0}\nMEM (KB) = {1:n0}", stats.FrameRate, stats.MemoryKb);
+            string allocStr = stats.GcHappened ? "!!!GC!!!" : string.Format("KB/S = {0:n0}", stats.FrameMallocKb);
+
+            stats.OnDraw();
 
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
@@ -105,10 +108,12 @@ namespace SpriterDotNet.MonoGame.Example
 
             currentAnimator.Draw(spriteBatch);
 
-			DrawText(string.Format("FPS = {0}\nMem = {1:n0}", stats.FrameRate, stats.Memory), new Vector2(Width - 200, 10), 0.6f);
-            DrawText(rtfm, new Vector2(10, 10), 0.6f);
-            DrawText(status, new Vector2(10, Height - 50));
-            DrawText(metadata, new Vector2(Width - 300, Height * 0.5f), 0.6f);
+            DrawText(statStr, new Vector2(Width - 150, 10), 0.6f, Color.Yellow);
+            DrawText(allocStr, new Vector2(Width - 150, 50), 0.6f, stats.GcHappened ? Color.Red : Color.Yellow);
+
+            DrawText(rtfm, new Vector2(10, 10), 0.6f, Color.Black);
+            DrawText(status, new Vector2(10, Height - 50), 1.0f, Color.Black);
+            DrawText(metadata, new Vector2(Width - 300, Height * 0.5f), 0.6f, Color.Black);
             spriteBatch.End();
         }
 
@@ -147,9 +152,9 @@ namespace SpriterDotNet.MonoGame.Example
             metadata = "Variables:\n" + GetVarValues() + "\nTags:\n" + GetTagValues();
         }
 
-        private void DrawText(string text, Vector2 position, float size = 1.0f)
+        private void DrawText(string text, Vector2 position, float size, Color color)
         {
-            spriteBatch.DrawString(spriteFont, text, position, Color.Black, 0, Vector2.Zero, size, SpriteEffects.None, 0.0f);
+            spriteBatch.DrawString(spriteFont, text, position, color, 0, Vector2.Zero, size, SpriteEffects.None, 0.0f);
         }
 
         private void PushCharacterMap()
