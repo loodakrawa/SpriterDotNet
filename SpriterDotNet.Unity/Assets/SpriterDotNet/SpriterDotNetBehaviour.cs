@@ -34,6 +34,8 @@ namespace SpriterDotNetUnity
         [HideInInspector]
         public int SortingOrder;
 
+        public float Ppu = 100;
+
         [HideInInspector]
         public ChildData ChildData;
 
@@ -55,7 +57,7 @@ namespace SpriterDotNetUnity
             SpriterEntity entity = SpriterData.Spriter.Entities[EntityIndex];
             AudioSource audioSource = gameObject.GetComponent<AudioSource>();
 
-            Animator = new UnityAnimator(entity, ChildData, audioSource);
+            Animator = new UnityAnimator(entity, ChildData, audioSource, Ppu);
             RegisterSpritesAndSounds();
 
             if (UseNativeTags) defaultTag = gameObject.tag;

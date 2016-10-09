@@ -14,20 +14,21 @@ namespace SpriterDotNetUnity
         public string SortingLayer { get; set; }
         public int SortingOrder { get; set; }
 
-        private const float DefaultPPU = 100.0f;
         private const float DefaultPivot = 0.5f;
 
         private ChildData childData;
         private SpriteRenderer[] renderers;
         private AudioSource audioSource;
+        private float ppu;
         private int index;
         private int boxIndex;
         private int pointIndex;
 
-        public UnityAnimator(SpriterEntity entity, ChildData childData, AudioSource audioSource) : base(entity)
+        public UnityAnimator(SpriterEntity entity, ChildData childData, AudioSource audioSource, float ppu) : base(entity)
         {
             this.childData = childData;
             this.audioSource = audioSource;
+            this.ppu = ppu;
 
             renderers = new SpriteRenderer[childData.Sprites.Length];
             for (int i = 0; i < childData.Sprites.Length; ++i)
@@ -107,8 +108,8 @@ namespace SpriterDotNetUnity
             child.SetActive(true);
             pivot.SetActive(true);
 
-            float w = objInfo.Width / DefaultPPU;
-            float h = objInfo.Height / DefaultPPU;
+            float w = objInfo.Width / ppu;
+            float h = objInfo.Height / ppu;
 
             BoxCollider2D collider = child.GetComponent<BoxCollider2D>();
             collider.size = new Vector2(w, h);
@@ -119,7 +120,7 @@ namespace SpriterDotNetUnity
             float deltaY = (DefaultPivot - info.PivotY) * h * info.ScaleY;
 
             pivotTransform.localEulerAngles = new Vector3(0, 0, info.Angle);
-            pivotTransform.localPosition = new Vector3(info.X / DefaultPPU, info.Y / DefaultPPU, 0);
+            pivotTransform.localPosition = new Vector3(info.X / ppu, info.Y / ppu, 0);
             childTransform.localPosition = new Vector3(deltaX, deltaY, childTransform.localPosition.z);
             childTransform.localScale = new Vector3(info.ScaleX, info.ScaleY, 1);
             ++boxIndex;
@@ -132,8 +133,8 @@ namespace SpriterDotNetUnity
             point.name = name;
             point.SetActive(true);
 
-            float x = info.X / DefaultPPU;
-            float y = info.Y / DefaultPPU;
+            float x = info.X / ppu;
+            float y = info.Y / ppu;
 
             pointTransform.localPosition = new Vector3(x, y, pointTransform.localPosition.z);
 

@@ -25,6 +25,9 @@ namespace SpriterDotNet
 
         [XmlArray("tag_list"), XmlArrayItem("i")]
         public SpriterElement[] Tags;
+
+		[XmlArray("atlas"), XmlArrayItem("i")]
+		public SpriterElement[] Atlases;
     }
 
 	#if !PCL
@@ -34,6 +37,14 @@ namespace SpriterDotNet
     {
         [XmlElement("file")]
         public SpriterFile[] Files;
+
+		[XmlAttribute("atlas")]
+		public int AtlasId;
+
+		public SpriterFolder()
+		{
+			AtlasId = -1;
+		}
     }
 
 	#if !PCL

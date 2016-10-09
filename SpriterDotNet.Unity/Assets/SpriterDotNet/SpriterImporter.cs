@@ -268,8 +268,12 @@ namespace SpriterDotNetUnity
             newEntry.stringValue = value;
         }
 
-        private static bool HasSound(SpriterEntity entity)
+        private static bool HasSound(SpriterEntity entity, HashSet<int> processedIds = null)
         {
+            if (processedIds == null) processedIds = new HashSet<int>();
+            if (processedIds.Contains(entity.Id)) return false;
+            processedIds.Add(entity.Id);
+
             foreach (SpriterAnimation animation in entity.Animations)
             {
                 if (animation.Soundlines != null && animation.Soundlines.Length > 0) return true;
@@ -280,7 +284,7 @@ namespace SpriterDotNetUnity
                     foreach(SpriterTimelineKey key in timeline.Keys)
                     {
                         if (key.ObjectInfo == null) continue;
-                        bool hasSound = HasSound(entity.Spriter.Entities[key.ObjectInfo.EntityId]);
+                        bool hasSound = HasSound(entity.Spriter.Entities[key.ObjectInfo.EntityId], processedIds);
                         if (hasSound) return true;
                     }
                 }

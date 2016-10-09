@@ -10,7 +10,6 @@ using Microsoft.Xna.Framework.Input;
 using SpriterDotNet.Providers;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -22,6 +21,7 @@ namespace SpriterDotNet.MonoGame.Example
 
         private static readonly IList<string> Scmls = new List<string>
         {
+            "AtlasExample/0",
             "GreyGuy/player",
             "TestSquares/squares",
             "GreyGuyPlus/player_006"
@@ -38,7 +38,8 @@ namespace SpriterDotNet.MonoGame.Example
             "C/V = Push/Pop CharMap",
             "W/A/S/D = Move",
             "Q/E = Rotate",
-            "N/M = Scale"
+            "N/M = Scale",
+            "F/G = Flip"
         };
 
         private static readonly Config config = new Config
@@ -62,7 +63,7 @@ namespace SpriterDotNet.MonoGame.Example
         private string rtfm = string.Join(Environment.NewLine, Instructions);
         private string status = string.Empty;
         private string metadata = string.Empty;
-        private Fps fps = new Fps();
+        private Stats stats = new Stats();
 
         private Vector2 centre;
 
@@ -74,16 +75,15 @@ namespace SpriterDotNet.MonoGame.Example
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             spriteFont = Content.Load<SpriteFont>(FontName);
-            Texture2D debugTexture = new Texture2D(GraphicsDevice, 1, 1);
-            DefaultProviderFactory<Texture2D, SoundEffect> factory = new DefaultProviderFactory<Texture2D, SoundEffect>(config, true);
+            DefaultProviderFactory<Sprite, SoundEffect> factory = new DefaultProviderFactory<Sprite, SoundEffect>(config, true);
 
             foreach (string scmlPath in Scmls)
             {
-                Spriter spriter = Content.Load<Spriter>(scmlPath);
+                SpriterContentLoader loader = new SpriterContentLoader(Content, scmlPath);
+                loader.Fill(factory);
 
-                RegisterTextures(factory, spriter, scmlPath);
 
-                foreach (SpriterEntity entity in spriter.Entities)
+                foreach (SpriterEntity entity in loader.Spriter.Entities)
                 {
                     var animator = new MonoGameDebugAnimator(entity, GraphicsDevice, factory);
                     animators.Add(animator);
@@ -97,7 +97,10 @@ namespace SpriterDotNet.MonoGame.Example
 
         public override void Draw(GameTime gameTime)
         {
-            fps.OnDraw(gameTime);
+            string statStr = string.Format("FPS = {0}\nMEM (KB) = {1:n0}", stats.FrameRate, stats.MemoryKb);
+            string allocStr = stats.GcHappened ? "!!!GC!!!" : string.Format("KB/S = {0:n0}", stats.FrameMallocKb);
+
+            stats.OnDraw();
 
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
@@ -105,16 +108,19 @@ namespace SpriterDotNet.MonoGame.Example
 
             currentAnimator.Draw(spriteBatch);
 
-            DrawText(string.Format("FPS = {0}", fps.FrameRate), new Vector2(Width - 100, 10), 0.6f);
-            DrawText(rtfm, new Vector2(10, 10), 0.6f);
-            DrawText(status, new Vector2(10, Height - 50));
-            DrawText(metadata, new Vector2(Width - 300, Height * 0.5f), 0.6f);
+            DrawText(statStr, new Vector2(Width - 150, 10), 0.6f, Color.Yellow);
+            DrawText(allocStr, new Vector2(Width - 150, 50), 0.6f, stats.GcHappened ? Color.Red : Color.Yellow);
+
+            DrawText(rtfm, new Vector2(10, 10), 0.6f, Color.Black);
+            DrawText(status, new Vector2(10, Height - 50), 1.0f, Color.Black);
+            DrawText(metadata, new Vector2(Width - 300, Height * 0.5f), 0.6f, Color.Black);
             spriteBatch.End();
         }
 
         public override void Update(GameTime gameTime)
         {
-            fps.OnUpdate(gameTime);
+            stats.OnUpdate(gameTime);
+			Vector2 scale = currentAnimator.Scale;
 
             if (IsPressed(Keys.Enter)) SwitchEntity();
             if (IsPressed(Keys.Space)) currentAnimator.Play(GetNextAnimation());
@@ -132,8 +138,10 @@ namespace SpriterDotNet.MonoGame.Example
             if (IsPressed(Keys.D)) currentAnimator.Position += new Vector2(10, 0);
             if (IsPressed(Keys.Q)) currentAnimator.Rotation -= 15 * (float)Math.PI / 180;
             if (IsPressed(Keys.E)) currentAnimator.Rotation += 15 * (float)Math.PI / 180;
-            if (IsPressed(Keys.N)) currentAnimator.Scale -= new Vector2(0.2f, 0.2f);
-            if (IsPressed(Keys.M)) currentAnimator.Scale += new Vector2(0.2f, 0.2f);
+			if (IsPressed(Keys.N)) currentAnimator.Scale -= new Vector2(Math.Sign(scale.X) * 0.2f, Math.Sign(scale.Y) * 0.2f);
+			if (IsPressed(Keys.M)) currentAnimator.Scale += new Vector2(Math.Sign(scale.X) * 0.2f, Math.Sign(scale.Y) * 0.2f);
+            if (IsPressed(Keys.F)) currentAnimator.Scale *= new Vector2(-1, 1);
+            if (IsPressed(Keys.G)) currentAnimator.Scale *= new Vector2(1, -1);
 
             oldState = Keyboard.GetState();
 
@@ -144,9 +152,9 @@ namespace SpriterDotNet.MonoGame.Example
             metadata = "Variables:\n" + GetVarValues() + "\nTags:\n" + GetTagValues();
         }
 
-        private void DrawText(string text, Vector2 position, float size = 1.0f)
+        private void DrawText(string text, Vector2 position, float size, Color color)
         {
-            spriteBatch.DrawString(spriteFont, text, position, Color.Black, 0, Vector2.Zero, size, SpriteEffects.None, 0.0f);
+            spriteBatch.DrawString(spriteFont, text, position, color, 0, Vector2.Zero, size, SpriteEffects.None, 0.0f);
         }
 
         private void PushCharacterMap()
@@ -243,53 +251,6 @@ namespace SpriterDotNet.MonoGame.Example
             var speed = currentAnimator.Speed + delta;
             speed = Math.Abs(speed) < MaxSpeed ? speed : MaxSpeed * Math.Sign(speed);
             currentAnimator.Speed = speed;
-        }
-
-        private void RegisterTextures(DefaultProviderFactory<Texture2D, SoundEffect> factory, Spriter spriter, string scmlPath)
-        {
-            string rootPath = scmlPath.Substring(0, scmlPath.IndexOf("/"));
-
-            foreach (SpriterFolder folder in spriter.Folders)
-            {
-                foreach (SpriterFile file in folder.Files)
-                {
-                    string path = FormatPath(folder, file, rootPath);
-
-                    if (file.Type == SpriterFileType.Sound)
-                    {
-                        SoundEffect sound = LoadContent<SoundEffect>(path);
-                        factory.SetSound(spriter, folder, file, sound);
-                    }
-                    else
-                    {
-                        Texture2D texture = LoadContent<Texture2D>(path);
-                        factory.SetSprite(spriter, folder, file, texture);
-                    }
-
-                }
-            }
-        }
-
-        private T LoadContent<T>(string path)
-        {
-            T asset = default(T);
-            try
-            {
-                asset = Content.Load<T>(path);
-            }
-            catch
-            {
-                System.Diagnostics.Debug.WriteLine("Missing Asset: " + path);
-            }
-
-            return asset;
-        }
-
-        private string FormatPath(SpriterFolder folder, SpriterFile file, string rootPath)
-        {
-            string fileName = Path.GetFileNameWithoutExtension(file.Name);
-            if (string.IsNullOrEmpty(folder.Name)) return string.Format("{0}/{1}", rootPath, fileName);
-            return string.Format("{0}/{1}/{2}", rootPath, folder.Name, fileName);
         }
 
         private void CurrentAnimator_EventTriggered(string obj)

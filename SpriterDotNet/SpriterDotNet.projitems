@@ -30,5 +30,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)SpriterReader.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FrameDataCalculator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Parsers\XmlSpriterParser.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AtlasDataModel.cs" />
   </ItemGroup>
 </Project>
