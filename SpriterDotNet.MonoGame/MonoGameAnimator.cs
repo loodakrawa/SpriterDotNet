@@ -19,7 +19,7 @@ namespace SpriterDotNet.MonoGame
         /// <summary>
         /// Scale factor of the animator. Negative values flip the image.
         /// </summary>
-        public virtual Vector2 Scale { get; set; }
+        public virtual Vector2 Scale { get; set; } = Vector2.One;
 
         /// <summary>
         /// Rotation in radians.
@@ -34,15 +34,20 @@ namespace SpriterDotNet.MonoGame
         /// <summary>
         /// The drawing depth. Should be in the [0,1] interval.
         /// </summary>
-        public virtual float Depth { get; set; }
+        public virtual float Depth { get; set; } = DefaultDepth;
 
         /// <summary>
         /// The depth distance between different sprites of the same animation.
         /// </summary>
-        public virtual float DeltaDepth { get; set; }
+        public virtual float DeltaDepth { get; set; } = DefaultDeltaDepth;
 
-        protected Stack<DrawInfo> DrawInfoPool { get; set; }
-        protected List<DrawInfo> DrawInfos { get; set; }
+        /// <summary>
+        /// The color used to render all the sprites.
+        /// </summary>
+        public virtual Color Color { get; set; } = Color.White;
+
+        protected Stack<DrawInfo> DrawInfoPool { get; set; } = new Stack<DrawInfo>();
+        protected List<DrawInfo> DrawInfos { get; set; } = new List<DrawInfo>();
         protected Matrix Transform { get; set; }
 
         private static readonly float SpriteAtlasRotation = -90 * MathHelper.DegToRad;
@@ -51,12 +56,6 @@ namespace SpriterDotNet.MonoGame
 
         public MonoGameAnimator(SpriterEntity entity, IProviderFactory<Sprite, SoundEffect> providerFactory = null) : base(entity, providerFactory)
         {
-            DrawInfoPool = new Stack<DrawInfo>();
-            DrawInfos = new List<DrawInfo>();
-
-            Scale = Vector2.One;
-            DeltaDepth = DefaultDeltaDepth;
-            Depth = DefaultDepth;
         }
 
         /// <summary>
@@ -146,7 +145,7 @@ namespace SpriterDotNet.MonoGame
             di.Origin = new Vector2(originX, originY);
             di.Scale = scale;
             di.Rotation = rotation + (sprite.Rotated ? SpriteAtlasRotation : 0);
-            di.Color = Color.White * info.Alpha;
+            di.Color = Color * info.Alpha;
             di.Effects = effects;
             di.Depth = depth;
 

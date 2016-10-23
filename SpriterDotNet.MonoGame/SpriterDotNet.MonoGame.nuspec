@@ -4,7 +4,7 @@
     
   <metadata>
     <id>SpriterDotNet.MonoGame</id>
-    <version>1.5.1</version>
+    <version>$version$</version>
     <authors>Luka "loodakrawa" Sverko</authors>
     <owners>Luka "loodakrawa" Sverko</owners>
     <licenseUrl>https://github.com/loodakrawa/SpriterDotNet/blob/develop/LICENSE</licenseUrl>

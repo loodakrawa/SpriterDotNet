@@ -39,7 +39,8 @@ namespace SpriterDotNet.MonoGame.Example
             "W/A/S/D = Move",
             "Q/E = Rotate",
             "N/M = Scale",
-            "F/G = Flip"
+            "F/G = Flip",
+            "J = Toggle Colour"
         };
 
         private static readonly Config config = new Config
@@ -120,7 +121,7 @@ namespace SpriterDotNet.MonoGame.Example
         public override void Update(GameTime gameTime)
         {
             stats.OnUpdate(gameTime);
-			Vector2 scale = currentAnimator.Scale;
+            Vector2 scale = currentAnimator.Scale;
 
             if (IsPressed(Keys.Enter)) SwitchEntity();
             if (IsPressed(Keys.Space)) currentAnimator.Play(GetNextAnimation());
@@ -131,6 +132,7 @@ namespace SpriterDotNet.MonoGame.Example
             if (IsPressed(Keys.T)) currentAnimator.Transition(GetNextAnimation(), 1000.0f);
             if (IsPressed(Keys.C)) PushCharacterMap();
             if (IsPressed(Keys.V)) currentAnimator.SpriteProvider.PopCharMap();
+            if (IsPressed(Keys.J)) currentAnimator.Color = currentAnimator.Color == Color.White ? Color.Red : Color.White;
 
             if (IsPressed(Keys.W)) currentAnimator.Position += new Vector2(0, -10);
             if (IsPressed(Keys.S)) currentAnimator.Position += new Vector2(0, 10);
@@ -138,8 +140,8 @@ namespace SpriterDotNet.MonoGame.Example
             if (IsPressed(Keys.D)) currentAnimator.Position += new Vector2(10, 0);
             if (IsPressed(Keys.Q)) currentAnimator.Rotation -= 15 * (float)Math.PI / 180;
             if (IsPressed(Keys.E)) currentAnimator.Rotation += 15 * (float)Math.PI / 180;
-			if (IsPressed(Keys.N)) currentAnimator.Scale -= new Vector2(Math.Sign(scale.X) * 0.2f, Math.Sign(scale.Y) * 0.2f);
-			if (IsPressed(Keys.M)) currentAnimator.Scale += new Vector2(Math.Sign(scale.X) * 0.2f, Math.Sign(scale.Y) * 0.2f);
+            if (IsPressed(Keys.N)) currentAnimator.Scale -= new Vector2(Math.Sign(scale.X) * 0.2f, Math.Sign(scale.Y) * 0.2f);
+            if (IsPressed(Keys.M)) currentAnimator.Scale += new Vector2(Math.Sign(scale.X) * 0.2f, Math.Sign(scale.Y) * 0.2f);
             if (IsPressed(Keys.F)) currentAnimator.Scale *= new Vector2(-1, 1);
             if (IsPressed(Keys.G)) currentAnimator.Scale *= new Vector2(1, -1);
 
