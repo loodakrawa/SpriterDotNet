@@ -37,7 +37,7 @@ namespace SpriterDotNet.MonoGame
         {
             foreach (SpriterFolder folder in Spriter.Folders)
             {
-                if (folder.AtlasId > -1) AddAtlasFolder(folder, factory);
+                if (atlases != null && atlases.Count > 0) AddAtlasFolder(folder, factory);
                 else AddRegularFolder(folder, factory);
             }
         }
@@ -70,7 +70,9 @@ namespace SpriterDotNet.MonoGame
 
         private void AddAtlasFolder(SpriterFolder folder, DefaultProviderFactory<Sprite, SoundEffect> factory)
         {
-            SpriterAtlas atlas = atlases[folder.AtlasId];
+            int id = folder.AtlasId;
+            if (id < 0) id = 0;
+            SpriterAtlas atlas = atlases[id];
             Texture2D texture = content.Load<Texture2D>(FormatPath(atlas.Meta.Image));
             Dictionary<string, ImageInfo> imageInfos = infos[atlas];
 

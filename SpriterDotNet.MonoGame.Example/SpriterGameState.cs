@@ -21,10 +21,10 @@ namespace SpriterDotNet.MonoGame.Example
 
         private static readonly IList<string> Scmls = new List<string>
         {
-            "AtlasExample/0",
+            //"AtlasExample/0",
             "GreyGuy/player",
-            "TestSquares/squares",
-            "GreyGuyPlus/player_006"
+            //"TestSquares/squares",
+            //"GreyGuyPlus/player_006"
         };
 
         private static readonly IList<string> Instructions = new List<string>

@@ -5,7 +5,6 @@
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
-using SpriterDotNet.MonoGame.Example;
 
 namespace SpriterDotNet.MonoGame.Example
 {
@@ -33,9 +32,10 @@ namespace SpriterDotNet.MonoGame.Example
 
             var dm = graphics.GraphicsDevice.DisplayMode;
 
-            #if DESKTOP
-            Window.Position = new Point((dm.Width - Width) / 2, (dm.Height - Height) / 2);
-            #endif
+#if DIRECTX
+            // center window
+            Window.Position = new Point((dm.Width - Width) / 2, 0);
+#endif
 
             SpriterGameState sgs = new SpriterGameState();
             FillGameState(sgs);
