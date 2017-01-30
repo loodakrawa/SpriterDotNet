@@ -34,12 +34,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="IDrawable.cs" />
+    <Compile Include="ISprite.cs" />
     <Compile Include="MathHelper.cs" />
     <Compile Include="MonoGameAnimator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Content\SpriterTypeReader.cs" />
-    <Compile Include="Content\SpriterAtlasTypeReader.cs" />
+    <Compile Include="Content\TexturePackerSheetDataReader.cs" />
     <Compile Include="SpriterContentLoader.cs" />
     <Compile Include="TextureDrawable.cs" />
     <Compile Include="TexturePackerDrawable.cs" />

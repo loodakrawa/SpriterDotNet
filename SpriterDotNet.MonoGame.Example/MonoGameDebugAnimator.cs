@@ -12,10 +12,10 @@ namespace SpriterDotNet.MonoGame.Example
 {
     public class MonoGameDebugAnimator : MonoGameAnimator
     {
-		private IDictionary<string, IDrawable> boxTextures = new Dictionary<string, IDrawable>();
-		private IDrawable pointTexture;
+		private IDictionary<string, ISprite> boxTextures = new Dictionary<string, ISprite>();
+		private ISprite pointTexture;
 
-        public MonoGameDebugAnimator(SpriterEntity entity, GraphicsDevice graphicsDevice, IProviderFactory<IDrawable, SoundEffect> providerFactory = null) : base(entity, providerFactory)
+        public MonoGameDebugAnimator(SpriterEntity entity, GraphicsDevice graphicsDevice, IProviderFactory<ISprite, SoundEffect> providerFactory = null) : base(entity, providerFactory)
         {
 			pointTexture = new TextureDrawable(TextureUtil.CreateCircle(graphicsDevice, 5, Color.Cyan));
 

@@ -5,8 +5,9 @@
 
 namespace SpriterDotNet.MonoGame.Importer
 {
-    public class SpriterWrapper
-    {
-        public string SpriterData { get; set; }
-    }
+    public class TexturePackerSheetWrapper
+	{
+		public string AtlasData { get; set; }
+	}
 }
+

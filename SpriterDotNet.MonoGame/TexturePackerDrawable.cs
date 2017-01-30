@@ -10,9 +10,9 @@ using System;
 namespace SpriterDotNet.MonoGame
 {
     /// <summary>
-    /// A wrapper around Texture2D to cater for sprite atlas metadata.
+    /// A drawable wrapper for a texture region created with TexturePacker
     /// </summary>
-	public class TexturePackerDrawable : IDrawable
+	public class TexturePackerDrawable : ISprite
 	{
         private static readonly float SpriteAtlasRotation = -90 * MathHelper.DegToRad;
 

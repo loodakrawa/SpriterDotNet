@@ -971,7 +971,7 @@
 /build:AtlasExample/0.scml
 
 #begin AtlasExample/atlas.json
-/importer:SpriterAtlasImporter
+/importer:TexturePackerSheetImporter
 /processor:PassThroughProcessor
 /build:AtlasExample/atlas.json
 

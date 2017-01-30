@@ -1,10 +1,18 @@
-﻿using Microsoft.Xna.Framework;
+﻿// Copyright (c) 2015 The original author or authors
+//
+// This software may be modified and distributed under the terms
+// of the zlib license.  See the LICENSE file for details.
+
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 
 namespace SpriterDotNet.MonoGame
 {
-    public class TextureDrawable : IDrawable
+    /// <summary>
+    /// A drawable wrapper for a Texture2D
+    /// </summary>
+    public class TextureDrawable : ISprite
     {
         private readonly Texture2D texture;
 

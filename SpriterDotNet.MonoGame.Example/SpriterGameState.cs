@@ -76,7 +76,7 @@ namespace SpriterDotNet.MonoGame.Example
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             spriteFont = Content.Load<SpriteFont>(FontName);
-            DefaultProviderFactory<IDrawable, SoundEffect> factory = new DefaultProviderFactory<IDrawable, SoundEffect>(config, true);
+            DefaultProviderFactory<ISprite, SoundEffect> factory = new DefaultProviderFactory<ISprite, SoundEffect>(config, true);
 
             foreach (string scmlPath in Scmls)
             {

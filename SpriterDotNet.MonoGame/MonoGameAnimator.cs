@@ -15,7 +15,7 @@ namespace SpriterDotNet.MonoGame
     /// MonoGame Animator implementation. It has separate Draw and Update steps. 
     /// During the Update step all spatial infos are calculated (translated from Spriter values) and the Draw step only draws the calculated values.
     /// </summary>
-	public class MonoGameAnimator : Animator<IDrawable, SoundEffect>
+	public class MonoGameAnimator : Animator<ISprite, SoundEffect>
     {
         /// <summary>
         /// Scale factor of the animator. Negative values flip the image.
@@ -54,7 +54,7 @@ namespace SpriterDotNet.MonoGame
         private static readonly float DefaultDepth = 0.5f;
         private static readonly float DefaultDeltaDepth = -0.000001f;
 
-        public MonoGameAnimator(SpriterEntity entity, IProviderFactory<IDrawable, SoundEffect> providerFactory = null) : base(entity, providerFactory)
+        public MonoGameAnimator(SpriterEntity entity, IProviderFactory<ISprite, SoundEffect> providerFactory = null) : base(entity, providerFactory)
         {
         }
 
@@ -66,7 +66,7 @@ namespace SpriterDotNet.MonoGame
             for (int i = 0; i < DrawInfos.Count; ++i)
             {
                 DrawInfo di = DrawInfos[i];
-                IDrawable sprite = di.Drawable;
+                ISprite sprite = di.Drawable;
                 sprite.Draw(spriteBatch, di.Pivot, di.Position, di.Scale, di.Rotation, di.Color, di.Depth);
                 DrawInfoPool.Push(di);
             }
@@ -81,7 +81,7 @@ namespace SpriterDotNet.MonoGame
             base.Update(deltaTime);
         }
 
-        protected override void ApplySpriteTransform(IDrawable drawable, SpriterObject info)
+        protected override void ApplySpriteTransform(ISprite drawable, SpriterObject info)
         {
             Vector2 position = new Vector2(info.X, -info.Y);
             Vector2 scale = new Vector2(info.ScaleX, info.ScaleY);
@@ -134,7 +134,7 @@ namespace SpriterDotNet.MonoGame
         /// </summary>
         protected class DrawInfo
         {
-            public IDrawable Drawable;
+            public ISprite Drawable;
             public Vector2 Pivot;
             public Vector2 Position;
             public Vector2 Origin;

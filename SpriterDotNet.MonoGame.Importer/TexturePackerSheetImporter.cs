@@ -13,21 +13,21 @@ using System.Xml;
 
 namespace SpriterDotNet.MonoGame.Importer
 {
-    [ContentImporter(".json", DisplayName = "Spriter Atlas Importer", DefaultProcessor = "PassThroughProcessor")]
-    public class SpriterAtlasImporter : ContentImporter<SpriterAtlasWrapper>
+    [ContentImporter(".json", DisplayName = "TexturePacker Sheet Importer", DefaultProcessor = "PassThroughProcessor")]
+    public class TexturePackerSheetImporter : ContentImporter<TexturePackerSheetWrapper>
     {
-		public override SpriterAtlasWrapper Import(string filename, ContentImporterContext context)
+		public override TexturePackerSheetWrapper Import(string filename, ContentImporterContext context)
         {
             context.Logger.LogMessage("Importing Spriter Atlas file: {0}", filename);
             string jsonData = File.ReadAllText(filename);
 
-			SpriterAtlasWrapper ret = new SpriterAtlasWrapper();
+			TexturePackerSheetWrapper ret = new TexturePackerSheetWrapper();
 
 			SpriterAtlasJson atlasJson = JsonConvert.DeserializeObject<SpriterAtlasJson>(jsonData, new RectangleConverter());
-			SpriterAtlas atlas = new SpriterAtlas();
+			TexturePackerSheet atlas = new TexturePackerSheet();
 			atlasJson.Fill(atlas);
 
-			XmlSerializer serializer = new XmlSerializer(typeof(SpriterAtlas));
+			XmlSerializer serializer = new XmlSerializer(typeof(TexturePackerSheet));
 
 			using(StringWriter sww = new StringWriter())
 			using(XmlWriter writer = XmlWriter.Create(sww))
@@ -45,7 +45,7 @@ namespace SpriterDotNet.MonoGame.Importer
 		public FramesJson Frames { get; set; }
 		public Meta Meta { get; set; }
 
-		public void Fill(SpriterAtlas atlas)
+		public void Fill(TexturePackerSheet atlas)
 		{
 			atlas.Meta = Meta;
 			atlas.ImageInfos = new List<ImageInfo>();
