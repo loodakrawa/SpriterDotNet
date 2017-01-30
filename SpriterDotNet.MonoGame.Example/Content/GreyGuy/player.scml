@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <spriter_data scml_version="1.0" generator="BrashMonkey Spriter" generator_version="b5.95">
-    <atlas>
-        <i name="atlas.json"/>
-    </atlas>
     <folder id="0" name="torso">
         <file id="0" name="torso/p_torso_idle.png" width="88" height="88" pivot_x="0.911111" pivot_y="0.555556"/>
         <file id="1" name="torso/p_torso_walk.png" width="88" height="88" pivot_x="0.911111" pivot_y="0.555556"/>

@@ -33,7 +33,7 @@ namespace SpriterDotNet.MonoGame
             Load();
         }
 
-        public void Fill(DefaultProviderFactory<Sprite, SoundEffect> factory)
+        public void Fill(DefaultProviderFactory<IDrawable, SoundEffect> factory)
         {
             foreach (SpriterFolder folder in Spriter.Folders)
             {
@@ -42,7 +42,7 @@ namespace SpriterDotNet.MonoGame
             }
         }
 
-        private void AddRegularFolder(SpriterFolder folder, DefaultProviderFactory<Sprite, SoundEffect> factory)
+        private void AddRegularFolder(SpriterFolder folder, DefaultProviderFactory<IDrawable, SoundEffect> factory)
         {
             foreach (SpriterFile file in folder.Files)
             {
@@ -56,19 +56,14 @@ namespace SpriterDotNet.MonoGame
                 else
                 {
                     Texture2D texture = LoadContent<Texture2D>(path);
-                    Sprite sprite = new Sprite
-                    {
-                        Texture = texture,
-                        Width = texture.Width,
-                        Height = texture.Height,
-                    };
+                    TextureDrawable sprite = new TextureDrawable(texture);
                     factory.SetSprite(Spriter, folder, file, sprite);
                 }
 
             }
         }
 
-        private void AddAtlasFolder(SpriterFolder folder, DefaultProviderFactory<Sprite, SoundEffect> factory)
+        private void AddAtlasFolder(SpriterFolder folder, DefaultProviderFactory<IDrawable, SoundEffect> factory)
         {
             int id = folder.AtlasId;
             if (id < 0) id = 0;
@@ -89,27 +84,28 @@ namespace SpriterDotNet.MonoGame
                 // "x", "y" = trimmed offset - pixels trimmed from the top and left
                 Size spriteSource = info.SpriteSourceSize;
 
-                Sprite sprite = new Sprite
-                {
-                    Texture = texture,
-                    Width = source.W,
-                    Height = source.H
-                };
-
-                sprite.TrimLeft = spriteSource.X;
-                sprite.TrimRight = source.W - frame.W - spriteSource.X;
-                sprite.TrimTop = spriteSource.Y;
-                sprite.TrimBottom = source.H - frame.H - spriteSource.Y;
+                Rectangle sourceRectangle;
+                bool rotated = false;
 
                 if (info.Rotated)
                 {
-                    sprite.SourceRectangle = new Rectangle(frame.X, frame.Y, frame.H, frame.W);
-                    sprite.Rotated = true;
+                    sourceRectangle = new Rectangle(frame.X, frame.Y, frame.H, frame.W);
+                    rotated = true;
                 }
                 else
                 {
-                    sprite.SourceRectangle = new Rectangle(frame.X, frame.Y, frame.W, frame.H);
+                    sourceRectangle = new Rectangle(frame.X, frame.Y, frame.W, frame.H);
                 }
+
+                float trimLeft = spriteSource.X;
+                float trimRight = source.W - frame.W - spriteSource.X;
+                float trimTop = spriteSource.Y;
+                float trimBottom = source.H - frame.H - spriteSource.Y;
+
+                int width = source.W;
+                int height = source.H;
+
+                TexturePackerDrawable sprite = new TexturePackerDrawable(texture, sourceRectangle, width, height, rotated, trimLeft, trimRight, trimTop, trimBottom);
 
                 factory.SetSprite(Spriter, folder, file, sprite);
             }

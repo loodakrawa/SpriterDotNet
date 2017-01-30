@@ -21,7 +21,7 @@ namespace SpriterDotNet.MonoGame.Example
 
         private static readonly IList<string> Scmls = new List<string>
         {
-            //"AtlasExample/0",
+            "AtlasExample/0",
             "GreyGuy/player",
             //"TestSquares/squares",
             //"GreyGuyPlus/player_006"
@@ -76,13 +76,12 @@ namespace SpriterDotNet.MonoGame.Example
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             spriteFont = Content.Load<SpriteFont>(FontName);
-            DefaultProviderFactory<Sprite, SoundEffect> factory = new DefaultProviderFactory<Sprite, SoundEffect>(config, true);
+            DefaultProviderFactory<IDrawable, SoundEffect> factory = new DefaultProviderFactory<IDrawable, SoundEffect>(config, true);
 
             foreach (string scmlPath in Scmls)
             {
                 SpriterContentLoader loader = new SpriterContentLoader(Content, scmlPath);
                 loader.Fill(factory);
-
 
                 foreach (SpriterEntity entity in loader.Spriter.Entities)
                 {
@@ -147,7 +146,8 @@ namespace SpriterDotNet.MonoGame.Example
 
             oldState = Keyboard.GetState();
 
-            currentAnimator.Update(gameTime.ElapsedGameTime.Milliseconds);
+            //currentAnimator.Update(gameTime.ElapsedGameTime.Milliseconds);
+            currentAnimator.Update(0);
 
             string entity = currentAnimator.Entity.Name;
             status = string.Format("{0} : {1}", entity, currentAnimator.Name);

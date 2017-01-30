@@ -12,19 +12,19 @@ namespace SpriterDotNet.MonoGame.Example
 {
     public class MonoGameDebugAnimator : MonoGameAnimator
     {
-		private IDictionary<string, Sprite> boxTextures = new Dictionary<string, Sprite>();
-		private Sprite pointTexture;
+		private IDictionary<string, IDrawable> boxTextures = new Dictionary<string, IDrawable>();
+		private IDrawable pointTexture;
 
-        public MonoGameDebugAnimator(SpriterEntity entity, GraphicsDevice graphicsDevice, IProviderFactory<Sprite, SoundEffect> providerFactory = null) : base(entity, providerFactory)
+        public MonoGameDebugAnimator(SpriterEntity entity, GraphicsDevice graphicsDevice, IProviderFactory<IDrawable, SoundEffect> providerFactory = null) : base(entity, providerFactory)
         {
-			pointTexture = new Sprite{Texture=TextureUtil.CreateCircle(graphicsDevice, 5, Color.Cyan)};
+			pointTexture = new TextureDrawable(TextureUtil.CreateCircle(graphicsDevice, 5, Color.Cyan));
 
             if (entity.ObjectInfos != null)
             {
                 foreach (SpriterObjectInfo objInfo in entity.ObjectInfos)
                 {
                     if (objInfo.ObjectType != SpriterObjectType.Box) continue;
-					boxTextures[objInfo.Name] = new Sprite{Texture = TextureUtil.CreateRectangle(graphicsDevice, (int)objInfo.Width, (int)objInfo.Height, Color.Cyan)};
+					boxTextures[objInfo.Name] = new TextureDrawable(TextureUtil.CreateRectangle(graphicsDevice, (int)objInfo.Width, (int)objInfo.Height, Color.Cyan));
                 }
             }
         }

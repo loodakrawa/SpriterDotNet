@@ -987,23 +987,6 @@
 /processorParam:TextureFormat=Color
 /build:AtlasExample/image.png
 
-#begin GreyGuy/atlas.json
-/importer:SpriterAtlasImporter
-/processor:PassThroughProcessor
-/build:GreyGuy/atlas.json
-
-#begin GreyGuy/image.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:GreyGuy/image.png
-
 #begin GreyGuy/arms/p_arm_idle.png
 /importer:TextureImporter
 /processor:TextureProcessor
