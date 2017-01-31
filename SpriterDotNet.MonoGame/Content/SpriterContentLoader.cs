@@ -10,8 +10,9 @@ using Microsoft.Xna.Framework.Graphics;
 using SpriterDotNet.Providers;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using SpriterDotNet.MonoGame.Sprites;
 
-namespace SpriterDotNet.MonoGame
+namespace SpriterDotNet.MonoGame.Content
 {
     public class SpriterContentLoader
     {
@@ -29,11 +30,12 @@ namespace SpriterDotNet.MonoGame
             this.content = content;
             this.scmlPath = scmlPath;
             rootPath = scmlPath.Substring(0, scmlPath.LastIndexOf("/"));
-            Load();
         }
 
         public void Fill(DefaultProviderFactory<ISprite, SoundEffect> factory)
         {
+            if (Spriter == null) Load();
+
             foreach (SpriterFolder folder in Spriter.Folders)
             {
                 if (atlases != null && atlases.Count > 0) AddAtlasFolder(folder, factory);
@@ -55,7 +57,7 @@ namespace SpriterDotNet.MonoGame
                 else
                 {
                     Texture2D texture = LoadContent<Texture2D>(path);
-                    TextureDrawable sprite = new TextureDrawable(texture);
+                    TextureSprite sprite = new TextureSprite(texture);
                     factory.SetSprite(Spriter, folder, file, sprite);
                 }
 
@@ -103,7 +105,7 @@ namespace SpriterDotNet.MonoGame
                 int width = source.W;
                 int height = source.H;
 
-                TexturePackerDrawable sprite = new TexturePackerDrawable(texture, sourceRectangle, width, height, rotated, trimLeft, trimRight, trimTop, trimBottom);
+                TexturePackerSprite sprite = new TexturePackerSprite(texture, sourceRectangle, width, height, rotated, trimLeft, trimRight, trimTop, trimBottom);
 
                 factory.SetSprite(Spriter, folder, file, sprite);
             }

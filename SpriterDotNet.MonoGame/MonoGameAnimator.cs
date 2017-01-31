@@ -6,6 +6,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
+using SpriterDotNet.MonoGame.Helpers;
 using System;
 using System.Collections.Generic;
 
@@ -76,7 +77,7 @@ namespace SpriterDotNet.MonoGame
         {
             DrawInfos.Clear();
 
-            Transform = MathHelper.GetMatrix(Scale, Rotation, Position);
+            Transform = MathUtil.GetMatrix(Scale, Rotation, Position);
 
             base.Update(deltaTime);
         }
@@ -85,7 +86,7 @@ namespace SpriterDotNet.MonoGame
         {
             Vector2 position = new Vector2(info.X, -info.Y);
             Vector2 scale = new Vector2(info.ScaleX, info.ScaleY);
-            float rotation = -info.Angle * MathHelper.DegToRad;
+            float rotation = -info.Angle * MathUtil.DegToRad;
             Color color = Color.White * info.Alpha;
 
             if (Scale.X < 0)
@@ -103,7 +104,7 @@ namespace SpriterDotNet.MonoGame
             int signX = Math.Sign(Scale.X * scale.X);
             int signY = Math.Sign(Scale.Y * scale.Y);
 
-            Matrix globalTransform = MathHelper.GetMatrix(scale, rotation, position) * Transform;
+            Matrix globalTransform = MathUtil.GetMatrix(scale, rotation, position) * Transform;
             globalTransform.DecomposeMatrix(out scale, out rotation, out position);
 
             scale = new Vector2(Math.Abs(scale.X) * signX, Math.Abs(scale.Y) * signY);

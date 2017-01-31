@@ -6,9 +6,9 @@
 using Microsoft.Xna.Framework;
 using System;
 
-namespace SpriterDotNet.MonoGame
+namespace SpriterDotNet.MonoGame.Helpers
 {
-    internal static class MathHelper
+    internal static class MathUtil
     {
         public static readonly float DegToRad = (float)(Math.PI / 180.0);
 

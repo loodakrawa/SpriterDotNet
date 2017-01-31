@@ -6,15 +6,16 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using System;
+using SpriterDotNet.MonoGame.Helpers;
 
-namespace SpriterDotNet.MonoGame
+namespace SpriterDotNet.MonoGame.Sprites
 {
     /// <summary>
     /// A drawable wrapper for a texture region created with TexturePacker
     /// </summary>
-	public class TexturePackerDrawable : ISprite
+	public class TexturePackerSprite : ISprite
 	{
-        private static readonly float SpriteAtlasRotation = -90 * MathHelper.DegToRad;
+        private static readonly float SpriteAtlasRotation = -90 * MathUtil.DegToRad;
 
         public Texture2D texture;
 		public Rectangle sourceRectangle;
@@ -26,7 +27,7 @@ namespace SpriterDotNet.MonoGame
 		public float trimTop;
 		public float trimBottom;
 
-        public TexturePackerDrawable(Texture2D texture, Rectangle sourceRectangle, int width, int height, bool rotated, float trimLeft, float trimRight, float trimTop, float trimBottom)
+        public TexturePackerSprite(Texture2D texture, Rectangle sourceRectangle, int width, int height, bool rotated, float trimLeft, float trimRight, float trimTop, float trimBottom)
         {
             this.texture = texture;
             this.sourceRectangle = sourceRectangle;

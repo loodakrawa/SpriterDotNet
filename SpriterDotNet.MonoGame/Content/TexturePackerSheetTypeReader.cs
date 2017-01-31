@@ -9,7 +9,7 @@ using System.IO;
 
 namespace SpriterDotNet.MonoGame.Content
 {
-	public class TexturePackerSheetDataReader : ContentTypeReader<TexturePackerSheet>
+	public class TexturePackerSheetTypeReader : ContentTypeReader<TexturePackerSheet>
     {
 		protected override TexturePackerSheet Read(ContentReader input, TexturePackerSheet existingInstance)
         {

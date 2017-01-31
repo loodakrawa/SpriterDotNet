@@ -10,7 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)FrameData.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Helpers\DictHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\DictionaryHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\MathHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\SpriterHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IFrameDataProvider.cs" />

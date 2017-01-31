@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Audio;
+using SpriterDotNet.MonoGame.Sprites;
 
 namespace SpriterDotNet.MonoGame.Example
 {
@@ -17,14 +18,14 @@ namespace SpriterDotNet.MonoGame.Example
 
         public MonoGameDebugAnimator(SpriterEntity entity, GraphicsDevice graphicsDevice, IProviderFactory<ISprite, SoundEffect> providerFactory = null) : base(entity, providerFactory)
         {
-			pointTexture = new TextureDrawable(TextureUtil.CreateCircle(graphicsDevice, 5, Color.Cyan));
+			pointTexture = new TextureSprite(TextureUtil.CreateCircle(graphicsDevice, 5, Color.Cyan));
 
             if (entity.ObjectInfos != null)
             {
                 foreach (SpriterObjectInfo objInfo in entity.ObjectInfos)
                 {
                     if (objInfo.ObjectType != SpriterObjectType.Box) continue;
-					boxTextures[objInfo.Name] = new TextureDrawable(TextureUtil.CreateRectangle(graphicsDevice, (int)objInfo.Width, (int)objInfo.Height, Color.Cyan));
+					boxTextures[objInfo.Name] = new TextureSprite(TextureUtil.CreateRectangle(graphicsDevice, (int)objInfo.Width, (int)objInfo.Height, Color.Cyan));
                 }
             }
         }

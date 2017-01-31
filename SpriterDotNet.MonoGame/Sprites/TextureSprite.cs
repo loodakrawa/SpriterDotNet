@@ -7,16 +7,16 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 
-namespace SpriterDotNet.MonoGame
+namespace SpriterDotNet.MonoGame.Sprites
 {
     /// <summary>
     /// A drawable wrapper for a Texture2D
     /// </summary>
-    public class TextureDrawable : ISprite
+    public class TextureSprite : ISprite
     {
         private readonly Texture2D texture;
 
-        public TextureDrawable(Texture2D texture)
+        public TextureSprite(Texture2D texture)
         {
             this.texture = texture;
         }

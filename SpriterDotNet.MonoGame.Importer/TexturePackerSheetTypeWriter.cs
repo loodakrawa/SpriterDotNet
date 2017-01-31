@@ -14,7 +14,7 @@ namespace SpriterDotNet.MonoGame.Importer
     {
         public override string GetRuntimeReader(TargetPlatform targetPlatform)
         {
-            return typeof(TexturePackerSheetDataReader).AssemblyQualifiedName;
+            return typeof(TexturePackerSheetTypeReader).AssemblyQualifiedName;
         }
 
         protected override void Write(ContentWriter output, TexturePackerSheetWrapper value)
