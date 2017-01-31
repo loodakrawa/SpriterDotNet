@@ -47,7 +47,7 @@ namespace SpriterDotNet.MonoGame.Content
         {
             foreach (SpriterFile file in folder.Files)
             {
-                string path = FormatPath(file.Name, folder.Name);
+                string path = FormatPath(file.Name);
 
                 if (file.Type == SpriterFileType.Sound)
                 {
@@ -68,7 +68,7 @@ namespace SpriterDotNet.MonoGame.Content
         {
             int id = folder.AtlasId;
             TexturePackerSheet atlas = atlases[id];
-            Texture2D texture = content.Load<Texture2D>(FormatPath(atlas.Meta.Image));
+            Texture2D texture = LoadContent<Texture2D>(FormatPath(atlas.Meta.Image));
             Dictionary<string, ImageInfo> imageInfos = infos[atlas];
 
             foreach (SpriterFile file in folder.Files)
@@ -121,7 +121,7 @@ namespace SpriterDotNet.MonoGame.Content
             foreach (var atlasRef in Spriter.Atlases)
             {
                 string path = FormatPath(atlasRef.Name);
-                TexturePackerSheet atlas = content.Load<TexturePackerSheet>(path);
+                TexturePackerSheet atlas = LoadContent<TexturePackerSheet>(path);
                 atlases[atlasRef.Id] = atlas;
 
                 Dictionary<string, ImageInfo> imageInfos = new Dictionary<string, ImageInfo>();
@@ -131,15 +131,16 @@ namespace SpriterDotNet.MonoGame.Content
             }
         }
 
-        private string FormatPath(string fileName, string folderName = null)
+        private string FormatPath(string fileName)
         {
-            fileName = Path.GetFileNameWithoutExtension(fileName);
-            if (string.IsNullOrEmpty(folderName)) return string.Format("{0}/{1}", rootPath, fileName);
-            return string.Format("{0}/{1}/{2}", rootPath, folderName, fileName);
+            return string.Format("{0}/{1}", rootPath, fileName);
         }
 
         private T LoadContent<T>(string path)
         {
+            int index = path.LastIndexOf(".");
+            if (index >= 0) path = path.Substring(0, index);
+
             T asset = default(T);
             try
             {

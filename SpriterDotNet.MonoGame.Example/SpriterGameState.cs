@@ -24,8 +24,8 @@ namespace SpriterDotNet.MonoGame.Example
         {
             "AtlasExample/0",
             "GreyGuy/player",
-            //"TestSquares/squares",
-            //"GreyGuyPlus/player_006"
+            "TestSquares/squares",
+            "GreyGuyPlus/player_006"
         };
 
         private static readonly IList<string> Instructions = new List<string>
