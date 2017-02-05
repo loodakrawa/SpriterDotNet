@@ -6,7 +6,6 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
-using SpriterDotNet.MonoGame.Helpers;
 using System;
 using System.Collections.Generic;
 
@@ -50,7 +49,6 @@ namespace SpriterDotNet.MonoGame
 
         protected Stack<DrawInfo> DrawInfoPool { get; set; } = new Stack<DrawInfo>();
         protected List<DrawInfo> DrawInfos { get; set; } = new List<DrawInfo>();
-        protected Matrix Transform { get; set; }
 
         private static readonly float DefaultDepth = 0.5f;
         private static readonly float DefaultDeltaDepth = -0.000001f;
@@ -77,8 +75,6 @@ namespace SpriterDotNet.MonoGame
         {
             DrawInfos.Clear();
 
-            Transform = MathUtil.GetMatrix(Scale, Rotation, Position);
-
             base.Update(deltaTime);
         }
 
@@ -86,7 +82,7 @@ namespace SpriterDotNet.MonoGame
         {
             Vector2 position = new Vector2(info.X, -info.Y);
             Vector2 scale = new Vector2(info.ScaleX, info.ScaleY);
-            float rotation = -info.Angle * MathUtil.DegToRad;
+            float rotation = MathHelper.ToRadians(-info.Angle);
             Color color = Color.White * info.Alpha;
 
             if (Scale.X < 0)
@@ -104,8 +100,17 @@ namespace SpriterDotNet.MonoGame
             int signX = Math.Sign(Scale.X * scale.X);
             int signY = Math.Sign(Scale.Y * scale.Y);
 
-            Matrix globalTransform = MathUtil.GetMatrix(scale, rotation, position) * Transform;
-            globalTransform.DecomposeMatrix(out scale, out rotation, out position);
+            float px = Scale.X * position.X * signX;
+            float py = Scale.Y * position.Y * signY;
+            float angleRad = Rotation;
+            float s = (float)Math.Sin(angleRad);
+            float c = (float)Math.Cos(angleRad);
+
+            float posX = px * c - py * s + Position.X;
+            float posY = px * s + py * c + Position.Y;
+            scale *= Scale;
+            rotation += Rotation;
+            position = new Vector2(posX, posY);
 
             scale = new Vector2(Math.Abs(scale.X) * signX, Math.Abs(scale.Y) * signY);
 

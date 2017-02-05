@@ -6,7 +6,6 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using System;
-using SpriterDotNet.MonoGame.Helpers;
 
 namespace SpriterDotNet.MonoGame.Sprites
 {
@@ -15,7 +14,7 @@ namespace SpriterDotNet.MonoGame.Sprites
     /// </summary>
 	public class TexturePackerSprite : ISprite
 	{
-        private static readonly float SpriteAtlasRotation = -90 * MathUtil.DegToRad;
+        private static readonly float SpriteAtlasRotation = MathHelper.ToRadians(-90);
 
         public Texture2D texture;
 		public Rectangle sourceRectangle;
@@ -44,6 +43,8 @@ namespace SpriterDotNet.MonoGame.Sprites
         {
             bool flipX = scale.X < 0;
             bool flipY = scale.Y < 0;
+
+            if (rotated) scale = new Vector2(scale.Y, scale.X);
 
             scale = new Vector2(Math.Abs(scale.X), Math.Abs(scale.Y));
 
