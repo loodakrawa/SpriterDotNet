@@ -20,12 +20,29 @@ namespace SpriterDotNet.MonoGame
         /// <summary>
         /// Scale factor of the animator. Negative values flip the image.
         /// </summary>
-        public virtual Vector2 Scale { get; set; } = Vector2.One;
+        public virtual Vector2 Scale
+        {
+            get { return scale; }
+            set
+            {
+                scale = value;
+                scaleAbs = new Vector2(Math.Abs(value.X), Math.Abs(value.Y));
+            }
+        }
 
         /// <summary>
         /// Rotation in radians.
         /// </summary>
-        public virtual float Rotation { get; set; }
+        public virtual float Rotation
+        {
+            get { return rotation; }
+            set
+            {
+                rotation = value;
+                rotationSin = (float)Math.Sin(Rotation);
+                rotationCos = (float)Math.Cos(Rotation);
+            }
+        }
 
         /// <summary>
         /// Position in pixels.
@@ -53,8 +70,17 @@ namespace SpriterDotNet.MonoGame
         private static readonly float DefaultDepth = 0.5f;
         private static readonly float DefaultDeltaDepth = -0.000001f;
 
+        private float rotation;
+        private float rotationSin;
+        private float rotationCos;
+
+        private Vector2 scale;
+        private Vector2 scaleAbs;
+
         public MonoGameAnimator(SpriterEntity entity, IProviderFactory<ISprite, SoundEffect> providerFactory = null) : base(entity, providerFactory)
         {
+            Scale = Vector2.One;
+            Rotation = 0;
         }
 
         /// <summary>
@@ -80,52 +106,37 @@ namespace SpriterDotNet.MonoGame
 
         protected override void ApplySpriteTransform(ISprite drawable, SpriterObject info)
         {
-            Vector2 position = new Vector2(info.X, -info.Y);
-            Vector2 scale = new Vector2(info.ScaleX, info.ScaleY);
+            float px = info.X;
+            float py = -info.Y;
             float rotation = MathHelper.ToRadians(-info.Angle);
-            Color color = Color.White * info.Alpha;
 
             if (Scale.X < 0)
             {
-                position = new Vector2(-position.X, position.Y);
+                px = -px;
                 rotation = -rotation;
             }
 
             if (Scale.Y < 0)
             {
-                position = new Vector2(position.X, -position.Y);
+                py = -py;
                 rotation = -rotation;
             }
 
-            int signX = Math.Sign(Scale.X * scale.X);
-            int signY = Math.Sign(Scale.Y * scale.Y);
+            px *= scaleAbs.X;
+            py *= scaleAbs.Y;
 
-            float px = Scale.X * position.X * signX;
-            float py = Scale.Y * position.Y * signY;
-            float angleRad = Rotation;
-            float s = (float)Math.Sin(angleRad);
-            float c = (float)Math.Cos(angleRad);
-
-            float posX = px * c - py * s + Position.X;
-            float posY = px * s + py * c + Position.Y;
-            scale *= Scale;
-            rotation += Rotation;
-            position = new Vector2(posX, posY);
-
-            scale = new Vector2(Math.Abs(scale.X) * signX, Math.Abs(scale.Y) * signY);
-
-            float depth = Depth + DeltaDepth * DrawInfos.Count;
-            depth = (depth < 0) ? 0 : (depth > 1) ? 1 : depth;
+            float posX = px * rotationCos - py * rotationSin;
+            float posY = px * rotationSin + py * rotationCos;
 
             DrawInfo di = DrawInfoPool.Count > 0 ? DrawInfoPool.Pop() : new DrawInfo();
 
-            di.Pivot = new Vector2(info.PivotX, (1 - info.PivotY));
             di.Drawable = drawable;
-            di.Position = position;
-            di.Scale = scale;
-            di.Rotation = rotation;
+            di.Pivot = new Vector2(info.PivotX, (1 - info.PivotY));
+            di.Position = new Vector2(posX, posY) + Position;
+            di.Scale = new Vector2(info.ScaleX, info.ScaleY) * Scale;
+            di.Rotation = rotation + Rotation;
             di.Color = Color * info.Alpha;
-            di.Depth = depth;
+            di.Depth = Depth + DeltaDepth * DrawInfos.Count;
 
             DrawInfos.Add(di);
         }
