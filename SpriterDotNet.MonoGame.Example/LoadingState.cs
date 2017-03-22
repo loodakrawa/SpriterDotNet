@@ -18,7 +18,7 @@ namespace SpriterDotNet.MonoGame.Example
         private Texture2D spinner;
         private SpriteBatch spriteBatch;
 
-        private static readonly float RotationSpeed = (float)(90 * Math.PI / 180);
+        private static readonly float RotationSpeed = (float)Math.PI / 1000.0f;
         private float rotation;
 
         public LoadingState(GameState targetState)
@@ -33,10 +33,8 @@ namespace SpriterDotNet.MonoGame.Example
             spriteBatch = new SpriteBatch(GraphicsDevice);
         }
 
-        public override void Draw(GameTime gameTime)
+        public override void Draw(float deltaTime)
         {
-            base.Draw(gameTime);
-
             GraphicsDevice.Clear(Color.Beige);
 
             spriteBatch.Begin();
@@ -44,11 +42,9 @@ namespace SpriterDotNet.MonoGame.Example
             spriteBatch.End();
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update(float deltaTime)
         {
-            base.Update(gameTime);
-
-            rotation += RotationSpeed * gameTime.ElapsedGameTime.Milliseconds / 1000.0f;
+            rotation += RotationSpeed * deltaTime;
 
             if (loadTask.IsCompleted)
             {
@@ -59,7 +55,6 @@ namespace SpriterDotNet.MonoGame.Example
 
         protected override void Unload()
         {
-            base.Unload();
         }
     }
 }

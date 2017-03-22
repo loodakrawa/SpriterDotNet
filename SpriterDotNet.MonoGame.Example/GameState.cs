@@ -3,7 +3,6 @@
 // This software may be modified and distributed under the terms
 // of the zlib license.  See the LICENSE file for details.
 
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -26,9 +25,6 @@ namespace SpriterDotNet.MonoGame.Example
             Loaded = true;
         }
 
-        protected virtual void Load()
-        {
-        }
 
         public void BaseUnload()
         {
@@ -37,17 +33,9 @@ namespace SpriterDotNet.MonoGame.Example
             Content.Unload();
         }
 
-        protected virtual void Unload()
-        {
-        }
-
-
-        public virtual void Update(GameTime gameTime)
-        {
-        }
-
-        public virtual void Draw(GameTime gameTime)
-        {
-        }
+        protected abstract void Load();
+        protected abstract void Unload();
+        public abstract void Update(float deltaTime);
+        public abstract void Draw(float deltaTime);
     }
 }

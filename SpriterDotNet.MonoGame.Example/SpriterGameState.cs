@@ -96,11 +96,8 @@ namespace SpriterDotNet.MonoGame.Example
             currentAnimator.EventTriggered += CurrentAnimator_EventTriggered;
         }
 
-        public override void Draw(GameTime gameTime)
+        public override void Draw(float deltaTime)
         {
-            string statStr = string.Format("FPS = {0}\nMEM (KB) = {1:n0}", stats.FrameRate, stats.MemoryKb);
-            string allocStr = stats.GcHappened ? "!!!GC!!!" : string.Format("KB/S = {0:n0}", stats.FrameMallocKb);
-
             stats.OnDraw();
 
             GraphicsDevice.Clear(Color.CornflowerBlue);
@@ -109,8 +106,7 @@ namespace SpriterDotNet.MonoGame.Example
 
             currentAnimator.Draw(spriteBatch);
 
-            DrawText(statStr, new Vector2(Width - 150, 10), 0.6f, Color.Yellow);
-            DrawText(allocStr, new Vector2(Width - 150, 50), 0.6f, stats.GcHappened ? Color.Red : Color.Yellow);
+            DrawText("FPS: " + stats.DrawRate, new Vector2(Width - 100, 10), 0.6f, Color.Yellow);
 
             DrawText(rtfm, new Vector2(10, 10), 0.6f, Color.Black);
             DrawText(status, new Vector2(10, Height - 50), 1.0f, Color.Black);
@@ -118,9 +114,9 @@ namespace SpriterDotNet.MonoGame.Example
             spriteBatch.End();
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update(float deltaTime)
         {
-            stats.OnUpdate(gameTime);
+            stats.OnUpdate(deltaTime);
             Vector2 scale = currentAnimator.Scale;
 
             if (IsPressed(Keys.Enter)) SwitchEntity();
@@ -147,7 +143,7 @@ namespace SpriterDotNet.MonoGame.Example
 
             oldState = Keyboard.GetState();
 
-            currentAnimator.Update(gameTime.ElapsedGameTime.Milliseconds);
+            currentAnimator.Update(deltaTime);
 
             string entity = currentAnimator.Entity.Name;
             status = string.Format("{0} : {1}", entity, currentAnimator.Name);
@@ -258,6 +254,11 @@ namespace SpriterDotNet.MonoGame.Example
         private void CurrentAnimator_EventTriggered(string obj)
         {
             System.Diagnostics.Debug.WriteLine(obj);
+        }
+
+        protected override void Unload()
+        {
+            Content.Unload();
         }
     }
 }
