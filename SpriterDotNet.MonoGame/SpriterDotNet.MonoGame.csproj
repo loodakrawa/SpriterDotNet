@@ -40,6 +40,7 @@
     <Compile Include="Content\SpriterTypeReader.cs" />
     <Compile Include="Content\TexturePackerSheetTypeReader.cs" />
     <Compile Include="Content\SpriterContentLoader.cs" />
+    <Compile Include="SpriteDrawInfo.cs" />
     <Compile Include="Sprites\TextureSprite.cs" />
     <Compile Include="Sprites\TexturePackerSprite.cs" />
   </ItemGroup>

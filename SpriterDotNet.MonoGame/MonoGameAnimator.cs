@@ -64,8 +64,8 @@ namespace SpriterDotNet.MonoGame
         /// </summary>
         public virtual Color Color { get; set; } = Color.White;
 
-        protected Stack<DrawInfo> DrawInfoPool { get; set; } = new Stack<DrawInfo>();
-        protected List<DrawInfo> DrawInfos { get; set; } = new List<DrawInfo>();
+        protected Stack<SpriteDrawInfo> DrawInfoPool { get; set; }
+        protected List<SpriteDrawInfo> DrawInfos { get; set; } = new List<SpriteDrawInfo>();
 
         private static readonly float DefaultDepth = 0.5f;
         private static readonly float DefaultDeltaDepth = -0.000001f;
@@ -77,10 +77,16 @@ namespace SpriterDotNet.MonoGame
         private Vector2 scale;
         private Vector2 scaleAbs;
 
-        public MonoGameAnimator(SpriterEntity entity, IProviderFactory<ISprite, SoundEffect> providerFactory = null) : base(entity, providerFactory)
+        public MonoGameAnimator
+        (
+            SpriterEntity entity, 
+            IProviderFactory<ISprite, SoundEffect> providerFactory = null, 
+            Stack<SpriteDrawInfo> drawInfoPool = null
+        ) : base(entity, providerFactory)
         {
             Scale = Vector2.One;
             Rotation = 0;
+            DrawInfoPool = drawInfoPool ?? new Stack<SpriteDrawInfo>();
         }
 
         /// <summary>
@@ -90,15 +96,15 @@ namespace SpriterDotNet.MonoGame
         {
             for (int i = 0; i < DrawInfos.Count; ++i)
             {
-                DrawInfo di = DrawInfos[i];
+                SpriteDrawInfo di = DrawInfos[i];
                 ISprite sprite = di.Drawable;
                 sprite.Draw(spriteBatch, di.Pivot, di.Position, di.Scale, di.Rotation, di.Color, di.Depth);
-                DrawInfoPool.Push(di);
             }
         }
 
         public override void Update(float deltaTime)
         {
+            for (int i = 0; i < DrawInfos.Count; ++i) DrawInfoPool.Push(DrawInfos[i]);
             DrawInfos.Clear();
 
             base.Update(deltaTime);
@@ -128,7 +134,7 @@ namespace SpriterDotNet.MonoGame
             float posX = px * rotationCos - py * rotationSin;
             float posY = px * rotationSin + py * rotationCos;
 
-            DrawInfo di = DrawInfoPool.Count > 0 ? DrawInfoPool.Pop() : new DrawInfo();
+            SpriteDrawInfo di = DrawInfoPool.Count > 0 ? DrawInfoPool.Pop() : new SpriteDrawInfo();
 
             di.Drawable = drawable;
             di.Pivot = new Vector2(info.PivotX, (1 - info.PivotY));
@@ -144,21 +150,6 @@ namespace SpriterDotNet.MonoGame
         protected override void PlaySound(SoundEffect sound, SpriterSound info)
         {
             sound.Play(info.Volume, 0.0f, info.Panning);
-        }
-
-        /// <summary>
-        /// Class for holding the draw info for a sprite.
-        /// </summary>
-        protected class DrawInfo
-        {
-            public ISprite Drawable;
-            public Vector2 Pivot;
-            public Vector2 Position;
-            public Vector2 Origin;
-            public Vector2 Scale;
-            public float Rotation;
-            public Color Color;
-            public float Depth;
         }
     }
 }

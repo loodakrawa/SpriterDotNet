@@ -16,7 +16,13 @@ namespace SpriterDotNet.MonoGame.Example
 		private IDictionary<string, ISprite> boxTextures = new Dictionary<string, ISprite>();
 		private ISprite pointTexture;
 
-        public MonoGameDebugAnimator(SpriterEntity entity, GraphicsDevice graphicsDevice, IProviderFactory<ISprite, SoundEffect> providerFactory = null) : base(entity, providerFactory)
+        public MonoGameDebugAnimator
+        (
+            SpriterEntity entity, 
+            GraphicsDevice graphicsDevice, 
+            IProviderFactory<ISprite, SoundEffect> providerFactory = null,
+            Stack<SpriteDrawInfo> drawInfoPool = null
+        ) : base(entity, providerFactory, drawInfoPool)
         {
 			pointTexture = new TextureSprite(TextureUtil.CreateCircle(graphicsDevice, 5, Color.Cyan));
 

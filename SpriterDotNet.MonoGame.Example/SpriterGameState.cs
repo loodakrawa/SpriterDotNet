@@ -84,9 +84,11 @@ namespace SpriterDotNet.MonoGame.Example
                 SpriterContentLoader loader = new SpriterContentLoader(Content, scmlPath);
                 loader.Fill(factory);
 
+                Stack<SpriteDrawInfo> drawInfoPool = new Stack<SpriteDrawInfo>();
+
                 foreach (SpriterEntity entity in loader.Spriter.Entities)
                 {
-                    var animator = new MonoGameDebugAnimator(entity, GraphicsDevice, factory);
+                    var animator = new MonoGameDebugAnimator(entity, GraphicsDevice, factory, drawInfoPool);
                     animators.Add(animator);
                     animator.Position = centre;
                 }
