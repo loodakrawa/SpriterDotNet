@@ -10,14 +10,14 @@ using SpriterDotNet.MonoGame.Content;
 namespace SpriterDotNet.MonoGame.Importer
 {
     [ContentTypeWriter]
-    public class SpriterAtlasTypeWriter : ContentTypeWriter<SpriterAtlasWrapper>
+    public class TexturePackerSheetTypeWriter : ContentTypeWriter<TexturePackerSheetWrapper>
     {
         public override string GetRuntimeReader(TargetPlatform targetPlatform)
         {
-            return typeof(SpriterAtlasTypeReader).AssemblyQualifiedName;
+            return typeof(TexturePackerSheetTypeReader).AssemblyQualifiedName;
         }
 
-        protected override void Write(ContentWriter output, SpriterAtlasWrapper value)
+        protected override void Write(ContentWriter output, TexturePackerSheetWrapper value)
         {
 			output.Write(value.AtlasData);
         }

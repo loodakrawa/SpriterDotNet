@@ -7,24 +7,31 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Audio;
+using SpriterDotNet.MonoGame.Sprites;
 
 namespace SpriterDotNet.MonoGame.Example
 {
     public class MonoGameDebugAnimator : MonoGameAnimator
     {
-		private IDictionary<string, Sprite> boxTextures = new Dictionary<string, Sprite>();
-		private Sprite pointTexture;
+		private IDictionary<string, ISprite> boxTextures = new Dictionary<string, ISprite>();
+		private ISprite pointTexture;
 
-        public MonoGameDebugAnimator(SpriterEntity entity, GraphicsDevice graphicsDevice, IProviderFactory<Sprite, SoundEffect> providerFactory = null) : base(entity, providerFactory)
+        public MonoGameDebugAnimator
+        (
+            SpriterEntity entity, 
+            GraphicsDevice graphicsDevice, 
+            IProviderFactory<ISprite, SoundEffect> providerFactory = null,
+            Stack<SpriteDrawInfo> drawInfoPool = null
+        ) : base(entity, providerFactory, drawInfoPool)
         {
-			pointTexture = new Sprite{Texture=TextureUtil.CreateCircle(graphicsDevice, 5, Color.Cyan)};
+			pointTexture = new TextureSprite(TextureUtil.CreateCircle(graphicsDevice, 5, Color.Cyan));
 
             if (entity.ObjectInfos != null)
             {
                 foreach (SpriterObjectInfo objInfo in entity.ObjectInfos)
                 {
                     if (objInfo.ObjectType != SpriterObjectType.Box) continue;
-					boxTextures[objInfo.Name] = new Sprite{Texture = TextureUtil.CreateRectangle(graphicsDevice, (int)objInfo.Width, (int)objInfo.Height, Color.Cyan)};
+					boxTextures[objInfo.Name] = new TextureSprite(TextureUtil.CreateRectangle(graphicsDevice, (int)objInfo.Width, (int)objInfo.Height, Color.Cyan));
                 }
             }
         }

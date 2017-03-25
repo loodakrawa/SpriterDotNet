@@ -30,16 +30,16 @@ namespace SpriterDotNet.MonoGame.Example
             return removed;
         }
 
-        public void Update(GameTime gameTime)
+        public void Update(float deltaTime)
         {
             if (currentState == null) return;
-            currentState.Update(gameTime);
+            currentState.Update(deltaTime);
         }
 
-        public void Draw(GameTime gameTime)
+        public void Draw(float deltaTime)
         {
             if (currentState == null) return;
-            currentState.Draw(gameTime);
+            currentState.Draw(deltaTime);
         }
     }
 }

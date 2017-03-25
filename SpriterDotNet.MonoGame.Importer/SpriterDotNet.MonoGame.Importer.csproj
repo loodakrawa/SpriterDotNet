@@ -54,9 +54,9 @@
     <Compile Include="SpriterDataWrapper.cs" />
     <Compile Include="SpriterImporter.cs" />
     <Compile Include="SpriterTypeWriter.cs" />
-    <Compile Include="SpriterAtlasWrapper.cs" />
-    <Compile Include="SpriterAtlasImporter.cs" />
-    <Compile Include="SpriterAtlasTypeWriter.cs" />
+    <Compile Include="TexturePackerSheetWrapper.cs" />
+    <Compile Include="TexturePackerSheetImporter.cs" />
+    <Compile Include="TexturePackerSheetTypeWriter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

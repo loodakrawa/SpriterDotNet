@@ -34,13 +34,15 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="MathHelper.cs" />
+    <Compile Include="ISprite.cs" />
     <Compile Include="MonoGameAnimator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Content\SpriterTypeReader.cs" />
-    <Compile Include="Content\SpriterAtlasTypeReader.cs" />
-    <Compile Include="SpriterContentLoader.cs" />
-    <Compile Include="Sprite.cs" />
+    <Compile Include="Content\TexturePackerSheetTypeReader.cs" />
+    <Compile Include="Content\SpriterContentLoader.cs" />
+    <Compile Include="SpriteDrawInfo.cs" />
+    <Compile Include="Sprites\TextureSprite.cs" />
+    <Compile Include="Sprites\TexturePackerSprite.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework, Version=3.1.2.0, Culture=neutral, PublicKeyToken=null">

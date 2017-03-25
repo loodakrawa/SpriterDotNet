@@ -56,7 +56,7 @@ namespace SpriterDotNet.Providers
 
             FrameData[] animData = Data[first.Name];
             int index = (int)(time / first.Length * animData.Length);
-            if (index == animData.Length) index = animData.Length - 1;
+            if (index >= animData.Length) index = animData.Length - 1;
             return animData[index];
         }
     }

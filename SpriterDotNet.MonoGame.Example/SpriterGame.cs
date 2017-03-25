@@ -5,7 +5,7 @@
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
-using SpriterDotNet.MonoGame.Example;
+using System;
 
 namespace SpriterDotNet.MonoGame.Example
 {
@@ -25,6 +25,9 @@ namespace SpriterDotNet.MonoGame.Example
             graphics.PreferredBackBufferWidth = Width;
             graphics.PreferredBackBufferHeight = Height;
             Content.RootDirectory = RootDirectory;
+
+            IsFixedTimeStep = false;
+            graphics.SynchronizeWithVerticalRetrace = false;
         }
 
         protected override void Initialize()
@@ -33,9 +36,10 @@ namespace SpriterDotNet.MonoGame.Example
 
             var dm = graphics.GraphicsDevice.DisplayMode;
 
-            #if DESKTOP
-            Window.Position = new Point((dm.Width - Width) / 2, (dm.Height - Height) / 2);
-            #endif
+#if DIRECTX
+            // center window
+            Window.Position = new Point((dm.Width - Width) / 2, 0);
+#endif
 
             SpriterGameState sgs = new SpriterGameState();
             FillGameState(sgs);
@@ -57,13 +61,13 @@ namespace SpriterDotNet.MonoGame.Example
         protected override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            gameStateManager.Update(gameTime);
+            gameStateManager.Update(gameTime.ElapsedGameTime.Ticks / (float) TimeSpan.TicksPerMillisecond);
         }
 
         protected override void Draw(GameTime gameTime)
         {
             base.Draw(gameTime);
-            gameStateManager.Draw(gameTime);
+            gameStateManager.Draw(gameTime.ElapsedGameTime.Ticks / (float)TimeSpan.TicksPerMillisecond);
         }
     }
 }

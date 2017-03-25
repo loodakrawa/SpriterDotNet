@@ -9,16 +9,16 @@ using System.IO;
 
 namespace SpriterDotNet.MonoGame.Content
 {
-	public class SpriterAtlasTypeReader : ContentTypeReader<SpriterAtlas>
+	public class TexturePackerSheetTypeReader : ContentTypeReader<TexturePackerSheet>
     {
-		protected override SpriterAtlas Read(ContentReader input, SpriterAtlas existingInstance)
+		protected override TexturePackerSheet Read(ContentReader input, TexturePackerSheet existingInstance)
         {
             string data = input.ReadString();
 
-			XmlSerializer serializer = new XmlSerializer(typeof(SpriterAtlas));
+			XmlSerializer serializer = new XmlSerializer(typeof(TexturePackerSheet));
 			using (TextReader reader = new StringReader(data))
 			{
-				SpriterAtlas spriterAtlas = serializer.Deserialize(reader) as SpriterAtlas;
+				TexturePackerSheet spriterAtlas = serializer.Deserialize(reader) as TexturePackerSheet;
 				return spriterAtlas;
 			}
 		}

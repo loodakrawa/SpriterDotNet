@@ -3,16 +3,15 @@
 // This software may be modified and distributed under the terms
 // of the zlib license.  See the LICENSE file for details.
 
-using System;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Audio;
-using System.IO;
 using Microsoft.Xna.Framework.Graphics;
 using SpriterDotNet.Providers;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using SpriterDotNet.MonoGame.Sprites;
 
-namespace SpriterDotNet.MonoGame
+namespace SpriterDotNet.MonoGame.Content
 {
     public class SpriterContentLoader
     {
@@ -22,31 +21,32 @@ namespace SpriterDotNet.MonoGame
         private readonly string scmlPath;
         private readonly string rootPath;
 
-        private Dictionary<int, SpriterAtlas> atlases;
-        private Dictionary<SpriterAtlas, Dictionary<string, ImageInfo>> infos;
+        private Dictionary<int, TexturePackerSheet> atlases;
+        private Dictionary<TexturePackerSheet, Dictionary<string, ImageInfo>> infos;
 
         public SpriterContentLoader(ContentManager content, string scmlPath)
         {
             this.content = content;
             this.scmlPath = scmlPath;
             rootPath = scmlPath.Substring(0, scmlPath.LastIndexOf("/"));
-            Load();
         }
 
-        public void Fill(DefaultProviderFactory<Sprite, SoundEffect> factory)
+        public void Fill(DefaultProviderFactory<ISprite, SoundEffect> factory)
         {
+            if (Spriter == null) Load();
+
             foreach (SpriterFolder folder in Spriter.Folders)
             {
-                if (folder.AtlasId > -1) AddAtlasFolder(folder, factory);
+                if (atlases != null && atlases.Count > 0) AddAtlasFolder(folder, factory);
                 else AddRegularFolder(folder, factory);
             }
         }
 
-        private void AddRegularFolder(SpriterFolder folder, DefaultProviderFactory<Sprite, SoundEffect> factory)
+        private void AddRegularFolder(SpriterFolder folder, DefaultProviderFactory<ISprite, SoundEffect> factory)
         {
             foreach (SpriterFile file in folder.Files)
             {
-                string path = FormatPath(file.Name, folder.Name);
+                string path = FormatPath(file.Name);
 
                 if (file.Type == SpriterFileType.Sound)
                 {
@@ -56,22 +56,18 @@ namespace SpriterDotNet.MonoGame
                 else
                 {
                     Texture2D texture = LoadContent<Texture2D>(path);
-                    Sprite sprite = new Sprite
-                    {
-                        Texture = texture,
-                        Width = texture.Width,
-                        Height = texture.Height,
-                    };
+                    TextureSprite sprite = new TextureSprite(texture);
                     factory.SetSprite(Spriter, folder, file, sprite);
                 }
 
             }
         }
 
-        private void AddAtlasFolder(SpriterFolder folder, DefaultProviderFactory<Sprite, SoundEffect> factory)
+        private void AddAtlasFolder(SpriterFolder folder, DefaultProviderFactory<ISprite, SoundEffect> factory)
         {
-            SpriterAtlas atlas = atlases[folder.AtlasId];
-            Texture2D texture = content.Load<Texture2D>(FormatPath(atlas.Meta.Image));
+            int id = folder.AtlasId;
+            TexturePackerSheet atlas = atlases[id];
+            Texture2D texture = LoadContent<Texture2D>(FormatPath(atlas.Meta.Image));
             Dictionary<string, ImageInfo> imageInfos = infos[atlas];
 
             foreach (SpriterFile file in folder.Files)
@@ -87,27 +83,28 @@ namespace SpriterDotNet.MonoGame
                 // "x", "y" = trimmed offset - pixels trimmed from the top and left
                 Size spriteSource = info.SpriteSourceSize;
 
-                Sprite sprite = new Sprite
-                {
-                    Texture = texture,
-                    Width = source.W,
-                    Height = source.H
-                };
-
-                sprite.TrimLeft = spriteSource.X;
-                sprite.TrimRight = source.W - frame.W - spriteSource.X;
-                sprite.TrimTop = spriteSource.Y;
-                sprite.TrimBottom = source.H - frame.H - spriteSource.Y;
+                Rectangle sourceRectangle;
+                bool rotated = false;
 
                 if (info.Rotated)
                 {
-                    sprite.SourceRectangle = new Rectangle(frame.X, frame.Y, frame.H, frame.W);
-                    sprite.Rotated = true;
+                    sourceRectangle = new Rectangle(frame.X, frame.Y, frame.H, frame.W);
+                    rotated = true;
                 }
                 else
                 {
-                    sprite.SourceRectangle = new Rectangle(frame.X, frame.Y, frame.W, frame.H);
+                    sourceRectangle = new Rectangle(frame.X, frame.Y, frame.W, frame.H);
                 }
+
+                float trimLeft = spriteSource.X;
+                float trimRight = source.W - frame.W - spriteSource.X;
+                float trimTop = spriteSource.Y;
+                float trimBottom = source.H - frame.H - spriteSource.Y;
+
+                int width = source.W;
+                int height = source.H;
+
+                TexturePackerSprite sprite = new TexturePackerSprite(texture, sourceRectangle, width, height, rotated, trimLeft, trimRight, trimTop, trimBottom);
 
                 factory.SetSprite(Spriter, folder, file, sprite);
             }
@@ -117,13 +114,13 @@ namespace SpriterDotNet.MonoGame
         {
             Spriter = LoadContent<Spriter>(scmlPath);
             if (Spriter.Atlases == null || Spriter.Atlases.Length == 0) return;
-            atlases = new Dictionary<int, SpriterAtlas>();
-            infos = new Dictionary<SpriterAtlas, Dictionary<string, ImageInfo>>();
+            atlases = new Dictionary<int, TexturePackerSheet>();
+            infos = new Dictionary<TexturePackerSheet, Dictionary<string, ImageInfo>>();
 
             foreach (var atlasRef in Spriter.Atlases)
             {
-                String path = FormatPath(atlasRef.Name);
-                SpriterAtlas atlas = content.Load<SpriterAtlas>(path);
+                string path = FormatPath(atlasRef.Name);
+                TexturePackerSheet atlas = LoadContent<TexturePackerSheet>(path);
                 atlases[atlasRef.Id] = atlas;
 
                 Dictionary<string, ImageInfo> imageInfos = new Dictionary<string, ImageInfo>();
@@ -133,15 +130,16 @@ namespace SpriterDotNet.MonoGame
             }
         }
 
-        private string FormatPath(string fileName, string folderName = null)
+        private string FormatPath(string fileName)
         {
-            fileName = Path.GetFileNameWithoutExtension(fileName);
-            if (string.IsNullOrEmpty(folderName)) return string.Format("{0}/{1}", rootPath, fileName);
-            return string.Format("{0}/{1}/{2}", rootPath, folderName, fileName);
+            return string.Format("{0}/{1}", rootPath, fileName);
         }
 
         private T LoadContent<T>(string path)
         {
+            int index = path.LastIndexOf(".");
+            if (index >= 0) path = path.Substring(0, index);
+
             T asset = default(T);
             try
             {

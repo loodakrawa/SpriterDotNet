@@ -10,7 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)FrameData.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Helpers\DictHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\DictionaryHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\MathHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\SpriterHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IFrameDataProvider.cs" />
@@ -23,13 +23,13 @@
     <Compile Include="$(MSBuildThisFileDirectory)Providers\DefaultAssetProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Providers\SnapshotFrameDataProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Providers\DefaultProviderFactory.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)DataModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SpriterModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Animator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Config.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ObjectPool.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SpriterReader.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FrameDataCalculator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Parsers\XmlSpriterParser.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)AtlasDataModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TexturePackerModel.cs" />
   </ItemGroup>
 </Project>

@@ -6,6 +6,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 
 namespace SpriterDotNet.MonoGame
@@ -14,17 +15,34 @@ namespace SpriterDotNet.MonoGame
     /// MonoGame Animator implementation. It has separate Draw and Update steps. 
     /// During the Update step all spatial infos are calculated (translated from Spriter values) and the Draw step only draws the calculated values.
     /// </summary>
-	public class MonoGameAnimator : Animator<Sprite, SoundEffect>
+	public class MonoGameAnimator : Animator<ISprite, SoundEffect>
     {
         /// <summary>
         /// Scale factor of the animator. Negative values flip the image.
         /// </summary>
-        public virtual Vector2 Scale { get; set; } = Vector2.One;
+        public virtual Vector2 Scale
+        {
+            get { return scale; }
+            set
+            {
+                scale = value;
+                scaleAbs = new Vector2(Math.Abs(value.X), Math.Abs(value.Y));
+            }
+        }
 
         /// <summary>
         /// Rotation in radians.
         /// </summary>
-        public virtual float Rotation { get; set; }
+        public virtual float Rotation
+        {
+            get { return rotation; }
+            set
+            {
+                rotation = value;
+                rotationSin = (float)Math.Sin(Rotation);
+                rotationCos = (float)Math.Cos(Rotation);
+            }
+        }
 
         /// <summary>
         /// Position in pixels.
@@ -46,108 +64,85 @@ namespace SpriterDotNet.MonoGame
         /// </summary>
         public virtual Color Color { get; set; } = Color.White;
 
-        protected Stack<DrawInfo> DrawInfoPool { get; set; } = new Stack<DrawInfo>();
-        protected List<DrawInfo> DrawInfos { get; set; } = new List<DrawInfo>();
-        protected Matrix Transform { get; set; }
+        protected Stack<SpriteDrawInfo> DrawInfoPool { get; set; }
+        protected List<SpriteDrawInfo> DrawInfos { get; set; } = new List<SpriteDrawInfo>();
 
-        private static readonly float SpriteAtlasRotation = -90 * MathHelper.DegToRad;
         private static readonly float DefaultDepth = 0.5f;
         private static readonly float DefaultDeltaDepth = -0.000001f;
 
-        public MonoGameAnimator(SpriterEntity entity, IProviderFactory<Sprite, SoundEffect> providerFactory = null) : base(entity, providerFactory)
+        private float rotation;
+        private float rotationSin;
+        private float rotationCos;
+
+        private Vector2 scale;
+        private Vector2 scaleAbs;
+
+        public MonoGameAnimator
+        (
+            SpriterEntity entity, 
+            IProviderFactory<ISprite, SoundEffect> providerFactory = null, 
+            Stack<SpriteDrawInfo> drawInfoPool = null
+        ) : base(entity, providerFactory)
         {
+            Scale = Vector2.One;
+            Rotation = 0;
+            DrawInfoPool = drawInfoPool ?? new Stack<SpriteDrawInfo>();
         }
 
         /// <summary>
         /// Draws the animation with the given SpriteBatch.
         /// </summary>
-        public virtual void Draw(SpriteBatch batch)
+        public virtual void Draw(SpriteBatch spriteBatch)
         {
             for (int i = 0; i < DrawInfos.Count; ++i)
             {
-                DrawInfo di = DrawInfos[i];
-                Sprite sprite = di.Sprite;
-                batch.Draw(sprite.Texture, di.Position, sprite.SourceRectangle, di.Color, di.Rotation, di.Origin, di.Scale, di.Effects, di.Depth);
-                DrawInfoPool.Push(di);
+                SpriteDrawInfo di = DrawInfos[i];
+                ISprite sprite = di.Drawable;
+                sprite.Draw(spriteBatch, di.Pivot, di.Position, di.Scale, di.Rotation, di.Color, di.Depth);
             }
         }
 
         public override void Update(float deltaTime)
         {
+            for (int i = 0; i < DrawInfos.Count; ++i) DrawInfoPool.Push(DrawInfos[i]);
             DrawInfos.Clear();
-
-            Transform = MathHelper.GetMatrix(Scale, Rotation, Position);
 
             base.Update(deltaTime);
         }
 
-        protected override void ApplySpriteTransform(Sprite sprite, SpriterObject info)
+        protected override void ApplySpriteTransform(ISprite drawable, SpriterObject info)
         {
-            bool rotated = sprite.Rotated;
-            Vector2 position = new Vector2(info.X, -info.Y);
-            Vector2 scale = new Vector2(info.ScaleX, info.ScaleY);
-            float rotation = -info.Angle * MathHelper.DegToRad;
-
-            bool flipX = (scale.X * Scale.X) < 0;
-            bool flipY = (scale.Y * Scale.Y) < 0;
-
-            SpriteEffects effects = SpriteEffects.None;
-            if (flipX) effects |= !rotated ? SpriteEffects.FlipHorizontally : SpriteEffects.FlipVertically;
-            if (flipY) effects |= !rotated ? SpriteEffects.FlipVertically : SpriteEffects.FlipHorizontally;
-
-            float originX;
-            float originY;
+            float px = info.X;
+            float py = -info.Y;
+            float rotation = MathHelper.ToRadians(-info.Angle);
 
             if (Scale.X < 0)
             {
-                position = new Vector2(-position.X, position.Y);
+                px = -px;
                 rotation = -rotation;
             }
 
             if (Scale.Y < 0)
             {
-                position = new Vector2(position.X, -position.Y);
+                py = -py;
                 rotation = -rotation;
             }
 
-            if (!rotated)
-            {
-                if (!flipX) originX = info.PivotX * sprite.Width - sprite.TrimLeft;
-                else originX = (1 - info.PivotX) * sprite.Width - sprite.TrimRight;
+            px *= scaleAbs.X;
+            py *= scaleAbs.Y;
 
-                if (!flipY) originY = (1 - info.PivotY) * sprite.Height - sprite.TrimTop;
-                else originY = info.PivotY * sprite.Height - sprite.TrimBottom;
-            }
-            else
-            {
-                if (!flipX)
-                {
-                    originX = info.PivotY * sprite.Height - sprite.TrimBottom;
-                    originY = info.PivotX * sprite.Width - sprite.TrimLeft;
-                }
-                else
-                {
-                    originX = (1 - info.PivotY) * sprite.Height - sprite.TrimTop;
-                    originY = (1 - info.PivotX) * sprite.Width - sprite.TrimRight;
-                }
-            }
+            float posX = px * rotationCos - py * rotationSin;
+            float posY = px * rotationSin + py * rotationCos;
 
-            Matrix globalTransform = MathHelper.GetMatrix(scale, rotation, position) * Transform;
-            globalTransform.DecomposeMatrix(out scale, out rotation, out position);
+            SpriteDrawInfo di = DrawInfoPool.Count > 0 ? DrawInfoPool.Pop() : new SpriteDrawInfo();
 
-            float depth = Depth + DeltaDepth * DrawInfos.Count;
-            depth = (depth < 0) ? 0 : (depth > 1) ? 1 : depth;
-
-            DrawInfo di = DrawInfoPool.Count > 0 ? DrawInfoPool.Pop() : new DrawInfo();
-
-            di.Sprite = sprite;
-            di.Position = position;
-            di.Origin = new Vector2(originX, originY);
-            di.Scale = scale;
-            di.Rotation = rotation + (sprite.Rotated ? SpriteAtlasRotation : 0);
+            di.Drawable = drawable;
+            di.Pivot = new Vector2(info.PivotX, (1 - info.PivotY));
+            di.Position = new Vector2(posX, posY) + Position;
+            di.Scale = new Vector2(info.ScaleX, info.ScaleY) * Scale;
+            di.Rotation = rotation + Rotation;
             di.Color = Color * info.Alpha;
-            di.Effects = effects;
-            di.Depth = depth;
+            di.Depth = Depth + DeltaDepth * DrawInfos.Count;
 
             DrawInfos.Add(di);
         }
@@ -155,21 +150,6 @@ namespace SpriterDotNet.MonoGame
         protected override void PlaySound(SoundEffect sound, SpriterSound info)
         {
             sound.Play(info.Volume, 0.0f, info.Panning);
-        }
-
-        /// <summary>
-        /// Class for holding the draw info for a sprite.
-        /// </summary>
-        protected class DrawInfo
-        {
-            public Sprite Sprite { get; set; }
-            public Vector2 Position { get; set; }
-            public Vector2 Origin { get; set; }
-            public Vector2 Scale { get; set; }
-            public float Rotation { get; set; }
-            public Color Color { get; set; }
-            public SpriteEffects Effects { get; set; }
-            public float Depth { get; set; }
         }
     }
 }

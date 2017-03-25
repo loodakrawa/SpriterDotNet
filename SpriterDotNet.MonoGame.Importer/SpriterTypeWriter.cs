@@ -10,14 +10,14 @@ using SpriterDotNet.MonoGame.Content;
 namespace SpriterDotNet.MonoGame.Importer
 {
     [ContentTypeWriter]
-    public class SpriterTypeWriter : ContentTypeWriter<SpriterDataWrapper>
+    public class SpriterTypeWriter : ContentTypeWriter<SpriterWrapper>
     {
         public override string GetRuntimeReader(TargetPlatform targetPlatform)
         {
             return typeof(SpriterTypeReader).AssemblyQualifiedName;
         }
 
-        protected override void Write(ContentWriter output, SpriterDataWrapper value)
+        protected override void Write(ContentWriter output, SpriterWrapper value)
         {
             output.Write(value.SpriterData);
         }
