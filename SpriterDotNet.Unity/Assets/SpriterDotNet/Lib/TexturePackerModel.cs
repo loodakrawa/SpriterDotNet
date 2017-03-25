@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace SpriterDotNet
 {
-	public class SpriterAtlas
+	public class TexturePackerSheet
 	{
 		public List<ImageInfo> ImageInfos { get; set; }
 		public Meta Meta { get; set; }

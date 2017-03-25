@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace SpriterDotNet.Helpers
 {
-    internal static class DictHelper
+    internal static class DictionaryHelper
     {
         /// <summary>
         /// Returns the existing value from the target dictionary for the given key. 
