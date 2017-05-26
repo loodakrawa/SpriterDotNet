@@ -21,22 +21,22 @@ Global
 		SpriterDotNet.MonoGame.Example\SpriterDotNet.MonoGame.Example.projitems*{8131dbf8-a78a-46fb-81f0-49ae47f4f492}*SharedItemsImports = 4
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|x86 = Debug|x86
-		Release|x86 = Release|x86
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{10C1ED31-6945-4617-85AD-D2575550149D}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{10C1ED31-6945-4617-85AD-D2575550149D}.Debug|x86.Build.0 = Debug|Any CPU
-		{10C1ED31-6945-4617-85AD-D2575550149D}.Release|x86.ActiveCfg = Release|Any CPU
-		{10C1ED31-6945-4617-85AD-D2575550149D}.Release|x86.Build.0 = Release|Any CPU
-		{6D91934F-B523-4207-A14A-ED8948CDB9D8}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{6D91934F-B523-4207-A14A-ED8948CDB9D8}.Debug|x86.Build.0 = Debug|Any CPU
-		{6D91934F-B523-4207-A14A-ED8948CDB9D8}.Release|x86.ActiveCfg = Release|Any CPU
-		{6D91934F-B523-4207-A14A-ED8948CDB9D8}.Release|x86.Build.0 = Release|Any CPU
-		{8131DBF8-A78A-46FB-81F0-49AE47F4F492}.Debug|x86.ActiveCfg = Debug|x86
-		{8131DBF8-A78A-46FB-81F0-49AE47F4F492}.Debug|x86.Build.0 = Debug|x86
-		{8131DBF8-A78A-46FB-81F0-49AE47F4F492}.Release|x86.ActiveCfg = Release|x86
-		{8131DBF8-A78A-46FB-81F0-49AE47F4F492}.Release|x86.Build.0 = Release|x86
+		{10C1ED31-6945-4617-85AD-D2575550149D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{10C1ED31-6945-4617-85AD-D2575550149D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{10C1ED31-6945-4617-85AD-D2575550149D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{10C1ED31-6945-4617-85AD-D2575550149D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6D91934F-B523-4207-A14A-ED8948CDB9D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6D91934F-B523-4207-A14A-ED8948CDB9D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6D91934F-B523-4207-A14A-ED8948CDB9D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6D91934F-B523-4207-A14A-ED8948CDB9D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8131DBF8-A78A-46FB-81F0-49AE47F4F492}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8131DBF8-A78A-46FB-81F0-49AE47F4F492}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8131DBF8-A78A-46FB-81F0-49AE47F4F492}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8131DBF8-A78A-46FB-81F0-49AE47F4F492}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
