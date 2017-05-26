@@ -9,8 +9,8 @@
     <ProjectGuid>{8131DBF8-A78A-46FB-81F0-49AE47F4F492}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DesktopGL</RootNamespace>
-    <AssemblyName>DesktopGL</AssemblyName>
+    <RootNamespace>SpriterDotNet.MonoGame.Example.DesktopGL</RootNamespace>
+    <AssemblyName>SpriterDotNet.MonoGame.Example.DesktopGL</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <MonoGamePlatform>DesktopGL</MonoGamePlatform>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
