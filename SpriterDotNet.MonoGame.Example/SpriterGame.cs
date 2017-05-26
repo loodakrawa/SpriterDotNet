@@ -36,9 +36,9 @@ namespace SpriterDotNet.MonoGame.Example
 
             var dm = graphics.GraphicsDevice.DisplayMode;
 
-#if DIRECTX
+#if DIRECTX || LINUX
             // center window
-            Window.Position = new Point((dm.Width - Width) / 2, 0);
+            Window.Position = new Point((dm.Width - Width) / 2, (dm.Height - Height) / 2);
 #endif
 
             SpriterGameState sgs = new SpriterGameState();
