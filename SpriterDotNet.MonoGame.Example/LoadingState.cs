@@ -38,7 +38,7 @@ namespace SpriterDotNet.MonoGame.Example
             GraphicsDevice.Clear(Color.Beige);
 
             spriteBatch.Begin();
-            spriteBatch.Draw(spinner, new Vector2(Width, Height) / 2, null, null, new Vector2(spinner.Width, spinner.Height) / 2, rotation, Vector2.One, Color.White, SpriteEffects.None, 0.5f);
+            spriteBatch.Draw(spinner, new Vector2(Width, Height) / 2, null, Color.White, rotation, new Vector2(spinner.Width, spinner.Height) / 2, Vector2.One, SpriteEffects.None, 0.5f);
             spriteBatch.End();
         }
 

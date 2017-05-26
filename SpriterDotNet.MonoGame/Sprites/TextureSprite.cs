@@ -43,17 +43,7 @@ namespace SpriterDotNet.MonoGame.Sprites
             scale = new Vector2(Math.Abs(scale.X), Math.Abs(scale.Y));
             Vector2 origin = new Vector2(originX, originY);
 
-            spriteBatch.Draw
-            (
-                texture: texture,
-                origin: origin,
-                position: position,
-                scale: scale,
-                rotation: rotation,
-                color: color,
-                layerDepth: depth,
-                effects: effects
-            );
+            spriteBatch.Draw(texture, position, null, color, rotation, origin, scale, effects, depth);
         }
     }
 }
