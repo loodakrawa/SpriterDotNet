@@ -34,6 +34,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Box.cs" />
     <Compile Include="ISprite.cs" />
     <Compile Include="MonoGameAnimator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -14,6 +14,9 @@ namespace SpriterDotNet.MonoGame.Sprites
     /// </summary>
     public class TextureSprite : ISprite
     {
+        public float Width => texture.Width;
+        public float Height => texture.Height;
+
         private readonly Texture2D texture;
 
         public TextureSprite(Texture2D texture)

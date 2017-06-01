@@ -41,7 +41,8 @@ namespace SpriterDotNet.MonoGame.Example
             "Q/E = Rotate",
             "N/M = Scale",
             "F/G = Flip",
-            "J = Toggle Colour"
+            "J = Toggle Colour",
+            "~ = Toggle Sprite Outlines"
         };
 
         private static readonly Config config = new Config
@@ -67,11 +68,11 @@ namespace SpriterDotNet.MonoGame.Example
         private string metadata = string.Empty;
         private Stats stats = new Stats();
 
-        private Vector2 centre;
+        private float elapsedTime;
 
         protected override void Load()
         {
-            centre = new Vector2(Width / 2.0f, Height / 2.0f);
+            Vector2 centre = new Vector2(Width / 2.0f, Height / 2.0f);
             oldState = Keyboard.GetState();
 
             spriteBatch = new SpriteBatch(GraphicsDevice);
@@ -142,14 +143,21 @@ namespace SpriterDotNet.MonoGame.Example
             if (IsPressed(Keys.M)) currentAnimator.Scale += new Vector2(Math.Sign(scale.X) * 0.2f, Math.Sign(scale.Y) * 0.2f);
             if (IsPressed(Keys.F)) currentAnimator.Scale *= new Vector2(-1, 1);
             if (IsPressed(Keys.G)) currentAnimator.Scale *= new Vector2(1, -1);
+            if (IsPressed(Keys.OemTilde)) (currentAnimator as MonoGameDebugAnimator).DrawSpriteOutlines = !(currentAnimator as MonoGameDebugAnimator).DrawSpriteOutlines;
+
 
             oldState = Keyboard.GetState();
 
             currentAnimator.Update(deltaTime);
 
-            string entity = currentAnimator.Entity.Name;
-            status = string.Format("{0} : {1}", entity, currentAnimator.Name);
-            metadata = "Variables:\n" + GetVarValues() + "\nTags:\n" + GetTagValues();
+            elapsedTime += deltaTime;
+            if(elapsedTime >= 100)
+            {
+                elapsedTime -= 100;
+                string entity = currentAnimator.Entity.Name;
+                status = string.Format("{0} : {1}", entity, currentAnimator.Name);
+                metadata = string.Format("Variables:\n{0}\nTags:\n", GetVarValues(), GetTagValues());
+            }
         }
 
         private void DrawText(string text, Vector2 position, float size, Color color)
