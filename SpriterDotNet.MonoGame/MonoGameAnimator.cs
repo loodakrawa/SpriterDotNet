@@ -79,8 +79,8 @@ namespace SpriterDotNet.MonoGame
 
         public MonoGameAnimator
         (
-            SpriterEntity entity, 
-            IProviderFactory<ISprite, SoundEffect> providerFactory = null, 
+            SpriterEntity entity,
+            IProviderFactory<ISprite, SoundEffect> providerFactory = null,
             Stack<SpriteDrawInfo> drawInfoPool = null
         ) : base(entity, providerFactory)
         {
@@ -112,9 +112,62 @@ namespace SpriterDotNet.MonoGame
 
         protected override void ApplySpriteTransform(ISprite drawable, SpriterObject info)
         {
+            float posX, posY, rotation;
+            GetPositionAndRotation(info, out posX, out posY, out rotation);
+
+            SpriteDrawInfo di = DrawInfoPool.Count > 0 ? DrawInfoPool.Pop() : new SpriteDrawInfo();
+
+            di.Drawable = drawable;
+            di.Pivot = new Vector2(info.PivotX, (1 - info.PivotY));
+            di.Position = new Vector2(posX, posY);
+            di.Scale = new Vector2(info.ScaleX, info.ScaleY) * Scale;
+            di.Rotation = rotation;
+            di.Color = Color * info.Alpha;
+            di.Depth = Depth + DeltaDepth * DrawInfos.Count;
+
+            DrawInfos.Add(di);
+        }
+
+        protected override void PlaySound(SoundEffect sound, SpriterSound info)
+        {
+            sound.Play(info.Volume, 0.0f, info.Panning);
+        }
+
+        public Box GetBoundingBox(SpriterObject info, float width, float height)
+        {
+            float posX, posY, rotation;
+            GetPositionAndRotation(info, out posX, out posY, out rotation);
+
+            float w = width * info.ScaleX * Scale.X;
+            float h = height * info.ScaleY * Scale.Y;
+
+            float rs = (float)Math.Sin(rotation);
+            float rc = (float)Math.Cos(rotation);
+
+            Vector2 originDelta = Rotate(new Vector2(-info.PivotX * w, -(1 - info.PivotY) * h), rs, rc);
+
+            Box cb = new Box();
+            Vector2 horizontal = Rotate(new Vector2(w, 0), rs, rc);
+            cb.Point1 = new Vector2(posX, posY) + originDelta;
+            cb.Point2 = cb.Point1 + horizontal;
+            cb.Point4 = cb.Point1 + Rotate(new Vector2(0, h), rs, rc);
+            cb.Point3 = cb.Point4 + horizontal;
+
+            return cb;
+        }
+
+        public Vector2 GetPosition(SpriterObject info)
+        {
+            float posX, posY, rotation;
+            GetPositionAndRotation(info, out posX, out posY, out rotation);
+            return new Vector2(posX, posY);
+        }
+
+        private void GetPositionAndRotation(SpriterObject info, out float posX, out float posY, out float rotation)
+        {
             float px = info.X;
             float py = -info.Y;
-            float rotation = MathHelper.ToRadians(-info.Angle);
+            rotation = MathHelper.ToRadians(-info.Angle);
 
             if (Scale.X < 0)
             {
@@ -131,25 +184,15 @@ namespace SpriterDotNet.MonoGame
             px *= scaleAbs.X;
             py *= scaleAbs.Y;
 
-            float posX = px * rotationCos - py * rotationSin;
-            float posY = px * rotationSin + py * rotationCos;
+            rotation += Rotation;
 
-            SpriteDrawInfo di = DrawInfoPool.Count > 0 ? DrawInfoPool.Pop() : new SpriteDrawInfo();
-
-            di.Drawable = drawable;
-            di.Pivot = new Vector2(info.PivotX, (1 - info.PivotY));
-            di.Position = new Vector2(posX, posY) + Position;
-            di.Scale = new Vector2(info.ScaleX, info.ScaleY) * Scale;
-            di.Rotation = rotation + Rotation;
-            di.Color = Color * info.Alpha;
-            di.Depth = Depth + DeltaDepth * DrawInfos.Count;
-
-            DrawInfos.Add(di);
+            posX = px * rotationCos - py * rotationSin + Position.X;
+            posY = px * rotationSin + py * rotationCos + Position.Y;
         }
 
-        protected override void PlaySound(SoundEffect sound, SpriterSound info)
+        private static Vector2 Rotate(Vector2 v, float s, float c)
         {
-            sound.Play(info.Volume, 0.0f, info.Panning);
+            return new Vector2(v.X * c - v.Y * s, v.X * s + v.Y * c);
         }
     }
 }

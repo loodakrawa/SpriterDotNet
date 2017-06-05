@@ -14,6 +14,9 @@ namespace SpriterDotNet.MonoGame.Sprites
     /// </summary>
 	public class TexturePackerSprite : ISprite
 	{
+        public float Width => width;
+        public float Height => height;
+
         private static readonly float SpriteAtlasRotation = MathHelper.ToRadians(-90);
 
         public Texture2D texture;
