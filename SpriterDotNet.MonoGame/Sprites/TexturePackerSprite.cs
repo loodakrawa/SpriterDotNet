@@ -1,10 +1,10 @@
-﻿// Copyright (c) 2015 The original author or authors
+﻿// Copyright (C) The original author or authors
 //
 // This software may be modified and distributed under the terms
 // of the zlib license.  See the LICENSE file for details.
 
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 
 namespace SpriterDotNet.MonoGame.Sprites
@@ -13,21 +13,21 @@ namespace SpriterDotNet.MonoGame.Sprites
     /// A drawable wrapper for a texture region created with TexturePacker
     /// </summary>
 	public class TexturePackerSprite : ISprite
-	{
+    {
         public float Width => width;
         public float Height => height;
 
         private static readonly float SpriteAtlasRotation = MathHelper.ToRadians(-90);
 
         public Texture2D texture;
-		public Rectangle sourceRectangle;
-		public int width;
-		public int height;
-		public bool rotated;
-		public float trimLeft;
-		public float trimRight;
-		public float trimTop;
-		public float trimBottom;
+        public Rectangle sourceRectangle;
+        public int width;
+        public int height;
+        public bool rotated;
+        public float trimLeft;
+        public float trimRight;
+        public float trimTop;
+        public float trimBottom;
 
         public TexturePackerSprite(Texture2D texture, Rectangle sourceRectangle, int width, int height, bool rotated, float trimLeft, float trimRight, float trimTop, float trimBottom)
         {
@@ -63,7 +63,7 @@ namespace SpriterDotNet.MonoGame.Sprites
             float ox;
             float oy;
 
-            if(rotated)
+            if (rotated)
             {
                 ox = flipY ? y : fy;
                 oy = flipX ? fx : x;
