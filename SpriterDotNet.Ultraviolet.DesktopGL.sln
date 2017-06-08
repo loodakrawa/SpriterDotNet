@@ -1,0 +1,53 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SpriterDotNet", "SpriterDotNet\SpriterDotNet.shproj", "{7142D477-6358-443E-85EF-27C94DE0C7F4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpriterDotNet.Ultraviolet.Example.DesktopGL", "SpriterDotNet.Ultraviolet.Example.DesktopGL\SpriterDotNet.Ultraviolet.Example.DesktopGL.csproj", "{F6C64886-59BF-4DFD-AF10-53C1700EE20D}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SpriterDotNet.Ultraviolet", "SpriterDotNet.Ultraviolet\SpriterDotNet.Ultraviolet.shproj", "{19AAA647-6E9D-4FEF-9CD9-C6F96AD50E01}"
+EndProject
+Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		SpriterDotNet.Ultraviolet\SpriterDotNet.Ultraviolet.projitems*{19aaa647-6e9d-4fef-9cd9-c6f96ad50e01}*SharedItemsImports = 13
+		SpriterDotNet\SpriterDotNet.projitems*{7142d477-6358-443e-85ef-27c94de0c7f4}*SharedItemsImports = 13
+		SpriterDotNet.Ultraviolet\SpriterDotNet.Ultraviolet.projitems*{f6c64886-59bf-4dfd-af10-53c1700ee20d}*SharedItemsImports = 4
+		SpriterDotNet\SpriterDotNet.projitems*{f6c64886-59bf-4dfd-af10-53c1700ee20d}*SharedItemsImports = 4
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+		Signed|Any CPU = Signed|Any CPU
+		Signed|x64 = Signed|x64
+		Signed|x86 = Signed|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F6C64886-59BF-4DFD-AF10-53C1700EE20D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6C64886-59BF-4DFD-AF10-53C1700EE20D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6C64886-59BF-4DFD-AF10-53C1700EE20D}.Debug|x64.ActiveCfg = Debug|x64
+		{F6C64886-59BF-4DFD-AF10-53C1700EE20D}.Debug|x64.Build.0 = Debug|x64
+		{F6C64886-59BF-4DFD-AF10-53C1700EE20D}.Debug|x86.ActiveCfg = Debug|x86
+		{F6C64886-59BF-4DFD-AF10-53C1700EE20D}.Debug|x86.Build.0 = Debug|x86
+		{F6C64886-59BF-4DFD-AF10-53C1700EE20D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6C64886-59BF-4DFD-AF10-53C1700EE20D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F6C64886-59BF-4DFD-AF10-53C1700EE20D}.Release|x64.ActiveCfg = Release|x64
+		{F6C64886-59BF-4DFD-AF10-53C1700EE20D}.Release|x64.Build.0 = Release|x64
+		{F6C64886-59BF-4DFD-AF10-53C1700EE20D}.Release|x86.ActiveCfg = Release|x86
+		{F6C64886-59BF-4DFD-AF10-53C1700EE20D}.Release|x86.Build.0 = Release|x86
+		{F6C64886-59BF-4DFD-AF10-53C1700EE20D}.Signed|Any CPU.ActiveCfg = Signed|Any CPU
+		{F6C64886-59BF-4DFD-AF10-53C1700EE20D}.Signed|Any CPU.Build.0 = Signed|Any CPU
+		{F6C64886-59BF-4DFD-AF10-53C1700EE20D}.Signed|x64.ActiveCfg = Signed|x64
+		{F6C64886-59BF-4DFD-AF10-53C1700EE20D}.Signed|x64.Build.0 = Signed|x64
+		{F6C64886-59BF-4DFD-AF10-53C1700EE20D}.Signed|x86.ActiveCfg = Signed|x86
+		{F6C64886-59BF-4DFD-AF10-53C1700EE20D}.Signed|x86.Build.0 = Signed|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
