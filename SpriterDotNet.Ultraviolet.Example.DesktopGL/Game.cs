@@ -1,22 +1,25 @@
+// Copyright (C) The original author or authors
+//
+// This software may be modified and distributed under the terms
+// of the zlib license.  See the LICENSE file for details.
+
+using SpriterDotNet;
+using SpriterDotNet.Providers;
+using SpriterDotNet.Ultraviolet;
+using SpriterDotNet.Ultraviolet.Content;
 using System;
-using System.IO;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
-using UltravioletGame1.Input;
 using TwistedLogik.Nucleus;
 using TwistedLogik.Nucleus.Text;
 using TwistedLogik.Ultraviolet;
+using TwistedLogik.Ultraviolet.Audio;
 using TwistedLogik.Ultraviolet.Content;
 using TwistedLogik.Ultraviolet.Graphics.Graphics2D;
 using TwistedLogik.Ultraviolet.Graphics.Graphics2D.Text;
 using TwistedLogik.Ultraviolet.OpenGL;
-using TwistedLogik.Ultraviolet.Platform;
-using System.Collections.Generic;
-using SpriterDotNet;
-using SpriterDotNet.Ultraviolet;
-using System.Linq;
-using SpriterDotNet.Providers;
-using TwistedLogik.Ultraviolet.Audio;
-using SpriterDotNet.Ultraviolet.Content;
+using UltravioletGame1.Input;
 
 namespace UltravioletGame1
 {
@@ -69,7 +72,6 @@ namespace UltravioletGame1
 
         private ContentManager content;
 
-        private CursorCollection cursors;
         private SpriteFont spriteFont;
         private SpriteBatch spriteBatch;
         private TextRenderer textRenderer;
@@ -99,19 +101,9 @@ namespace UltravioletGame1
             return new OpenGLUltravioletContext(this, configuration);
         }
 
-        protected override void OnInitialized()
-        {
-            SetFileSourceFromManifestIfExists("UltravioletGame.Content.uvarc");
-
-            base.OnInitialized();
-        }
-
         protected override void OnLoadingContent()
         {
             content = ContentManager.Create("Content");
-
-            LoadLocalizationDatabases();
-            LoadCursors();
 
             spriteBatch = SpriteBatch.Create();
             spriteFont = content.Load<SpriteFont>("Fonts/SegoeUI");
@@ -143,25 +135,6 @@ namespace UltravioletGame1
             GC.Collect(2);
 
             base.OnLoadingContent();
-        }
-
-        protected void LoadLocalizationDatabases()
-        {
-            var fss = FileSystemService.Create();
-            var databases = content.GetAssetFilePathsInDirectory("Localization", "*.xml");
-            foreach (var database in databases)
-            {
-                using (var stream = fss.OpenRead(database))
-                {
-                    Localization.Strings.LoadFromStream(stream);
-                }
-            }
-        }
-
-        protected void LoadCursors()
-        {
-            cursors = content.Load<CursorCollection>("Cursors/Cursors");
-            Ultraviolet.GetPlatform().Cursor = cursors["Normal"];
         }
 
         protected override void OnUpdating(UltravioletTime time)
