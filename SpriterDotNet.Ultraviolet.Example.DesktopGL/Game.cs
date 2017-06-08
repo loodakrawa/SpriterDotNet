@@ -98,7 +98,14 @@ namespace UltravioletGame1
                 System.Diagnostics.Debug.WriteLine(message);
             };
 #endif
+            
             return new OpenGLUltravioletContext(this, configuration);
+        }
+
+        protected override void OnInitialized()
+        {
+            base.OnInitialized();
+            SynchronizeWithVerticalRetrace = false;
         }
 
         protected override void OnLoadingContent()
@@ -175,6 +182,12 @@ namespace UltravioletGame1
                 string entity = currentAnimator.Entity.Name;
                 status = string.Format("{0} : {1}", entity, currentAnimator.Name);
                 metadata = string.Format("Variables:\n{0}\nTags:\n", GetVarValues(), GetTagValues());
+
+                textFormatter.Reset();
+                textFormatter.AddArgument(Ultraviolet.GetGraphics().FrameRate);
+                textFormatter.AddArgument(GC.GetTotalMemory(false) / 1024);
+                textFormatter.AddArgument(Environment.Is64BitProcess ? "64-bit" : "32-bit");
+                textFormatter.Format("{0:decimals:2} FPS\nAllocated: {1:decimals:2} kb\n{2}", textBuffer);
             }
 
             base.OnUpdating(time);
@@ -182,12 +195,6 @@ namespace UltravioletGame1
 
         protected override void OnDrawing(UltravioletTime time)
         {
-            textFormatter.Reset();
-            textFormatter.AddArgument(Ultraviolet.GetGraphics().FrameRate);
-            textFormatter.AddArgument(GC.GetTotalMemory(false) / 1024);
-            textFormatter.AddArgument(Environment.Is64BitProcess ? "64-bit" : "32-bit");
-            textFormatter.Format("{0:decimals:2} FPS\nAllocated: {1:decimals:2} kb\n{2}", textBuffer);
-
             Size2 size = Ultraviolet.GetPlatform().Windows.GetCurrent().ClientSize;
 
             currentAnimator.Position = new Vector2(size.Width, size.Height) / 2;           
