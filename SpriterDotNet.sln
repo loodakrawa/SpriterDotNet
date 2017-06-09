@@ -1,0 +1,68 @@
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpriterDotNet.Example.MonoGame.DesktopGL", "SpriterDotNet.Example.MonoGame.DesktopGL\SpriterDotNet.Example.MonoGame.DesktopGL.csproj", "{8131DBF8-A78A-46FB-81F0-49AE47F4F492}"
+	ProjectSection(ProjectDependencies) = postProject
+		{6D91934F-B523-4207-A14A-ED8948CDB9D8} = {6D91934F-B523-4207-A14A-ED8948CDB9D8}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpriterDotNet.Example.MonoGame.WindowsDX", "SpriterDotNet.Example.MonoGame.WindowsDX\SpriterDotNet.Example.MonoGame.WindowsDX.csproj", "{9EA4C831-7243-402E-A0AA-A502E6E1549E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{6D91934F-B523-4207-A14A-ED8948CDB9D8} = {6D91934F-B523-4207-A14A-ED8948CDB9D8}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpriterDotNet.Example.MonoGame.Android", "SpriterDotNet.Example.MonoGame.Android\SpriterDotNet.Example.MonoGame.Android.csproj", "{5A245DF3-AA11-4F8A-A81F-CE85B9D6855F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{6D91934F-B523-4207-A14A-ED8948CDB9D8} = {6D91934F-B523-4207-A14A-ED8948CDB9D8}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpriterDotNet.MonoGame.Importer", "SpriterDotNet.MonoGame.Importer\SpriterDotNet.MonoGame.Importer.csproj", "{6D91934F-B523-4207-A14A-ED8948CDB9D8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpriterDotNet", "SpriterDotNet\SpriterDotNet.csproj", "{432AA78E-E0DB-4DE4-A4E8-DAE66DCEEACF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpriterDotNet.MonoGame", "SpriterDotNet.MonoGame\SpriterDotNet.MonoGame.csproj", "{10C1ED31-6945-4617-85AD-D2575550149D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpriterDotNet.Example.MonoGame", "SpriterDotNet.Example.MonoGame\SpriterDotNet.Example.MonoGame.csproj", "{088DCB79-28F7-4428-B416-0E096446C69F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{10C1ED31-6945-4617-85AD-D2575550149D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{10C1ED31-6945-4617-85AD-D2575550149D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{10C1ED31-6945-4617-85AD-D2575550149D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{10C1ED31-6945-4617-85AD-D2575550149D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6D91934F-B523-4207-A14A-ED8948CDB9D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6D91934F-B523-4207-A14A-ED8948CDB9D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6D91934F-B523-4207-A14A-ED8948CDB9D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6D91934F-B523-4207-A14A-ED8948CDB9D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8131DBF8-A78A-46FB-81F0-49AE47F4F492}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8131DBF8-A78A-46FB-81F0-49AE47F4F492}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8131DBF8-A78A-46FB-81F0-49AE47F4F492}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8131DBF8-A78A-46FB-81F0-49AE47F4F492}.Release|Any CPU.Build.0 = Release|Any CPU
+		{432AA78E-E0DB-4DE4-A4E8-DAE66DCEEACF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{432AA78E-E0DB-4DE4-A4E8-DAE66DCEEACF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{432AA78E-E0DB-4DE4-A4E8-DAE66DCEEACF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{432AA78E-E0DB-4DE4-A4E8-DAE66DCEEACF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{088DCB79-28F7-4428-B416-0E096446C69F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{088DCB79-28F7-4428-B416-0E096446C69F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{088DCB79-28F7-4428-B416-0E096446C69F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{088DCB79-28F7-4428-B416-0E096446C69F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9EA4C831-7243-402E-A0AA-A502E6E1549E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9EA4C831-7243-402E-A0AA-A502E6E1549E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9EA4C831-7243-402E-A0AA-A502E6E1549E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9EA4C831-7243-402E-A0AA-A502E6E1549E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5A245DF3-AA11-4F8A-A81F-CE85B9D6855F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A245DF3-AA11-4F8A-A81F-CE85B9D6855F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A245DF3-AA11-4F8A-A81F-CE85B9D6855F}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{5A245DF3-AA11-4F8A-A81F-CE85B9D6855F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A245DF3-AA11-4F8A-A81F-CE85B9D6855F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5A245DF3-AA11-4F8A-A81F-CE85B9D6855F}.Release|Any CPU.Deploy.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
