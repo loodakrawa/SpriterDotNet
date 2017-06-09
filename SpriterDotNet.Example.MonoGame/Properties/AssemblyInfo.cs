@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyTitle("SpriterDotNet.MonoGame.Example")]
+[assembly: AssemblyTitle("SpriterDotNet.Example.MonoGame")]
 [assembly: AssemblyVersion("1.5.0")]
 [assembly: AssemblyFileVersion("1.5.0")]
 [assembly: AssemblyInformationalVersion("1.5.0")]

@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 
 namespace SpriterDotNet.Example.MonoGame.Android
 {
-    [Activity(Label = "SpriterDotNet.MonoGame.Example.Android",
+    [Activity(Label = "SpriterDotNet.Example.MonoGame.Android",
            MainLauncher = true,
            Icon = "@drawable/icon",
            ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.KeyboardHidden
