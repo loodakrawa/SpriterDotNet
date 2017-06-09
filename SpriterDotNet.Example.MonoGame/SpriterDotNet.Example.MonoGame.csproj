@@ -1,15 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
-    <MinimumVisualStudioVersion>11.0</MinimumVisualStudioVersion>
+    <MinimumVisualStudioVersion>10.0</MinimumVisualStudioVersion>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{10C1ED31-6945-4617-85AD-D2575550149D}</ProjectGuid>
+    <ProjectGuid>{088DCB79-28F7-4428-B416-0E096446C69F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SpriterDotNet.MonoGame</RootNamespace>
-    <AssemblyName>SpriterDotNet.MonoGame</AssemblyName>
+    <RootNamespace>SpriterDotNet.Example.MonoGame</RootNamespace>
+    <AssemblyName>SpriterDotNet.Example.MonoGame</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -21,7 +21,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;PCL</DefineConstants>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -29,21 +29,20 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE;PCL</DefineConstants>
+    <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Box.cs" />
-    <Compile Include="ISprite.cs" />
-    <Compile Include="MonoGameAnimator.cs" />
+    <Compile Include="GameState.cs" />
+    <Compile Include="GameStateManager.cs" />
+    <Compile Include="LoadingState.cs" />
+    <Compile Include="MonoGameDebugAnimator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Content\SpriterTypeReader.cs" />
-    <Compile Include="Content\TexturePackerSheetTypeReader.cs" />
-    <Compile Include="Content\SpriterContentLoader.cs" />
-    <Compile Include="SpriteDrawInfo.cs" />
-    <Compile Include="Sprites\TextureSprite.cs" />
-    <Compile Include="Sprites\TexturePackerSprite.cs" />
+    <Compile Include="SpriterGame.cs" />
+    <Compile Include="SpriterGameState.cs" />
+    <Compile Include="Stats.cs" />
+    <Compile Include="TextureUtil.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework, Version=3.6.0.1625, Culture=neutral, processorArchitecture=MSIL">
@@ -53,20 +52,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\SpriterDotNet.MonoGame\SpriterDotNet.MonoGame.csproj">
+      <Project>{10c1ed31-6945-4617-85ad-d2575550149d}</Project>
+      <Name>SpriterDotNet.MonoGame</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SpriterDotNet\SpriterDotNet.csproj">
       <Project>{432aa78e-e0db-4de4-a4e8-dae66dceeacf}</Project>
       <Name>SpriterDotNet</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>
