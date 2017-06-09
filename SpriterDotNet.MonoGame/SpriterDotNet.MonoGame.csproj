@@ -54,7 +54,12 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <Import Project="..\SpriterDotNet\SpriterDotNet.projitems" Label="Shared" />
+  <ItemGroup>
+    <ProjectReference Include="..\SpriterDotNet\SpriterDotNet.csproj">
+      <Project>{432aa78e-e0db-4de4-a4e8-dae66dceeacf}</Project>
+      <Name>SpriterDotNet</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

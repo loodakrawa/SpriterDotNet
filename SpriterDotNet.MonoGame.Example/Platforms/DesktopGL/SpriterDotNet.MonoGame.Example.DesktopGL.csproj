@@ -113,6 +113,10 @@
       <Project>{10c1ed31-6945-4617-85ad-d2575550149d}</Project>
       <Name>SpriterDotNet.MonoGame</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\SpriterDotNet\SpriterDotNet.csproj">
+      <Project>{432aa78e-e0db-4de4-a4e8-dae66dceeacf}</Project>
+      <Name>SpriterDotNet</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="..\..\SpriterDotNet.MonoGame.Example.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
