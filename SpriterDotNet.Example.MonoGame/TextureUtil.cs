@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 
-namespace SpriterDotNet.MonoGame.Example
+namespace SpriterDotNet.Example.MonoGame
 {
     public static class TextureUtil
     {

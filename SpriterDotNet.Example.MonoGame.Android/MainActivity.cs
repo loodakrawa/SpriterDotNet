@@ -4,7 +4,7 @@ using Android.OS;
 using Android.Content.PM;
 using Microsoft.Xna.Framework;
 
-namespace SpriterDotNet.MonoGame.Example.Android
+namespace SpriterDotNet.Example.MonoGame.Android
 {
     [Activity(Label = "SpriterDotNet.MonoGame.Example.Android",
            MainLauncher = true,

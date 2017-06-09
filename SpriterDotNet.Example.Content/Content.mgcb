@@ -10,7 +10,8 @@
 
 #-------------------------------- References --------------------------------#
 
-/reference:..\..\SpriterDotNet.MonoGame.Importer\bin\Debug\SpriterDotNet.MonoGame.Importer.dll
+/reference:..\SpriterDotNet.MonoGame.Importer\bin\Debug\SpriterDotNet.MonoGame.Importer.dll
+/reference:..\SpriterDotNet.MonoGame.Importer\bin\Release\SpriterDotNet.MonoGame.Importer.dll
 
 #---------------------------------- Content ---------------------------------#
 

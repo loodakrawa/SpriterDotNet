@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using System;
 
-namespace SpriterDotNet.MonoGame.Example
+namespace SpriterDotNet.Example.MonoGame
 {
     public class SpriterGame : Game
     {

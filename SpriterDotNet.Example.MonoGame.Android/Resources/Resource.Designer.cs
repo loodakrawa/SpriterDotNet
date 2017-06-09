@@ -9,9 +9,9 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: global::Android.Runtime.ResourceDesignerAttribute("SpriterDotNet.MonoGame.Example.Android.Resource", IsApplication=true)]
+[assembly: global::Android.Runtime.ResourceDesignerAttribute("SpriterDotNet.Example.MonoGame.Android.Resource", IsApplication=true)]
 
-namespace SpriterDotNet.MonoGame.Example.Android
+namespace SpriterDotNet.Example.MonoGame.Android
 {
 	
 	

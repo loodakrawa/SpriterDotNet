@@ -6,10 +6,11 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
+using SpriterDotNet.MonoGame;
 using System;
 using System.Collections.Generic;
 
-namespace SpriterDotNet.MonoGame.Example
+namespace SpriterDotNet.Example.MonoGame
 {
     public class MonoGameDebugAnimator : MonoGameAnimator
     {

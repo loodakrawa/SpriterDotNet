@@ -7,8 +7,8 @@
     <ProjectTypeGuids>{EFBA0AD7-5A72-4C68-AF49-83D382785DCF};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SpriterDotNet.MonoGame.Example.Android</RootNamespace>
-    <AssemblyName>SpriterDotNet.MonoGame.Example.Android</AssemblyName>
+    <RootNamespace>SpriterDotNet.Example.MonoGame.Android</RootNamespace>
+    <AssemblyName>SpriterDotNet.Example.MonoGame.Android</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <AndroidApplication>true</AndroidApplication>
     <AndroidResgenFile>Resources\Resource.Designer.cs</AndroidResgenFile>
@@ -39,7 +39,7 @@
   <ItemGroup>
     <Reference Include="Mono.Android" />
     <Reference Include="MonoGame.Framework, Version=3.6.0.1625, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\MonoGame.Framework.Android.3.6.0.1625\lib\MonoAndroid\MonoGame.Framework.dll</HintPath>
+      <HintPath>..\packages\MonoGame.Framework.Android.3.6.0.1625\lib\MonoAndroid\MonoGame.Framework.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="mscorlib" />
@@ -54,7 +54,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <MonoGameContentReference Include="..\..\Content\Content.mgcb">
+    <MonoGameContentReference Include="..\SpriterDotNet.Example.Content\Content.mgcb">
       <Link>Content\Content.mgcb</Link>
     </MonoGameContentReference>
     <None Include="packages.config" />
@@ -73,16 +73,19 @@
     <None Include="Properties\AndroidManifest.xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\SpriterDotNet.MonoGame\SpriterDotNet.MonoGame.csproj">
+    <ProjectReference Include="..\SpriterDotNet.Example.MonoGame\SpriterDotNet.Example.MonoGame.csproj">
+      <Project>{088dcb79-28f7-4428-b416-0e096446c69f}</Project>
+      <Name>SpriterDotNet.Example.MonoGame</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SpriterDotNet.MonoGame\SpriterDotNet.MonoGame.csproj">
       <Project>{10c1ed31-6945-4617-85ad-d2575550149d}</Project>
       <Name>SpriterDotNet.MonoGame</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\SpriterDotNet\SpriterDotNet.csproj">
+    <ProjectReference Include="..\SpriterDotNet\SpriterDotNet.csproj">
       <Project>{432aa78e-e0db-4de4-a4e8-dae66dceeacf}</Project>
       <Name>SpriterDotNet</Name>
     </ProjectReference>
   </ItemGroup>
-  <Import Project="..\..\SpriterDotNet.Monogame.Example.projitems" Label="Shared" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />
 </Project>
