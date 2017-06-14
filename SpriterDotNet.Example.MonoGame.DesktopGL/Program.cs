@@ -12,7 +12,7 @@ namespace SpriterDotNet.Example.MonoGame.DesktopGL
         [STAThread]
         static void Main()
         {
-            using (SpriterGame game = new SpriterGame())
+            using (ExampleGame game = new ExampleGame())
             {
                 game.Run();
             }

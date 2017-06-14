@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SpriterDotNet.Example\SpriterDotNet.Example.csproj" />
     <ProjectReference Include="..\SpriterDotNet.MonoGame\SpriterDotNet.MonoGame.csproj" />
     <ProjectReference Include="..\SpriterDotNet\SpriterDotNet.csproj" />
   </ItemGroup>

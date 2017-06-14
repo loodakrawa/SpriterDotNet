@@ -1,7 +1,7 @@
 using TwistedLogik.Ultraviolet;
 using TwistedLogik.Ultraviolet.Input;
 
-namespace UltravioletGame1.Input
+namespace SpriterDotNet.Example.Ultraviolet.DesktopGL
 {
     public sealed class GameInputActions : InputActionCollection
     {
@@ -29,8 +29,8 @@ namespace UltravioletGame1.Input
         public InputAction FlipX { get; private set; }
         public InputAction FlipY { get; private set; }
         public InputAction DrawOutlines { get; private set; }
+        public InputAction ToggleVSync { get; private set; }
 
-        
         protected override void OnCreatingActions()
         {
             SwitchEntity = CreateAction("SwitchEntity");
@@ -53,6 +53,7 @@ namespace UltravioletGame1.Input
             FlipX = CreateAction("FlipX");
             FlipY = CreateAction("FlipY");
             DrawOutlines = CreateAction("DrawOutlines");
+            ToggleVSync = CreateAction("ToggleVSync");
 
             base.OnCreatingActions();
         }
@@ -79,6 +80,7 @@ namespace UltravioletGame1.Input
             FlipX.Primary = CreateKeyboardBinding(Key.F);
             FlipY.Primary = CreateKeyboardBinding(Key.G);
             DrawOutlines.Primary = CreateKeyboardBinding(Key.BackQuote);
+            ToggleVSync.Primary = CreateKeyboardBinding(Key.Minus);
 
             base.OnResetting();
         }

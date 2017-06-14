@@ -17,7 +17,7 @@ namespace SpriterDotNet.Example.MonoGame.Android
         {
             base.OnCreate(bundle);
 
-            var g = new SpriterGame();
+            var g = new ExampleGame();
             SetContentView((View)g.Services.GetService(typeof(View)));
             g.Run();
         }

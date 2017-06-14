@@ -9,7 +9,7 @@ namespace SpriterDotNet.Example.Ultraviolet.DesktopGL
     {
         public static void Main(string[] args)
         {
-            using (var game = new Game())
+            using (var game = new ExampleGame())
             {
                 game.Run();
             }

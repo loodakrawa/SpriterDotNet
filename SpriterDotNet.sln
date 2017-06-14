@@ -28,6 +28,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpriterDotNet.Example.MonoG
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpriterDotNet.MonoGame.Importer", "SpriterDotNet.MonoGame.Importer\SpriterDotNet.MonoGame.Importer.csproj", "{6E0F244E-A147-4368-8712-7FFB59C8596A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpriterDotNet.Example", "SpriterDotNet.Example\SpriterDotNet.Example.csproj", "{F706B894-18B2-40D8-8A01-775F216EE3D0}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		SpriterDotNet.Ultraviolet\SpriterDotNet.Ultraviolet.projitems*{f6c64886-59bf-4dfd-af10-53c1700ee20d}*SharedItemsImports = 4
@@ -71,6 +73,10 @@ Global
 		{6E0F244E-A147-4368-8712-7FFB59C8596A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6E0F244E-A147-4368-8712-7FFB59C8596A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6E0F244E-A147-4368-8712-7FFB59C8596A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F706B894-18B2-40D8-8A01-775F216EE3D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F706B894-18B2-40D8-8A01-775F216EE3D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F706B894-18B2-40D8-8A01-775F216EE3D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F706B894-18B2-40D8-8A01-775F216EE3D0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

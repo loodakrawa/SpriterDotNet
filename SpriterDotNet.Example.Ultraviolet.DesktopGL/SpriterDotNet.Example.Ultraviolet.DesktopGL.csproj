@@ -170,9 +170,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Game.cs" />
-    <Compile Include="Input\GameInputActions.cs" />
-    <Compile Include="Input\IUltravioletInputExtensions.cs" />
+    <Compile Include="ExampleGame.cs" />
+    <Compile Include="GameInputActions.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -194,6 +193,10 @@
     <Content Include="uv.ico" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\SpriterDotNet.Example\SpriterDotNet.Example.csproj">
+      <Project>{f706b894-18b2-40d8-8a01-775f216ee3d0}</Project>
+      <Name>SpriterDotNet.Example</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SpriterDotNet\SpriterDotNet.csproj">
       <Project>{432aa78e-e0db-4de4-a4e8-dae66dceeacf}</Project>
       <Name>SpriterDotNet</Name>
