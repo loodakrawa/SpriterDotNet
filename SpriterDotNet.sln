@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.13
+VisualStudioVersion = 15.0.26430.6
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpriterDotNet.Example.MonoGame.DesktopGL", "SpriterDotNet.Example.MonoGame.DesktopGL\SpriterDotNet.Example.MonoGame.DesktopGL.csproj", "{8131DBF8-A78A-46FB-81F0-49AE47F4F492}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -28,10 +28,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpriterDotNet.Example.MonoG
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpriterDotNet.MonoGame.Importer", "SpriterDotNet.MonoGame.Importer\SpriterDotNet.MonoGame.Importer.csproj", "{6E0F244E-A147-4368-8712-7FFB59C8596A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpriterDotNet.Example", "SpriterDotNet.Example\SpriterDotNet.Example.csproj", "{F706B894-18B2-40D8-8A01-775F216EE3D0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpriterDotNet.Example", "SpriterDotNet.Example\SpriterDotNet.Example.csproj", "{F706B894-18B2-40D8-8A01-775F216EE3D0}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SpriterDotNet.Ultraviolet", "SpriterDotNet.Ultraviolet\SpriterDotNet.Ultraviolet.shproj", "{19AAA647-6E9D-4FEF-9CD9-C6F96AD50E01}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		SpriterDotNet.Ultraviolet\SpriterDotNet.Ultraviolet.projitems*{19aaa647-6e9d-4fef-9cd9-c6f96ad50e01}*SharedItemsImports = 13
 		SpriterDotNet.Ultraviolet\SpriterDotNet.Ultraviolet.projitems*{f6c64886-59bf-4dfd-af10-53c1700ee20d}*SharedItemsImports = 4
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
