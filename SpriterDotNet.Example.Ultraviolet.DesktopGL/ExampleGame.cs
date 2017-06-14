@@ -47,13 +47,13 @@ namespace SpriterDotNet.Example.Ultraviolet.DesktopGL
         public ExampleGame() : base("loodakrawa", "SpriterDotNet.Example")
         {
             IsFixedTimeStep = false;
-            SynchronizeWithVerticalRetrace = true;
         }
 
         protected override UltravioletContext OnCreatingUltravioletContext()
         {
             var configuration = new OpenGLUltravioletConfiguration();
             PopulateConfiguration(configuration);
+
 
 #if DEBUG
             configuration.Debug = true;
@@ -69,7 +69,9 @@ namespace SpriterDotNet.Example.Ultraviolet.DesktopGL
 
         protected override void OnInitialized()
         {
-            base.OnInitialized();          
+            base.OnInitialized();
+
+            SynchronizeWithVerticalRetrace = true;
         }
 
         protected override void OnLoadingContent()
