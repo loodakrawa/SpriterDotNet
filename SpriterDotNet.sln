@@ -4,18 +4,27 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 15.0.26430.13
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpriterDotNet.Example.MonoGame.DesktopGL", "SpriterDotNet.Example.MonoGame.DesktopGL\SpriterDotNet.Example.MonoGame.DesktopGL.csproj", "{8131DBF8-A78A-46FB-81F0-49AE47F4F492}"
+	ProjectSection(ProjectDependencies) = postProject
+		{6E0F244E-A147-4368-8712-7FFB59C8596A} = {6E0F244E-A147-4368-8712-7FFB59C8596A}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpriterDotNet.Example.MonoGame.WindowsDX", "SpriterDotNet.Example.MonoGame.WindowsDX\SpriterDotNet.Example.MonoGame.WindowsDX.csproj", "{9EA4C831-7243-402E-A0AA-A502E6E1549E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{6E0F244E-A147-4368-8712-7FFB59C8596A} = {6E0F244E-A147-4368-8712-7FFB59C8596A}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpriterDotNet.Example.MonoGame.Android", "SpriterDotNet.Example.MonoGame.Android\SpriterDotNet.Example.MonoGame.Android.csproj", "{5A245DF3-AA11-4F8A-A81F-CE85B9D6855F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{6E0F244E-A147-4368-8712-7FFB59C8596A} = {6E0F244E-A147-4368-8712-7FFB59C8596A}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpriterDotNet.Example.Ultraviolet.DesktopGL", "SpriterDotNet.Example.Ultraviolet.DesktopGL\SpriterDotNet.Example.Ultraviolet.DesktopGL.csproj", "{F6C64886-59BF-4DFD-AF10-53C1700EE20D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpriterDotNet", "SpriterDotNet\SpriterDotNet.csproj", "{2AA3C3C6-97FA-4726-9BB6-D9AEA239891A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpriterDotNet", "SpriterDotNet\SpriterDotNet.csproj", "{2AA3C3C6-97FA-4726-9BB6-D9AEA239891A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpriterDotNet.MonoGame", "SpriterDotNet.MonoGame\SpriterDotNet.MonoGame.csproj", "{A70EC332-A533-40B0-A6B2-36F158789F30}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpriterDotNet.MonoGame", "SpriterDotNet.MonoGame\SpriterDotNet.MonoGame.csproj", "{A70EC332-A533-40B0-A6B2-36F158789F30}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpriterDotNet.Example.MonoGame", "SpriterDotNet.Example.MonoGame\SpriterDotNet.Example.MonoGame.csproj", "{18F6A6E0-32A3-445C-8AE3-CED4B6236285}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpriterDotNet.Example.MonoGame", "SpriterDotNet.Example.MonoGame\SpriterDotNet.Example.MonoGame.csproj", "{18F6A6E0-32A3-445C-8AE3-CED4B6236285}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpriterDotNet.MonoGame.Importer", "SpriterDotNet.MonoGame.Importer\SpriterDotNet.MonoGame.Importer.csproj", "{6E0F244E-A147-4368-8712-7FFB59C8596A}"
 EndProject
