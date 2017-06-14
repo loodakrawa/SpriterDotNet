@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using System;
 using System.Xml.Serialization;
 using System.Xml;
+using System.Reflection;
 
 namespace SpriterDotNet.MonoGame.Importer
 {
@@ -85,7 +86,7 @@ namespace SpriterDotNet.MonoGame.Importer
 
 		public override bool CanConvert(Type objectType)
 		{
-			return typeof(T).IsAssignableFrom(objectType);
+			return typeof(T).GetTypeInfo().IsAssignableFrom(objectType.GetTypeInfo());
 		}
 
 		public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)

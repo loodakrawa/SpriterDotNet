@@ -10,14 +10,18 @@
 
 #-------------------------------- References --------------------------------#
 
-/reference:..\SpriterDotNet.MonoGame.Importer\bin\Debug\SpriterDotNet.MonoGame.Importer.dll
-/reference:..\SpriterDotNet.MonoGame.Importer\bin\Release\SpriterDotNet.MonoGame.Importer.dll
+/reference:Lib\Newtonsoft.Json.dll
+/reference:Lib\System.IO.FileSystem.dll
+/reference:Lib\System.Xml.ReaderWriter.dll
+/reference:..\SpriterDotNet.MonoGame.Importer\bin\Debug\netstandard1.4\SpriterDotNet.MonoGame.Importer.dll
+/reference:..\SpriterDotNet.MonoGame.Importer\bin\Release\netstandard1.4\SpriterDotNet.MonoGame.Importer.dll
 
 #---------------------------------- Content ---------------------------------#
 
 #begin Status.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
 /processorParam:TextureFormat=Compressed
 /build:Status.spritefont
 
