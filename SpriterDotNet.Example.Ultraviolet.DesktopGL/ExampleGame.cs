@@ -53,17 +53,7 @@ namespace SpriterDotNet.Example.Ultraviolet.DesktopGL
         {
             var configuration = new OpenGLUltravioletConfiguration();
             PopulateConfiguration(configuration);
-
-
-#if DEBUG
-            configuration.Debug = true;
-            configuration.DebugLevels = DebugLevels.Error | DebugLevels.Warning;
-            configuration.DebugCallback = (uv, level, message) =>
-            {
-                Debug.WriteLine(message);
-            };
-#endif
-            
+           
             return new OpenGLUltravioletContext(this, configuration);
         }
 
