@@ -173,7 +173,6 @@
     <Compile Include="ExampleGame.cs" />
     <Compile Include="GameInputActions.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -201,6 +200,9 @@
       <Project>{432aa78e-e0db-4de4-a4e8-dae66dceeacf}</Project>
       <Name>SpriterDotNet</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
   </ItemGroup>
   <Import Project="..\SpriterDotNet.Ultraviolet\SpriterDotNet.Ultraviolet.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

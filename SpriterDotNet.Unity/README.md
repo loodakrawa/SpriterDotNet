@@ -1,5 +1,7 @@
 # SpriterDotNet.Unity #
 
+**The SpriterDotNet.Unity development is on hold until Unity adds support for .NET Standard. Hopefully that's going to happen when .NET Standard 2.0 comes out.**
+
 ## Installation ##
 
 The easiest way to install SpriterDotNet.Unity is by importing the appropriate .unitypackage.
