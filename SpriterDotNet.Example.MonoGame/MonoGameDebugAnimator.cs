@@ -30,7 +30,7 @@ namespace SpriterDotNet.Example.MonoGame
             Stack<SpriteDrawInfo> drawInfoPool = null
         ) : base(entity, providerFactory, drawInfoPool)
         {
-            whiteDot = TextureUtil.CreateRectangle(graphicsDevice, 1, 1, Color.White);
+            whiteDot = CreateTexture(graphicsDevice, 1, 1, Color.White);
         }
 
         protected override void ApplySpriteTransform(ISprite drawable, SpriterObject info)
@@ -87,6 +87,17 @@ namespace SpriterDotNet.Example.MonoGame
             Rectangle rec = new Rectangle((int)start.X, (int)start.Y, (int)edge.Length(), 1);
 
             batch.Draw(whiteDot, rec, null, DebugColor, angle, new Vector2(0, 0), SpriteEffects.None, 0);
+        }
+
+        private Texture2D CreateTexture(GraphicsDevice graphics, int width, int height, Color color)
+        {
+            Texture2D rect = new Texture2D(graphics, width, height);
+
+            Color[] data = new Color[width * height];
+            for (int i = 0; i < data.Length; ++i) data[i] = color;
+            rect.SetData(data);
+
+            return rect;
         }
     }
 }

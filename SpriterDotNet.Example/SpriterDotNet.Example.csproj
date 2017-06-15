@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Xml.XmlSerializer" Version="4.3.0" />
+    <ProjectReference Include="..\SpriterDotNet\SpriterDotNet.csproj" />
   </ItemGroup>
 
 </Project>

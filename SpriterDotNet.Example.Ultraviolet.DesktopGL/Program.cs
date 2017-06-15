@@ -3,16 +3,13 @@
 // This software may be modified and distributed under the terms
 // of the zlib license.  See the LICENSE file for details.
 
-using System;
-
-namespace SpriterDotNet.Example.MonoGame.WindowsDX
+namespace SpriterDotNet.Example.Ultraviolet.DesktopGL
 {
-    public static class Program
+    public class Program
     {
-        [STAThread]
-        static void Main()
+        public static void Main(string[] args)
         {
-            using (ExampleGame game = new ExampleGame())
+            using (var game = new ExampleGame())
             {
                 game.Run();
             }
