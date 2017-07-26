@@ -3,15 +3,16 @@
   <PropertyGroup>
     <TargetFramework>netstandard1.0</TargetFramework>
     <PackageTargetFallback>$(PackageTargetFallback);portable-win8+net45+wpa81</PackageTargetFallback>
-    <Version>1.6.0</Version>
+    <Version>1.6.1</Version>
     <Authors>Luka "loodakrawa" Sverko</Authors>
-    <Description>A simple, fast and efficient Spriter implementation in pure C#</Description>
-    <Copyright>Copyright (C) Luka "loodakrawa" Sverko</Copyright>
+    <Description>SpriterDotNet MonoGame implementation.</Description>
+    <Copyright>Copyright (C) 2017</Copyright>
     <PackageTags>Spriter MonoGame</PackageTags>
     <PackageProjectUrl></PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/loodakrawa/SpriterDotNet/blob/develop/LICENSE</PackageLicenseUrl>
     <RepositoryUrl>https://github.com/loodakrawa/SpriterDotNet</RepositoryUrl>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Company />
   </PropertyGroup>
 
   <ItemGroup>
