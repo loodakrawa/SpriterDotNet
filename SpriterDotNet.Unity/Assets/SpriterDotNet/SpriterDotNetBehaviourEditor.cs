@@ -15,7 +15,7 @@ namespace SpriterDotNetUnity
     [CustomEditor(typeof(SpriterDotNetBehaviour))]
     public class SpriterDotNetBehaviourEditor : Editor
     {
-        string[] GetSortingLayerNames()
+        private string[] GetSortingLayerNames()
         {
             Type internalEditorUtilityType = typeof(InternalEditorUtility);
             PropertyInfo sortingLayersProperty = internalEditorUtilityType.GetProperty("sortingLayerNames", BindingFlags.Static | BindingFlags.NonPublic);

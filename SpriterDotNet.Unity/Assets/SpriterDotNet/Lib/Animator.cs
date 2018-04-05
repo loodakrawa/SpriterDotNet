@@ -90,7 +90,7 @@ namespace SpriterDotNet
         public IAssetProvider<TSound> SoundProvider { get; set; }
 
         /// <summary>
-        /// The latest FrameData
+        /// The latest FrameData.
         /// </summary>
         public FrameData FrameData { get; protected set; }
 
@@ -106,7 +106,7 @@ namespace SpriterDotNet
             Animations = entity.Animations.ToDictionary(a => a.Name, a => a);
             Speed = 1.0f;
 
-            if(providerFactory != null)
+            if (providerFactory != null)
             {
                 DataProvider = providerFactory.GetDataProvider(entity);
                 SpriteProvider = providerFactory.GetSpriteProvider(entity);

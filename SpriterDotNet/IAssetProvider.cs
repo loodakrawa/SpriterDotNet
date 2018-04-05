@@ -30,22 +30,22 @@ namespace SpriterDotNet
         void Set(int folderId, int fileId, T asset);
 
         /// <summary>
-        /// Swaps one asset with another
+        /// Swaps one asset with another.
         /// </summary>
         void Swap(T original, T replacement);
 
         /// <summary>
-        /// Removes a asset swap
+        /// Removes a asset swap.
         /// </summary>
         void Unswap(T original);
 
         /// <summary>
-        /// Applies the provided character map
+        /// Applies the provided character map.
         /// </summary>
         void PushCharMap(SpriterCharacterMap charMap);
 
         /// <summary>
-        /// Removes the top character map
+        /// Removes the top character map.
         /// </summary>
         void PopCharMap();
     }

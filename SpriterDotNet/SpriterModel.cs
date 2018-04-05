@@ -19,8 +19,8 @@ namespace SpriterDotNet
         [XmlArray("tag_list"), XmlArrayItem("i")]
         public SpriterElement[] Tags;
 
-		[XmlArray("atlas"), XmlArrayItem("i")]
-		public SpriterElement[] Atlases;
+        [XmlArray("atlas"), XmlArrayItem("i")]
+        public SpriterElement[] Atlases;
     }
 
     public class SpriterFolder : SpriterElement
@@ -28,13 +28,13 @@ namespace SpriterDotNet
         [XmlElement("file")]
         public SpriterFile[] Files;
 
-		[XmlAttribute("atlas")]
-		public int AtlasId;
+        [XmlAttribute("atlas")]
+        public int AtlasId;
 
-		public SpriterFolder()
-		{
-			AtlasId = -1;
-		}
+        public SpriterFolder()
+        {
+            AtlasId = -1;
+        }
     }
 
     public class SpriterFile : SpriterElement
