@@ -10,7 +10,7 @@ namespace SpriterDotNet.Helpers
     internal static class MathHelper
     {
         /// <summary>
-        /// Does a linear angle interpolation taking into account the spin
+        /// Does a linear angle interpolation taking into account the spin.
         /// </summary>
         public static float AngleLinear(float a, float b, int spin, float f)
         {
@@ -21,7 +21,7 @@ namespace SpriterDotNet.Helpers
         }
 
         /// <summary>
-        /// Does a linear angle interpolation towards the closest direction
+        /// Does a linear angle interpolation towards the closest direction.
         /// </summary>
         public static float CloserAngleLinear(float a, float b, float f)
         {

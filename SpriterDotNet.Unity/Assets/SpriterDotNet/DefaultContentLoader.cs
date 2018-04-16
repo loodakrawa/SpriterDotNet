@@ -14,8 +14,7 @@ namespace SpriterDotNetUnity
     {
         public virtual T Load<T>(string path) where T : UnityEngine.Object
         {
-            T asset;
-            asset = AssetDatabase.LoadAssetAtPath<T>(path);
+            var asset = AssetDatabase.LoadAssetAtPath<T>(path);
             if (asset == null) Debug.Log("Missing Asset: " + path);
 
             return asset;

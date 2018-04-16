@@ -16,9 +16,9 @@ namespace SpriterDotNetUnity
 
         public SdnFileEntry[] FileEntries;
 
-        public void OnEnable()
+        private void OnEnable()
         {
-            if(Spriter != null) new SpriterInitPreprocessor().Preprocess(Spriter);
+            if (Spriter != null) new SpriterInitPreprocessor().Preprocess(Spriter);
         }
     }
 

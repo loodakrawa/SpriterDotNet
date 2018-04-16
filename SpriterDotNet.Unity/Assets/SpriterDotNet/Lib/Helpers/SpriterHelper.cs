@@ -10,7 +10,7 @@ namespace SpriterDotNet.Helpers
     internal static class SpriterHelper
     {
         /// <summary>
-        /// Checks if the given Mainline keys are compatible for animation blending. 
+        /// Checks if the given Mainline keys are compatible for animation blending.
         /// Even if this method returns true there is no guarantee that the animations are really compatible.
         /// </summary>
         public static bool WillItBlend(SpriterMainlineKey firstKey, SpriterMainlineKey secondKey)

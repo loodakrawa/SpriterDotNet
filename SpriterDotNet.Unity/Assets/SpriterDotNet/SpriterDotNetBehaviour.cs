@@ -34,7 +34,8 @@ namespace SpriterDotNetUnity
         [HideInInspector]
         public int SortingOrder;
 
-        public float Ppu = 100;
+        [SerializeField]
+        private float Ppu = 100;
 
         [HideInInspector]
         public ChildData ChildData;
@@ -52,7 +53,7 @@ namespace SpriterDotNetUnity
 
         private string defaultTag;
 
-        public void Start()
+        private void Start()
         {
             SpriterEntity entity = SpriterData.Spriter.Entities[EntityIndex];
             AudioSource audioSource = gameObject.GetComponent<AudioSource>();
@@ -65,7 +66,7 @@ namespace SpriterDotNetUnity
             Animator.Update(0);
         }
 
-        public void Update()
+        private void Update()
         {
 #if UNITY_EDITOR
             if (!UnityEditor.EditorApplication.isPlayingOrWillChangePlaymode) return;

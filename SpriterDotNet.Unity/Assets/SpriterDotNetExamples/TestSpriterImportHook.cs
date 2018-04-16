@@ -13,7 +13,7 @@ using UnityEngine;
 namespace SpriterDotNetExamples
 {
     [InitializeOnLoad]
-    class TestSpriterImportHook
+    public class TestSpriterImportHook
     {
         static TestSpriterImportHook()
         {
@@ -27,7 +27,7 @@ namespace SpriterDotNetExamples
         }
     }
 
-    class CustomContentLoader : DefaultContentLoader
+    public class CustomContentLoader : DefaultContentLoader
     {
         public override T Load<T>(string path)
         {
@@ -35,7 +35,6 @@ namespace SpriterDotNetExamples
             return base.Load<T>(path);
         }
     }
-
 }
 
 #endif

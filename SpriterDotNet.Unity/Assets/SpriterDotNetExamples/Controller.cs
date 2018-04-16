@@ -14,18 +14,22 @@ using System.Text;
 
 public class Controller : MonoBehaviour
 {
-    public Text Text;
+    [SerializeField]
+    private Text Text;
 
-    public float MaxSpeed = 5.0f;
-    public float DeltaSpeed = 0.2f;
-    public float TransitionTime = 1.0f;
+    [SerializeField]
+    private float MaxSpeed = 5.0f;
+    [SerializeField]
+    private float DeltaSpeed = 0.2f;
+    [SerializeField]
+    private float TransitionTime = 1.0f;
 
     [HideInInspector]
     public float AnimatorSpeed = 1.0f;
 
     private UnityAnimator animator;
 
-    void Update()
+    private void Update()
     {
         if (animator == null)
         {
@@ -48,7 +52,7 @@ public class Controller : MonoBehaviour
         animator.Speed = AnimatorSpeed;
     }
 
-    void OnGUI()
+    private void OnGUI()
     {
         if (Text == null) return;
         Text.text = "Variables:\n" + GetVarValues() + "\nTags:\n" + GetTagValues();

@@ -10,7 +10,7 @@ namespace SpriterDotNet.Helpers
     internal static class DictionaryHelper
     {
         /// <summary>
-        /// Returns the existing value from the target dictionary for the given key. 
+        /// Returns the existing value from the target dictionary for the given key.
         /// If the key is not present, it instantiates the value, puts it in the dictionary and returns it.
         /// </summary>
         public static TValue GetOrCreate<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key) where TValue : class, new()

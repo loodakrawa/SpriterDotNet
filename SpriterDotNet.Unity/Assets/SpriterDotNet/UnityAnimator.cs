@@ -45,7 +45,7 @@ namespace SpriterDotNetUnity
 
             base.Animate(deltaTime);
 
-            while(index < childData.Sprites.Length)
+            while (index < childData.Sprites.Length)
             {
                 renderers[index].sprite = null;
                 childData.Sprites[index].SetActive(false);
@@ -58,7 +58,7 @@ namespace SpriterDotNetUnity
                 childData.BoxPivots[boxIndex].SetActive(false);
                 ++boxIndex;
             }
-            while(pointIndex < childData.Points.Length)
+            while (pointIndex < childData.Points.Length)
             {
                 childData.Points[pointIndex].SetActive(false);
                 ++pointIndex;

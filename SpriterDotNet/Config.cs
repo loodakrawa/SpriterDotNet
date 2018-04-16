@@ -13,16 +13,16 @@ namespace SpriterDotNet
         public bool MetadataEnabled { get; set; }
 
         public bool VarsEnabled { get; set; }
-        public bool TagsEnabled { get; set; } 
-        public bool EventsEnabled { get; set; } 
+        public bool TagsEnabled { get; set; }
+        public bool EventsEnabled { get; set; }
         public bool SoundsEnabled { get; set; }
 
         /// <summary>
-        /// Enables object pooling
+        /// Enables object pooling.
         /// </summary>
         public bool PoolingEnabled { get; set; }
 
-        public Config() 
+        public Config()
         {
             MetadataEnabled = true;
             VarsEnabled = true;
