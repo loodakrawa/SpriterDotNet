@@ -39,7 +39,12 @@ namespace SpriterDotNetUnity
 
         private static bool IsScml(string path)
         {
-            return ScmlExtensions.Any(path.EndsWith) && !path.EndsWith(AutosaveExtension);
+            return IsFile(path) && ScmlExtensions.Any(path.EndsWith) && !path.EndsWith(AutosaveExtension);
+        }
+
+        private static bool IsFile(string path)
+        {
+            return (File.GetAttributes(path) & FileAttributes.Directory) != FileAttributes.Directory;
         }
 
         private static void CreateSpriter(string path)
