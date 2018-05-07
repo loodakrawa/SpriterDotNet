@@ -126,7 +126,7 @@ namespace SpriterDotNetUnity
             sdnbExisting.SpriterData = sdnbNew.SpriterData;
             sdnbExisting.UseNativeTags = sdnbNew.UseNativeTags;
 
-            GameObject createdPrefab = PrefabUtility.ReplacePrefab(existing, prefab, ReplacePrefabOptions.Default);
+            GameObject createdPrefab = PrefabUtility.ReplacePrefab(existing, prefab, ReplacePrefabOptions.ReplaceNameBased);
             GameObject.DestroyImmediate(existing);
             return createdPrefab;
         }
