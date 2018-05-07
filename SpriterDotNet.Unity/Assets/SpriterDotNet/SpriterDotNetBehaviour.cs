@@ -29,7 +29,7 @@ namespace SpriterDotNetUnity
     public class SpriterDotNetBehaviour : MonoBehaviour
     {
         [HideInInspector]
-        public string SortingLayer;
+        public string SortingLayer = "Default";
 
         [HideInInspector]
         public int SortingOrder;
