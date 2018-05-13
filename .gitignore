@@ -8,7 +8,6 @@ x86/
 build/
 [Bb]in/
 [Oo]bj/
-packages/
 .vs/
 project.lock.json
 
@@ -23,7 +22,6 @@ Temp/
 # Specific
 SpriterDotNet.Unity/*.csproj
 SpriterDotNet.Unity/*.sln
-SpriterDotNet.Unity/ProjectSettings
 SpriterDotNet.Unity/Assets/SpriterDotNet/Lib/*.pdb
 SpriterDotNet.Unity/Assets/SpriterDotNet/Lib/*.pdb.meta
 !SpriterDotNet.Unity/Assets/SpriterDotNet/Lib/*.dll
