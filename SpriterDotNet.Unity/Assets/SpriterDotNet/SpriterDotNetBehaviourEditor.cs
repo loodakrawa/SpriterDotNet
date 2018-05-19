@@ -6,29 +6,22 @@
 #if UNITY_EDITOR
 
 using System;
-using System.Reflection;
+using System.Linq;
 using UnityEditor;
-using UnityEditorInternal;
+using UnityEngine;
 
 namespace SpriterDotNetUnity
 {
     [CustomEditor(typeof(SpriterDotNetBehaviour))]
     public class SpriterDotNetBehaviourEditor : Editor
     {
-        private string[] GetSortingLayerNames()
-        {
-            Type internalEditorUtilityType = typeof(InternalEditorUtility);
-            PropertyInfo sortingLayersProperty = internalEditorUtilityType.GetProperty("sortingLayerNames", BindingFlags.Static | BindingFlags.NonPublic);
-            return (string[])sortingLayersProperty.GetValue(null, new object[0]);
-        }
-
         public override void OnInspectorGUI()
         {
             DrawDefaultInspector();
 
             SpriterDotNetBehaviour sdnb = target as SpriterDotNetBehaviour;
 
-            string[] layers = GetSortingLayerNames();
+            string[] layers = SortingLayer.layers.Select(l => l.name).ToArray();
             int currentIndex = Array.IndexOf(layers, sdnb.SortingLayer);
             if (currentIndex < 0) currentIndex = 0;
             int choiceIndex = EditorGUILayout.Popup("Sorting Layer", currentIndex, layers);
