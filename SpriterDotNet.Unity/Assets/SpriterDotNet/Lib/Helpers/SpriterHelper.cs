@@ -46,7 +46,21 @@ namespace SpriterDotNet.Helpers
                 keyBId = 0;
             }
 
-            return keys[keyBId];
+            var nextKey = keys[keyBId];
+            if (firstKey.Time == nextKey.Time)
+            {
+                ++keyBId;
+                if (keyBId >= keys.Length)
+                {
+                    if (!looping) return null;
+                    keyBId = 0;
+                }
+                return keys[keyBId];
+            }
+            else
+            {
+                return nextKey;
+            }
         }
 
         /// <summary>
@@ -193,7 +207,7 @@ namespace SpriterDotNet.Helpers
         /// </summary>
         public static float AdjustTime(float targetTime, SpriterKey keyA, SpriterKey keyB, float animationLength)
         {
-            float nextTime = keyB.Time > keyA.Time ? keyB.Time : animationLength;
+            float nextTime = GetNextTime(keyA, keyB, animationLength);
             float factor = GetFactor(keyA, keyB, animationLength, targetTime);
             return MathHelper.Linear(keyA.Time, nextTime, factor);
         }
@@ -209,12 +223,35 @@ namespace SpriterDotNet.Helpers
             if (timeA > timeB)
             {
                 timeB += animationLength;
+                if (timeA == timeB)
+                {
+                    timeB += animationLength;
+                }
                 if (targetTime < timeA) targetTime += animationLength;
             }
 
             float factor = MathHelper.GetFactor(timeA, timeB, targetTime);
             factor = AdjustFactor(factor, keyA);
             return factor;
+        }
+
+        /// <summary>
+        /// Gets next time for the two keys based on relative keys timeline position.
+        /// </summary>
+        private static float GetNextTime(SpriterKey keyA, SpriterKey keyB, float animationLength)
+        {
+            if (keyA.Time < keyB.Time)
+            {
+                return keyB.Time;
+            }
+            else if (keyB.Time + animationLength == keyA.Time)
+            {
+                return keyA.Time + animationLength;
+            }
+            else
+            {
+                return animationLength;
+            }
         }
     }
 }

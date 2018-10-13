@@ -333,6 +333,13 @@ namespace SpriterDotNet
             int nextKey = keyA.Id + 1;
             if (nextKey >= keys.Length) nextKey = 0;
             keyB = keys[nextKey];
+            if (keyA.Time == keyB.Time)
+            {
+                ++nextKey;
+                if (nextKey >= keys.Length) nextKey = 0;
+                keyB = keys[nextKey];
+            }
+
         }
 
         protected virtual SpriterSpatial GetBoneInfo(SpriterRef spriterRef, SpriterAnimation animation, float targetTime)
