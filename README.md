@@ -2,6 +2,10 @@
 
 A simple, fast and efficient Spriter implementation in pure C#
 
+## Project Status ##
+
+The project has been slightly neglected lately due to life circumstances but I plan to make up for it soon (from June/July 2019 onwards) and fix all reported issues and implement version 2.0 with the development philosophy inspired by the fantastic [Handmade Hero](https://handmadehero.org/).
+
 ## About ##
 
 The goal of SpriterDotNet is to be as fast as possible while keeping the code clean and readable. 
