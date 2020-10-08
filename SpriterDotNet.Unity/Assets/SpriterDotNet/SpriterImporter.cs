@@ -28,6 +28,12 @@ namespace SpriterDotNetUnity
 
         public static IContentLoader ContentLoader = new DefaultContentLoader();
 
+        void OnPreprocessTexture()
+        {
+            TextureImporter textureImporter = (TextureImporter)assetImporter;
+            textureImporter.textureType = TextureImporterType.Sprite;
+        }
+
         private static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromPath)
         {
             foreach (string asset in importedAssets)
