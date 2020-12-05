@@ -96,6 +96,7 @@ namespace SpriterDotNet.Helpers
             child.ScaleY *= parent.ScaleY;
             child.Angle = parent.Angle + Math.Sign(parent.ScaleX * parent.ScaleY) * child.Angle;
             child.Angle %= 360.0f;
+            child.Alpha = parent.Alpha * child.Alpha;
         }
 
         /// <summary>
@@ -148,6 +149,7 @@ namespace SpriterDotNet.Helpers
             target.Y = MathHelper.Linear(a.Y, b.Y, factor);
             target.ScaleX = MathHelper.Linear(a.ScaleX, b.ScaleX, factor);
             target.ScaleY = MathHelper.Linear(a.ScaleY, b.ScaleY, factor);
+            target.Alpha = MathHelper.Linear(a.Alpha, b.Alpha, factor);
         }
 
         /// <summary>
