@@ -39,7 +39,7 @@ namespace SpriterDotNet.Providers
             {
                 KeyValuePair<int, int> mapping = CharMapValues[asset];
                 if (mapping.Key == folderId && mapping.Value == fileId) return asset;
-                return Get(mapping.Key, mapping.Value);
+                return GetAsset(mapping.Key, mapping.Value);
             }
 
             return SwappedAssets.ContainsKey(asset) ? SwappedAssets[asset] : asset;
