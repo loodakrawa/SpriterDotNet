@@ -9,6 +9,7 @@ using System;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
+using UnityEditor.SceneManagement;
 
 namespace SpriterDotNetUnity
 {
