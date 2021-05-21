@@ -9,6 +9,7 @@ using System;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
+using UnityEditor.SceneManagement;
 
 namespace SpriterDotNetUnity
 {
@@ -27,6 +28,12 @@ namespace SpriterDotNetUnity
             int choiceIndex = EditorGUILayout.Popup("Sorting Layer", currentIndex, layers);
             sdnb.SortingLayer = layers[choiceIndex];
             sdnb.SortingOrder = EditorGUILayout.IntField("Sorting Order", sdnb.SortingOrder);
+			
+			if (GUI.changed)
+            {
+                EditorUtility.SetDirty(sdnb);
+                EditorSceneManager.MarkSceneDirty(sdnb.gameObject.scene);
+            }
         }
     }
 }
