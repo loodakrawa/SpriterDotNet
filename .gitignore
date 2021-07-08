@@ -25,3 +25,4 @@ SpriterDotNet.Unity/*.sln
 SpriterDotNet.Unity/Assets/SpriterDotNet/Lib/*.pdb
 SpriterDotNet.Unity/Assets/SpriterDotNet/Lib/*.pdb.meta
 !SpriterDotNet.Unity/Assets/SpriterDotNet/Lib/*.dll
+/packages
