@@ -20,6 +20,10 @@ The most easy way of using SpriterDotNet.Unity with your own animations is the f
 * Drag and drop the generated .prefab to the scene (SpriterDotNet.Unity generates a prefab for each entity in the scml)
 * Drag and drop Controller.prefab to the scene
 * (Optional) Drag and drop Canvas.prefab to the scene to have on-screen instructions about key mappings
+* You can also load a Spriter entity from a local file to a new object at runtime (parent transform optional):
+  ```csharp
+  SpriterDotNetBehaviour newEntity = SpriterRuntimeImporter.CreateSpriter("path/to/your.scml", "entityName", parent);
+  ```
 
 **Note that the example Controller supports ony one prefab per scene. If you add multiples, it's only going to affect one of them.**
 
