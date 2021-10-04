@@ -3,8 +3,6 @@
 // This software may be modified and distributed under the terms
 // of the zlib license.  See the LICENSE file for details.
 
-#if UNITY_EDITOR
-
 using SpriterDotNet;
 using System;
 using System.Collections.Generic;
@@ -15,6 +13,7 @@ using UnityEngine;
 
 namespace SpriterDotNetUnity
 {
+#if UNITY_EDITOR
     public class SpriterImporter : AssetPostprocessor
     {
         private static readonly string AutosaveExtension = ".autosave.scml";
@@ -70,15 +69,15 @@ namespace SpriterDotNetUnity
 
                 SpriterDotNetBehaviour behaviour = go.AddComponent<SpriterDotNetBehaviour>();
                 behaviour.UseNativeTags = UseNativeTags;
-                if (HasSound(entity)) go.AddComponent<AudioSource>();
+                if (SpriterImporterUtil.HasSound(entity)) go.AddComponent<AudioSource>();
 
                 sprites.SetParent(go);
                 metadata.SetParent(go);
 
                 ChildData cd = new ChildData();
-                CreateSprites(entity, cd, spriter, sprites);
-                CreateCollisionRectangles(entity, cd, spriter, metadata);
-                CreatePoints(entity, cd, spriter, metadata);
+                SpriterImporterUtil.CreateSprites(entity, cd, sprites);
+                SpriterImporterUtil.CreateCollisionRectangles(entity, cd, metadata);
+                SpriterImporterUtil.CreatePoints(entity, cd, metadata);
 
                 behaviour.EntityIndex = entity.Id;
                 behaviour.enabled = true;
@@ -149,84 +148,6 @@ namespace SpriterDotNetUnity
             fromChild.localScale = Vector3.one;
         }
 
-        private static void CreateSprites(SpriterEntity entity, ChildData cd, Spriter spriter, GameObject parent)
-        {
-            int maxObjects = GetDrawablesCount(entity);
-
-            cd.Sprites = new GameObject[maxObjects];
-            cd.SpritePivots = new GameObject[maxObjects];
-            cd.SpriteTransforms = new Transform[maxObjects];
-            cd.SpritePivotTransforms = new Transform[maxObjects];
-
-            for (int i = 0; i < maxObjects; ++i)
-            {
-                GameObject pivot = new GameObject("Pivot " + i);
-                GameObject child = new GameObject("Sprite " + i);
-
-                pivot.SetParent(parent);
-                child.SetParent(pivot);
-
-                cd.SpritePivots[i] = pivot;
-                cd.Sprites[i] = child;
-                cd.SpritePivotTransforms[i] = pivot.transform;
-                cd.SpriteTransforms[i] = child.transform;
-
-                child.transform.localPosition = Vector3.zero;
-
-                child.AddComponent<SpriteRenderer>();
-            }
-        }
-
-        private static void CreateCollisionRectangles(SpriterEntity entity, ChildData cd, Spriter spriter, GameObject parent)
-        {
-            if (entity.ObjectInfos == null) return;
-            var boxes = entity.ObjectInfos.Where(o => o.ObjectType == SpriterObjectType.Box).ToList();
-            if (boxes.Count == 0) return;
-
-            GameObject boxRoot = new GameObject("Boxes");
-            boxRoot.SetParent(parent);
-
-            cd.BoxPivots = new GameObject[boxes.Count];
-            cd.Boxes = new GameObject[boxes.Count];
-            cd.BoxTransforms = new Transform[boxes.Count];
-            cd.BoxPivotTransforms = new Transform[boxes.Count];
-
-            for (int i = 0; i < boxes.Count; ++i)
-            {
-                GameObject pivot = new GameObject("Pivot " + i);
-                GameObject child = new GameObject("Box " + i);
-
-                pivot.SetParent(boxRoot);
-                child.SetParent(pivot);
-
-                cd.BoxPivots[i] = pivot;
-                cd.Boxes[i] = child;
-                cd.BoxPivotTransforms[i] = pivot.transform;
-                cd.BoxTransforms[i] = child.transform;
-
-                child.AddComponent<BoxCollider2D>();
-            }
-        }
-
-        private static void CreatePoints(SpriterEntity entity, ChildData cd, Spriter spriter, GameObject parent)
-        {
-            GameObject pointRoot = new GameObject("Points");
-            pointRoot.SetParent(parent);
-
-            int count = GetPointsCount(entity);
-
-            cd.Points = new GameObject[count];
-            cd.PointTransforms = new Transform[count];
-
-            for (int i = 0; i < count; ++i)
-            {
-                GameObject point = new GameObject("Point " + i);
-                point.SetParent(pointRoot);
-                cd.Points[i] = point;
-                cd.PointTransforms[i] = point.transform;
-            }
-        }
-
         private static IEnumerable<SdnFileEntry> LoadAssets(Spriter spriter, string rootFolder)
         {
             for (int i = 0; i < spriter.Folders.Length; ++i)
@@ -278,8 +199,95 @@ namespace SpriterDotNetUnity
             SerializedProperty newEntry = tags.GetArrayElementAtIndex(tags.arraySize - 1);
             newEntry.stringValue = value;
         }
+    }
+#endif
 
-        private static bool HasSound(SpriterEntity entity, HashSet<int> processedIds = null)
+    internal static class SpriterImporterUtil
+    {
+        public static void SetParent(this GameObject child, GameObject parent)
+        {
+            child.transform.SetParent(parent.transform);
+        }
+
+        internal static void CreateSprites(SpriterEntity entity, ChildData cd, GameObject parent)
+        {
+            int maxObjects = GetDrawablesCount(entity);
+
+            cd.Sprites = new GameObject[maxObjects];
+            cd.SpritePivots = new GameObject[maxObjects];
+            cd.SpriteTransforms = new Transform[maxObjects];
+            cd.SpritePivotTransforms = new Transform[maxObjects];
+
+            for (int i = 0; i < maxObjects; ++i)
+            {
+                GameObject pivot = new GameObject("Pivot " + i);
+                GameObject child = new GameObject("Sprite " + i);
+
+                pivot.SetParent(parent);
+                child.SetParent(pivot);
+
+                cd.SpritePivots[i] = pivot;
+                cd.Sprites[i] = child;
+                cd.SpritePivotTransforms[i] = pivot.transform;
+                cd.SpriteTransforms[i] = child.transform;
+
+                child.transform.localPosition = Vector3.zero;
+
+                child.AddComponent<SpriteRenderer>();
+            }
+        }
+
+        internal static void CreateCollisionRectangles(SpriterEntity entity, ChildData cd, GameObject parent)
+        {
+            if (entity.ObjectInfos == null) return;
+            var boxes = entity.ObjectInfos.Where(o => o.ObjectType == SpriterObjectType.Box).ToList();
+            if (boxes.Count == 0) return;
+
+            GameObject boxRoot = new GameObject("Boxes");
+            boxRoot.SetParent(parent);
+
+            cd.BoxPivots = new GameObject[boxes.Count];
+            cd.Boxes = new GameObject[boxes.Count];
+            cd.BoxTransforms = new Transform[boxes.Count];
+            cd.BoxPivotTransforms = new Transform[boxes.Count];
+
+            for (int i = 0; i < boxes.Count; ++i)
+            {
+                GameObject pivot = new GameObject("Pivot " + i);
+                GameObject child = new GameObject("Box " + i);
+
+                pivot.SetParent(boxRoot);
+                child.SetParent(pivot);
+
+                cd.BoxPivots[i] = pivot;
+                cd.Boxes[i] = child;
+                cd.BoxPivotTransforms[i] = pivot.transform;
+                cd.BoxTransforms[i] = child.transform;
+
+                child.AddComponent<BoxCollider2D>();
+            }
+        }
+
+        internal static void CreatePoints(SpriterEntity entity, ChildData cd, GameObject parent)
+        {
+            GameObject pointRoot = new GameObject("Points");
+            pointRoot.SetParent(parent);
+
+            int count = GetPointsCount(entity);
+
+            cd.Points = new GameObject[count];
+            cd.PointTransforms = new Transform[count];
+
+            for (int i = 0; i < count; ++i)
+            {
+                GameObject point = new GameObject("Point " + i);
+                point.SetParent(pointRoot);
+                cd.Points[i] = point;
+                cd.PointTransforms[i] = point.transform;
+            }
+        }
+
+        internal static bool HasSound(SpriterEntity entity, HashSet<int> processedIds = null)
         {
             if (processedIds == null) processedIds = new HashSet<int>();
             if (processedIds.Contains(entity.Id)) return false;
@@ -303,7 +311,7 @@ namespace SpriterDotNetUnity
             return false;
         }
 
-        private static int GetDrawablesCount(SpriterEntity entity)
+        internal static int GetDrawablesCount(SpriterEntity entity)
         {
             if (entity.Animations == null) return 0;
 
@@ -318,7 +326,7 @@ namespace SpriterDotNetUnity
             return drawablesCount;
         }
 
-        private static int GetDrawablesCount(SpriterAnimation animation)
+        internal static int GetDrawablesCount(SpriterAnimation animation)
         {
             if (animation.MainlineKeys == null) return 0;
 
@@ -333,7 +341,7 @@ namespace SpriterDotNetUnity
             return drawablesCount;
         }
 
-        private static int GetDrawablesCount(SpriterAnimation animation, SpriterMainlineKey key)
+        internal static int GetDrawablesCount(SpriterAnimation animation, SpriterMainlineKey key)
         {
             if (key.ObjectRefs == null) return 0;
 
@@ -361,7 +369,7 @@ namespace SpriterDotNetUnity
             return drawablesCount;
         }
 
-        private static int GetPointsCount(SpriterEntity entity)
+        internal static int GetPointsCount(SpriterEntity entity)
         {
             if (entity.Animations == null) return 0;
 
@@ -376,14 +384,4 @@ namespace SpriterDotNetUnity
             return count;
         }
     }
-
-    internal static class SpriterImporterUtil
-    {
-        public static void SetParent(this GameObject child, GameObject parent)
-        {
-            child.transform.SetParent(parent.transform);
-        }
-    }
 }
-
-#endif
