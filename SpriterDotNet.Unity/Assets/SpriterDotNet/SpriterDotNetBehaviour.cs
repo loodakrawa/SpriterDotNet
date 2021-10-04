@@ -23,6 +23,20 @@ namespace SpriterDotNetUnity
         public Transform[] BoxPivotTransforms;
         public Transform[] BoxTransforms;
         public Transform[] PointTransforms;
+
+        public void Verify()
+        {
+            if (SpritePivots == null) SpritePivots = new GameObject[0];
+            if (Sprites == null) Sprites = new GameObject[0];
+            if (BoxPivots == null) BoxPivots = new GameObject[0];
+            if (Boxes == null) Boxes = new GameObject[0];
+            if (Points == null) Points = new GameObject[0];
+            if (SpritePivotTransforms == null) SpritePivotTransforms = new Transform[0];
+            if (SpriteTransforms == null) SpriteTransforms = new Transform[0];
+            if (BoxPivotTransforms == null) BoxPivotTransforms = new Transform[0];
+            if (BoxTransforms == null) BoxTransforms = new Transform[0];
+            if (PointTransforms == null) PointTransforms = new Transform[0];
+        }
     }
 
     [ExecuteInEditMode]
